@@ -1,22 +1,40 @@
 {
   "name": "vite-plugin-ember",
   "version": "0.1.0",
+  "description": "Vite plugin for rendering live Ember components in VitePress documentation",
   "license": "MIT",
   "type": "module",
+  "author": "Alexey Kulakov",
+  "homepage": "https://github.com/aklkv/vite-plugin-ember#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/aklkv/vite-plugin-ember.git",
     "directory": "vite-plugin-ember"
   },
+  "bugs": {
+    "url": "https://github.com/aklkv/vite-plugin-ember/issues"
+  },
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "ember",
+    "glimmer",
+    "vitepress",
+    "gjs",
+    "gts"
+  ],
+  "sideEffects": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./components/EmberPlayground.vue": "./src/vitepress/EmberPlayground.vue",
     "./components/EmberPlayground": "./src/vitepress/EmberPlayground.vue",
     "./*": {
+      "types": "./dist/*.d.ts",
       "default": "./dist/*.js"
     }
   },
@@ -34,7 +52,8 @@
     "lint:format:fix": "prettier . --cache --write",
     "lint:types": "tsc --noEmit",
     "format": "prettier . --cache --write",
-    "format:check": "prettier . --cache --check"
+    "format:check": "prettier . --cache --check",
+    "prepack": "rollup --config"
   },
   "dependencies": {
     "@babel/core": "^7.29.0",

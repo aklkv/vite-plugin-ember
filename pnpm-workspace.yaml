@@ -1,3 +1,16 @@
+# Docs: https://pnpm.io/settings
+# https://github.com/emberjs/rfcs/pull/907
+
+autoInstallPeers: false
+resolvePeersFromWorkspaceRoot: false
+
+verifyDepsBeforeRun: install
+
+# only allow these packages to run install scripts (postinstall, etc.)
+onlyBuiltDependencies:
+  - content-tag
+  - esbuild
+
 packages:
   - vite-plugin-ember
   - docs
