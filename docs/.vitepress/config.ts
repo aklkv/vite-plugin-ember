@@ -4,6 +4,7 @@ import vitePluginEmber, { emberFence } from 'vite-plugin-ember';
 export default defineConfig({
   title: 'Ember in VitePress',
   description: 'Render live Ember components inside VitePress documentation',
+  base: '/vite-plugin-ember/',
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
