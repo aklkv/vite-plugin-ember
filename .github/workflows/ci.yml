@@ -21,10 +21,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: 'package.json'
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      - name: Build plugin
+        run: pnpm -C vite-plugin-ember build
 
       - name: Lint
         run: pnpm lint
@@ -39,7 +42,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: 'package.json'
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
