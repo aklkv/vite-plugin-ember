@@ -6,6 +6,11 @@ resolvePeersFromWorkspaceRoot: false
 
 verifyDepsBeforeRun: install
 
+# silence missing peer warnings from vitepress's internal algolia deps
+peerDependencyRules:
+  ignoreMissing:
+    - search-insights
+
 # only allow these packages to run install scripts (postinstall, etc.)
 onlyBuiltDependencies:
   - content-tag
