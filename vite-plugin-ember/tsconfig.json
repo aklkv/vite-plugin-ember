@@ -10,7 +10,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "types": ["ember-source/types"]
+    "types": ["node", "ember-source/types"]
   },
   "include": ["src"]
 }
