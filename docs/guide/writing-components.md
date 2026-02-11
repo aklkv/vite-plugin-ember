@@ -127,15 +127,15 @@ Adding `preview` shows both the rendered output and the source code:
 
 ## File-based demos
 
-For larger components, keep them in separate `.gjs` / `.gts` files and reference them with the `<EmberPlayground>` component directly:
+For larger components, keep them in separate `.gjs` / `.gts` files and reference them with the `<CodePreview>` component directly:
 
 ```md
-<EmberPlayground src="/demos/Counter.gts" />
+<CodePreview src="/demos/counter.gts" />
 ```
 
 Place demo files in a `demos/` directory (or anywhere under `docs/`). The path is relative to your VitePress root.
 
-<EmberPlayground src="/demos/Counter.gts" />
+<CodePreview src="/demos/counter.gts" />
 
 ::: tip
 File-based demos are useful when a component is too large for a code fence, or when you want to share the same component across multiple pages.

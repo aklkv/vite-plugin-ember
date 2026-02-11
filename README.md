@@ -10,7 +10,7 @@ Write `.gjs` / `.gts` code fences in markdown and see them rendered on the page 
 - **Full Ember support** — class components, `@tracked` state, `{{on}}` modifier, and TypeScript via `.gts`
 - **Zero-config compilation** — content-tag preprocessing, Babel template compilation, decorator transforms, and `@ember/*` / `@glimmer/*` module resolution handled automatically
 - **`@embroider/macros` shim** — runtime stubs so `ember-source` ESM imports just work
-- **Vue wrapper** — ships an `<EmberPlayground>` component for seamless VitePress integration
+- **Vue wrapper** — ships a `<CodePreview>` component for seamless VitePress integration
 
 ## Quick Start
 
@@ -44,13 +44,13 @@ export default defineConfig({
 ```ts
 // .vitepress/theme/index.ts
 import DefaultTheme from 'vitepress/theme';
-import EmberPlayground from 'vite-plugin-ember/components/EmberPlayground.vue';
+import CodePreview from 'vite-plugin-ember/components/code-preview.vue';
 import type { Theme } from 'vitepress';
 
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.component('EmberPlayground', EmberPlayground);
+    app.component('CodePreview', CodePreview);
   },
 } satisfies Theme;
 ```
@@ -98,7 +98,7 @@ pnpm dev
 │       ├── index.ts               # Plugin + Ember compilation pipeline
 │       └── vitepress/
 │           ├── ember-fence.ts     # markdown-it plugin for ```gjs live fences
-│           └── EmberPlayground.vue  # Vue wrapper component
+│           └── code-preview.vue     # Vue wrapper component
 ├── docs/                # VitePress documentation site
 │   ├── demos/           # .gjs/.gts demo components
 │   └── guide/           # Documentation pages

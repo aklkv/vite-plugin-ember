@@ -20,7 +20,7 @@ The plugin bridges these two worlds by hooking into Vite's plugin system at ever
 │  └───────────────────────────────────────┘              │
 │         │                                               │
 │         ▼                                               │
-│  <EmberPlayground src="/@id/virtual:ember-demo-a1b2.gjs" />
+│  <CodePreview src="/@id/virtual:ember-demo-a1b2.gjs" />
 │         │                                               │
 └─────────┼───────────────────────────────────────────────┘
           │  Browser requests /@id/virtual:ember-demo-a1b2.gjs
@@ -36,7 +36,7 @@ The plugin bridges these two worlds by hooking into Vite's plugin system at ever
           │  Compiled ES module
           ▼
 ┌─────────────────────────────────────────────────────────┐
-│  EmberPlayground.vue                                    │
+│  code-preview.vue                                      │
 │                                                         │
 │  import(src)  → gets compiled component                 │
 │  @ember/renderer → renderComponent(Comp, { into: el })  │
@@ -52,7 +52,7 @@ When VitePress processes a markdown file, the `emberFence` markdown-it plugin in
 
 - Hashes the fence body to create a stable virtual module ID (`virtual:ember-demo-<hash>.gjs`)
 - Stores the raw source code in a shared `demoRegistry` Map
-- Replaces the fence with an `<EmberPlayground src="/@id/virtual:ember-demo-<hash>.gjs" />` HTML tag
+- Replaces the fence with an `<CodePreview src="/@id/virtual:ember-demo-<hash>.gjs" />` HTML tag
 
 ### 2. Module resolution (request time)
 
@@ -72,7 +72,7 @@ The `@embroider/macros` package (which `ember-source` ESM modules import) is shi
 
 ### 4. Client-side rendering
 
-The `EmberPlayground` Vue component:
+The `CodePreview` Vue component:
 
 1. Dynamically imports the compiled module via `import(src)`
 2. Imports `renderComponent` from `@ember/renderer`

@@ -7,7 +7,7 @@ declare module '*.vue' {
   export default component;
 }
 
-declare module 'vite-plugin-ember/components/EmberPlayground.vue' {
+declare module 'vite-plugin-ember/components/code-preview.vue' {
   import type { DefineComponent } from 'vue';
   const component: DefineComponent<object, object, any>;
   export default component;

@@ -17,7 +17,7 @@ const TAB_CONTENT: Record<Tab, string> = {
   features:
     '• Inline GJS/GTS code fences with live rendering\n• File-based component demos\n• Full Glimmer component support with tracked state\n• TypeScript support via .gts files\n• Hot module replacement',
   setup:
-    '1. Install vite-plugin-ember\n2. Add it to your VitePress config\n3. Use ```gjs live fences or <EmberPlayground> components\n4. Write standard Ember/Glimmer components',
+    '1. Install vite-plugin-ember\n2. Add it to your VitePress config\n3. Use ```gjs live fences or <CodePreview> components\n4. Write standard Ember/Glimmer components',
 };
 
 export default class TabPanel extends Component<Signature> {

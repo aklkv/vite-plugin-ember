@@ -40,22 +40,22 @@ export default defineConfig({
 ```
 
 - **`vitePluginEmber()`** — Handles `.gjs` / `.gts` compilation, module resolution for `@ember/*` and `@glimmer/*`, and virtual module serving.
-- **`emberFence(md)`** — Converts ` ```gjs live ` fences in markdown into rendered `<EmberPlayground>` components.
+- **`emberFence(md)`** — Converts ` ```gjs live ` fences in markdown into rendered `<CodePreview>` components.
 
 ### 3. Register the Vue wrapper component
 
-Create a custom VitePress theme that registers the `EmberPlayground` component shipped with the plugin:
+Create a custom VitePress theme that registers the `CodePreview` component shipped with the plugin:
 
 ```ts
 // .vitepress/theme/index.ts
 import DefaultTheme from 'vitepress/theme';
-import EmberPlayground from 'vite-plugin-ember/components/EmberPlayground.vue';
+import CodePreview from 'vite-plugin-ember/components/code-preview.vue';
 import type { Theme } from 'vitepress';
 
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.component('EmberPlayground', EmberPlayground);
+    app.component('CodePreview', CodePreview);
   },
 } satisfies Theme;
 ```
@@ -79,10 +79,10 @@ docs/
 ├── .vitepress/
 │   ├── config.ts              # Vite + markdown plugin config
 │   └── theme/
-│       └── index.ts           # Custom theme (imports EmberPlayground from plugin)
+│       └── index.ts           # Custom theme (imports CodePreview from plugin)
 ├── demos/                     # Optional: file-based .gjs/.gts demos
-│   ├── Counter.gts
-│   └── Button.gjs
+│   ├── counter.gts
+│   └── button.gjs
 ├── guide/
 │   └── getting-started.md
 ├── index.md
