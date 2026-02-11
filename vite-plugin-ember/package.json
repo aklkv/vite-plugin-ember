@@ -1,0 +1,65 @@
+{
+  "name": "vite-plugin-ember",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aklkv/vite-plugin-ember.git",
+    "directory": "vite-plugin-ember"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "default": "./dist/index.js"
+    },
+    "./components/EmberPlayground.vue": "./src/vitepress/EmberPlayground.vue",
+    "./components/EmberPlayground": "./src/vitepress/EmberPlayground.vue",
+    "./*": {
+      "default": "./dist/*.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src/vitepress/EmberPlayground.vue"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "concurrently 'npm:lint:*(!fix)' --names 'lint:'",
+    "lint:fix": "concurrently 'npm:lint:*:fix' --names 'fix:'",
+    "lint:js": "eslint .",
+    "lint:js:fix": "eslint . --fix",
+    "lint:format": "prettier . --cache --check",
+    "lint:format:fix": "prettier . --cache --write",
+    "lint:types": "tsc --noEmit",
+    "format": "prettier . --cache --write",
+    "format:check": "prettier . --cache --check"
+  },
+  "dependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/plugin-transform-typescript": "^7.28.6",
+    "babel-plugin-ember-template-compilation": "^4.0.0",
+    "content-tag": "^4.1.0",
+    "decorator-transforms": "^2.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/babel__core": "^7.20.5",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^25.2.3",
+    "concurrently": "^9.2.1",
+    "ember-source": "6.10.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.3.0",
+    "markdown-it": "^14.1.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.55.0"
+  },
+  "peerDependencies": {
+    "vite": ">=5",
+    "vitepress": ">=1",
+    "vue": ">=3"
+  }
+}

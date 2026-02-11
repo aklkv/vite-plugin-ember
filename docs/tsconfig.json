@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "lib": ["ESNext", "DOM"],
+    "types": ["vite/client", "ember-source/types"],
+    "jsx": "preserve" // Important for Vue components in Markdown
+  },
+  "include": [
+    "env.d.ts",
+    ".vitepress/**/*.ts",
+    ".vitepress/**/*.vue",
+    "**/*.md",
+    "demos/**/*.gts"
+  ],
+  "exclude": ["node_modules"]
+}
