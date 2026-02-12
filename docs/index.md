@@ -14,10 +14,16 @@ hero:
       link: /examples
 
 features:
-  - title: Inline code fences
+  - icon: 📝
+    title: Inline code fences
     details: Write Ember components directly in markdown with ```gjs live and see them rendered on the page.
-  - title: Full Ember support
+  - icon: 🔥
+    title: Full Ember support
     details: Class components, @tracked state, arrow function handlers, the on modifier, and TypeScript via .gts — it all works.
-  - title: Zero config compilation
+  - icon: ⚡
+    title: Zero config compilation
     details: The plugin handles content-tag preprocessing, Babel template compilation, decorator transforms, and module resolution automatically.
+  - icon: 👁️
+    title: Preview mode
+    details: Add the preview flag to show the rendered component alongside its syntax-highlighted source code — great for API docs and tutorials.
 ---

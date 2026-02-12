@@ -22,6 +22,9 @@ export default defineConfig({
         ],
       },
     ],
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/aklkv/vite-plugin-ember' },
+    ],
   },
   vite: {
     plugins: [vitePluginEmber()],

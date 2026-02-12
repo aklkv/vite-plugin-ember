@@ -102,13 +102,15 @@ export default defineConfig({
 
 The plugin intercepts fences with `gjs` or `gts` language and a `live` flag:
 
-| Input                   | Output HTML                                                                         |
-| ----------------------- | ----------------------------------------------------------------------------------- |
-| ` ```gjs live `         | `<CodePreview src="/@id/virtual:ember-demo-HASH.gjs" />`                            |
-| ` ```gts live `         | `<CodePreview src="/@id/virtual:ember-demo-HASH.gts" />`                            |
-| ` ```gjs live preview ` | `<CodePreview src="..."><div v-pre><pre><code>...</code></pre></div></CodePreview>` |
+| Input                   | Output HTML                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| ` ```gjs live `         | `<CodePreview :loader="() => import('virtual:ember-demo-HASH.gjs')" />`              |
+| ` ```gts live `         | `<CodePreview :loader="() => import('virtual:ember-demo-HASH.gts')" />`              |
+| ` ```gjs live preview ` | `<CodePreview :loader="() => import('...')"><pre><code>…</code></pre></CodePreview>` |
 
-Each fence body is hashed and stored in a shared registry. The Vite plugin's `load` hook serves the source when the browser requests the virtual module, and the `transform` hook compiles it.
+Each fence body is hashed and stored in a shared registry. The Vite plugin's `load` hook serves the source when the module is imported, and the `transform` hook compiles it.
+
+For file-based demos, a core ruler transforms `<CodePreview src="/demos/counter.gts" />` into `<CodePreview :loader="() => import('/demos/counter.gts')" />` so Vite can statically analyse and bundle the import in production (SSG) builds.
 
 ## `CodePreview` (Vue component)
 
@@ -116,9 +118,10 @@ The Vue wrapper component that mounts Ember components into the page.
 
 ### Props
 
-| Prop  | Type     | Description                                           |
-| ----- | -------- | ----------------------------------------------------- |
-| `src` | `string` | URL of the compiled Ember module to import and render |
+| Prop     | Type                 | Description                                                              |
+| -------- | -------------------- | ------------------------------------------------------------------------ |
+| `loader` | `() => Promise<any>` | A function that returns a dynamic import of the Ember module (preferred) |
+| `src`    | `string`             | URL of the module to import (fallback, uses `@vite-ignore`)              |
 
 ### Slots
 
@@ -128,7 +131,7 @@ The Vue wrapper component that mounts Ember components into the page.
 
 ### How it works
 
-1. On mount, it imports the module from `src` using a dynamic `import()`.
+1. On mount, it calls the `loader()` prop (or falls back to `import(src)`) to load the module.
 2. It imports `renderComponent` from `@ember/renderer`.
 3. It calls `renderComponent(Component, { into: element })` to mount the Ember component.
 4. On Vue unmount, it calls `cleanup.destroy()` to tear down the Ember component tree.
