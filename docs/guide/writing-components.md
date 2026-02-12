@@ -3,7 +3,7 @@
 There are two ways to include live Ember components in your documentation: **inline code fences** and **file-based demos**.
 
 ::: warning Known Limitations
-By default, components are rendered without an Ember application container. **Initializers and routing are not available.** Service injection (`@service`) works if you [provide an owner](/guide/plugin-api#enabling-service-injection) in your theme setup.
+By default, components are rendered without an Ember application container. **Initializers and routing are not available.** Service injection (`@service`) works when you call [`setupEmber`](/guide/plugin-api#enabling-service-injection) with a `services` option in your theme setup.
 :::
 
 ## Inline code fences
@@ -149,14 +149,15 @@ File-based demos are useful when a component is too large for a code fence, or w
 
 The plugin resolves these package namespaces automatically — no extra dependencies needed:
 
-| Package                    | Common imports                              |
-| -------------------------- | ------------------------------------------- |
-| `@glimmer/component`       | `Component` base class                      |
-| `@glimmer/tracking`        | `tracked`, `cached`                         |
-| `@ember/modifier`          | `on` modifier                               |
-| `@ember/helper`            | `fn`, `concat`, `get`, `hash`               |
-| `@ember/template-compiler` | (used internally)                           |
-| `@ember/renderer`          | `renderComponent` (used by the Vue wrapper) |
+| Package              | Common imports                              |
+| -------------------- | ------------------------------------------- |
+| `@glimmer/component` | `Component` base class                      |
+| `@glimmer/tracking`  | `tracked`, `cached`                         |
+| `@ember/modifier`    | `on` modifier                               |
+| `@ember/helper`      | `fn`, `concat`, `get`, `hash`               |
+| `@ember/service`     | `service` decorator                         |
+| `@ember/owner`       | `getOwner`, `setOwner`                      |
+| `@ember/renderer`    | `renderComponent` (used by the Vue wrapper) |
 
 Any `@ember/*` or `@glimmer/*` import is resolved from `ember-source`'s ESM packages automatically.
 

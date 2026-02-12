@@ -15,7 +15,6 @@
     "allowJs": true
   },
   "include": [
-    "env.d.ts",
     ".vitepress/**/*.ts",
     ".vitepress/**/*.vue",
     "**/*.md",

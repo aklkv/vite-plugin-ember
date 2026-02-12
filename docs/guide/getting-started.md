@@ -46,33 +46,31 @@ export default defineConfig({
 
 ### 3. Register the Vue wrapper component
 
-Create a custom VitePress theme that registers the `CodePreview` component shipped with the plugin:
+Create a custom VitePress theme that sets up the Ember integration:
 
 ```ts
 // .vitepress/theme/index.ts
 import DefaultTheme from 'vitepress/theme';
-import CodePreview from 'vite-plugin-ember/components/code-preview.vue';
+import { setupEmber } from 'vite-plugin-ember/setup';
 import type { Theme } from 'vitepress';
 
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.component('CodePreview', CodePreview);
+    setupEmber(app);
   },
 } satisfies Theme;
 ```
 
-The component handles dynamic imports, `@ember/renderer` mounting, error display, and SSR safety out of the box.
+`setupEmber` registers the `<CodePreview>` component and wires up an Ember owner so `@service` injection works out of the box. To register services, pass them as options:
 
-> **TypeScript:** If your editor can't resolve the `.vue` import, add this to an `env.d.ts` in your project root:
->
-> ```ts
-> declare module 'vite-plugin-ember/components/code-preview.vue' {
->   import type { DefineComponent } from 'vue';
->   const component: DefineComponent<object, object, any>;
->   export default component;
-> }
-> ```
+```ts
+setupEmber(app, {
+  services: {
+    greeting: new GreetingService(),
+  },
+});
+```
 
 ### 4. Start the dev server
 

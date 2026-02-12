@@ -166,3 +166,16 @@ A tab panel written in GTS with TypeScript interfaces.
 A color picker showing child component extraction and dynamic inline styles.
 
 <CodePreview src="/demos/color-picker.gjs" />
+
+---
+
+## Service injection
+
+Components can use Ember's `@service` decorator to inject services registered
+via [`setupEmber`](/guide/plugin-api#enabling-service-injection).
+
+### service-demo.gts
+
+A component that receives a greeting message from an injected `GreetingService`.
+
+<CodePreview src="/demos/service-demo.gts" preview />

@@ -1,31 +1,17 @@
+<script lang="ts">
+import { EMBER_OWNER_KEY } from './constants';
+export { EMBER_OWNER_KEY };
+</script>
+
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, inject } from 'vue';
 import { inBrowser } from 'vitepress';
-
-/**
- * Vue injection key for providing a default Ember owner to all CodePreview
- * instances. Provide this in your VitePress theme's `enhanceApp` to enable
- * `@service` injection in live demos.
- *
- * @example
- * ```ts
- * import { EMBER_OWNER_KEY } from 'vite-plugin-ember/components/code-preview.vue';
- *
- * export default {
- *   ...DefaultTheme,
- *   enhanceApp({ app }) {
- *     const owner = buildMyOwner(); // create & configure an Ember owner
- *     app.provide(EMBER_OWNER_KEY, owner);
- *   },
- * } satisfies Theme;
- * ```
- */
-export const EMBER_OWNER_KEY = Symbol('ember-owner');
 
 const props = defineProps<{
   src?: string;
   loader?: () => Promise<any>;
   owner?: object;
+  preview?: boolean;
 }>();
 const injectedOwner = inject<object | undefined>(EMBER_OWNER_KEY, undefined);
 const mountEl = ref<HTMLDivElement | null>(null);
