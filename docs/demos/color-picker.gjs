@@ -19,7 +19,11 @@ const ColorSwatch = <template>
     type="button"
     {{on "click" @onSelect}}
     style="width: 32px; height: 32px; border-radius: 50%;
-           border: {{if @isSelected '3px solid #333' '2px solid transparent'}};
+           border: {{if
+      @isSelected
+      '3px solid var(--vp-c-text-1)'
+      '2px solid transparent'
+    }};
            background: {{@color}}; cursor: pointer;
            transition: transform 0.15s;
            transform: {{if @isSelected 'scale(1.2)' 'scale(1)'}};"
@@ -36,8 +40,10 @@ export default class ColorPicker extends Component {
   };
 
   <template>
-    <div style="font-family: system-ui; max-width: 300px;">
-      <h4 style="margin: 0 0 12px;">🎨 Color Picker</h4>
+    <div
+      style="font-family: var(--vp-font-family-base, system-ui); max-width: 300px;"
+    >
+      <h4 style="margin: 0 0 12px; color: var(--vp-c-text-1);">🎨 Color Picker</h4>
 
       <div
         style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;"
@@ -53,8 +59,8 @@ export default class ColorPicker extends Component {
 
       <div
         style="padding: 20px; border-radius: 8px; text-align: center;
-                  background: {{this.selectedColor}}; color: white;
-                  font-weight: bold; transition: background 0.3s;"
+               background: {{this.selectedColor}}; color: white;
+               font-weight: bold; transition: background 0.3s;"
       >
         {{this.message}}
       </div>

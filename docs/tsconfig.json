@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "noUnusedLocals": true,
     "lib": ["ESNext", "DOM"],
-    "types": ["vite/client", "ember-source/types"],
+    "types": ["vite/client", "ember-source/types", "@glint/ember-tsc/types"],
     "jsx": "preserve" // Important for Vue components in Markdown
   },
   "include": [
