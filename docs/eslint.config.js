@@ -27,6 +27,7 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      parserOptions: tsParserOptions,
       globals: {
         ...globals.browser,
       },
