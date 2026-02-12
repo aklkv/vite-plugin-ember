@@ -2,7 +2,10 @@
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import { inBrowser } from 'vitepress';
 
-const props = defineProps<{ src: string }>();
+const props = defineProps<{
+  src?: string;
+  loader?: () => Promise<any>;
+}>();
 const mountEl = ref<HTMLDivElement | null>(null);
 const error = ref<string | null>(null);
 let cleanup: undefined | { destroy?: () => void };
@@ -20,7 +23,7 @@ onMounted(async () => {
 
   try {
     const [mod, { renderComponent }] = await Promise.all([
-      import(/* @vite-ignore */ props.src),
+      props.loader ? props.loader() : import(/* @vite-ignore */ props.src!),
       getRenderer(),
     ]);
 
