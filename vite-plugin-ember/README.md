@@ -127,13 +127,38 @@ pnpm dev
 
 ## Limitations
 
-Components are rendered standalone via `@ember/renderer` — there is **no Ember application container**. This means:
+Components are rendered standalone via `@ember/renderer`. By default there is **no Ember application container**, which means:
 
-- **`@service` injection does not work** — there is no owner/DI container to resolve services from
+- **`@service` injection** requires providing an owner (see below)
 - **Initializers and instance-initializers** are not executed
 - **Routing** (`LinkTo`, `RouterService`) is not available
 
-Components that rely only on `@tracked` state, `@action`, modifiers, and helpers work as expected.
+Components that rely only on `@tracked` state, `@action`, modifiers, and helpers work out of the box.
+
+### Enabling service injection
+
+To support `@service` in your demos, provide an Ember owner via Vue's `provide` in your theme:
+
+```ts
+// .vitepress/theme/index.ts
+import DefaultTheme from 'vitepress/theme';
+import CodePreview, { EMBER_OWNER_KEY } from 'vite-plugin-ember/components/code-preview.vue';
+import type { Theme } from 'vitepress';
+
+// Create an owner and register your services
+const owner = {}; // implement the Ember Owner API
+// owner.register('service:my-service', MyService);
+
+export default {
+  ...DefaultTheme,
+  enhanceApp({ app }) {
+    app.component('CodePreview', CodePreview);
+    app.provide(EMBER_OWNER_KEY, owner);
+  },
+} satisfies Theme;
+```
+
+All `<CodePreview>` instances (including those from ` ```gjs live ` fences) will then use this owner for dependency injection.
 
 ## Requirements
 

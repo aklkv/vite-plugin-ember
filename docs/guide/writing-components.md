@@ -3,7 +3,7 @@
 There are two ways to include live Ember components in your documentation: **inline code fences** and **file-based demos**.
 
 ::: warning Known Limitations
-Components are rendered standalone via `@ember/renderer` without an Ember application container. This means **`@service` injection, initializers, and routing are not available**. Components that use `@tracked`, `@action`, modifiers, and helpers work as expected.
+By default, components are rendered without an Ember application container. **Initializers and routing are not available.** Service injection (`@service`) works if you [provide an owner](/guide/plugin-api#enabling-service-injection) in your theme setup.
 :::
 
 ## Inline code fences
