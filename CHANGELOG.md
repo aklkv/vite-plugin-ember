@@ -2,6 +2,17 @@
 
 ## Release (2026-02-12)
 
+* vite-plugin-ember 0.2.0 (minor)
+
+#### :rocket: Enhancement
+* `vite-plugin-ember`
+  * [#24](https://github.com/aklkv/vite-plugin-ember/pull/24) feat: compile precompileTemplate calls in V2 addon .js files ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-02-12)
+
 * vite-plugin-ember 0.1.1 (patch)
 
 #### :bug: Bug Fix
