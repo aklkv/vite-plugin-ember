@@ -1,8 +1,13 @@
 # vite-plugin-ember
 
+[![CI](https://github.com/aklkv/vite-plugin-ember/actions/workflows/ci.yml/badge.svg)](https://github.com/aklkv/vite-plugin-ember/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 A [Vite](https://vitejs.dev/) plugin that lets you render live, interactive [Ember](https://emberjs.com/) components inside [VitePress](https://vitepress.dev/) documentation pages.
 
 Write `.gjs` / `.gts` code fences in markdown and see them rendered on the page — no full Ember app required.
+
+**[View the live documentation →](https://aklkv.github.io/vite-plugin-ember/)**
 
 ## Features
 
@@ -92,7 +97,7 @@ pnpm dev
 
 ## Project Structure
 
-````
+````text
 ├── vite-plugin-ember/   # The Vite plugin (publishable package)
 │   └── src/
 │       ├── index.ts               # Plugin + Ember compilation pipeline

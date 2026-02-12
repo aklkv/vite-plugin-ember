@@ -20,10 +20,10 @@ The plugin bridges these two worlds by hooking into Vite's plugin system at ever
 │  └───────────────────────────────────────┘              │
 │         │                                               │
 │         ▼                                               │
-│  <CodePreview src="/@id/virtual:ember-demo-a1b2.gjs" />
+│  <CodePreview :loader="() => import('virtual:ember-demo-a1b2.gjs')" />
 │         │                                               │
 └─────────┼───────────────────────────────────────────────┘
-          │  Browser requests /@id/virtual:ember-demo-a1b2.gjs
+          │  Vite resolves & bundles the virtual import
           ▼
 ┌─────────────────────────────────────────────────────────┐
 │  vite-plugin-ember (Vite plugin)                        │
@@ -38,7 +38,7 @@ The plugin bridges these two worlds by hooking into Vite's plugin system at ever
 ┌─────────────────────────────────────────────────────────┐
 │  code-preview.vue                                      │
 │                                                         │
-│  import(src)  → gets compiled component                 │
+│  loader()     → gets compiled component                 │
 │  @ember/renderer → renderComponent(Comp, { into: el })  │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
@@ -52,7 +52,9 @@ When VitePress processes a markdown file, the `emberFence` markdown-it plugin in
 
 - Hashes the fence body to create a stable virtual module ID (`virtual:ember-demo-<hash>.gjs`)
 - Stores the raw source code in a shared `demoRegistry` Map
-- Replaces the fence with an `<CodePreview src="/@id/virtual:ember-demo-<hash>.gjs" />` HTML tag
+- Replaces the fence with a `<CodePreview :loader="() => import('virtual:ember-demo-<hash>.gjs')" />` tag
+
+For file-based demos (`<CodePreview src="/demos/counter.gts" />`), a markdown-it core ruler rewrites the `src` attribute into a `:loader` prop so Vite can statically analyse and bundle the import.
 
 ### 2. Module resolution (request time)
 
@@ -74,7 +76,7 @@ The `@embroider/macros` package (which `ember-source` ESM modules import) is shi
 
 The `CodePreview` Vue component:
 
-1. Dynamically imports the compiled module via `import(src)`
+1. Calls the `loader()` function to dynamically import the compiled module
 2. Imports `renderComponent` from `@ember/renderer`
 3. Mounts the Ember component into a `<div>` element
 4. Cleans up via `destroy()` when the Vue component unmounts
