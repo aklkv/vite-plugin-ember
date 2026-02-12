@@ -2,8 +2,8 @@
   "solution": {
     "vite-plugin-ember": {
       "impact": "patch",
-      "oldVersion": "0.0.1",
-      "newVersion": "0.0.2",
+      "oldVersion": "0.0.2",
+      "newVersion": "0.0.3",
       "tagName": "latest",
       "constraints": [
         {
@@ -14,5 +14,5 @@
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.0.2 (patch)\n\n#### :house: Internal\n* Other\n  * [#11](https://github.com/aklkv/vite-plugin-ember/pull/11) chore: use cp instead of symlink for README in publish workflow ([@aklkv](https://github.com/aklkv))\n* `vite-plugin-ember`\n  * [#9](https://github.com/aklkv/vite-plugin-ember/pull/9) Prepare Release v0.0.1 ([@github-actions[bot]](https://github.com/apps/github-actions))\n  * [#10](https://github.com/aklkv/vite-plugin-ember/pull/10) chore: drop prepack script and copy README in publish workflow ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 2\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n- GitHub Actions [Bot] ([@github-actions](https://github.com/apps/github-actions))\n"
+  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.0.3 (patch)\n\n#### :house: Internal\n* `vite-plugin-ember`\n  * [#13](https://github.com/aklkv/vite-plugin-ember/pull/13) chore: move README into package and symlink from root ([@aklkv](https://github.com/aklkv))\n  * [#12](https://github.com/aklkv/vite-plugin-ember/pull/12) Prepare Release v0.0.2 ([@github-actions[bot]](https://github.com/apps/github-actions))\n  * [#9](https://github.com/aklkv/vite-plugin-ember/pull/9) Prepare Release v0.0.1 ([@github-actions[bot]](https://github.com/apps/github-actions))\n  * [#10](https://github.com/aklkv/vite-plugin-ember/pull/10) chore: drop prepack script and copy README in publish workflow ([@aklkv](https://github.com/aklkv))\n* Other\n  * [#11](https://github.com/aklkv/vite-plugin-ember/pull/11) chore: use cp instead of symlink for README in publish workflow ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 2\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n- GitHub Actions [Bot] ([@github-actions](https://github.com/apps/github-actions))\n"
 }
