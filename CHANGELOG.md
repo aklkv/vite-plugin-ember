@@ -2,6 +2,17 @@
 
 ## Release (2026-02-12)
 
+* vite-plugin-ember 0.0.4 (patch)
+
+#### :memo: Documentation
+* `vite-plugin-ember`
+  * [#15](https://github.com/aklkv/vite-plugin-ember/pull/15) chore: add ember-source and @glimmer/component as peer dependencies ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-02-12)
+
 * vite-plugin-ember 0.0.3 (patch)
 
 #### :house: Internal
