@@ -52,8 +52,7 @@
     "lint:format:fix": "prettier . --cache --write",
     "lint:types": "tsc --noEmit",
     "format": "prettier . --cache --write",
-    "format:check": "prettier . --cache --check",
-    "prepack": "rollup --config"
+    "format:check": "prettier . --cache --check"
   },
   "dependencies": {
     "@babel/core": "^7.29.0",

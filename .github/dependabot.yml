@@ -5,11 +5,17 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    labels:
+      - "dependencies"
+      - "internal"
 
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
+    labels:
+      - "dependencies"
+      - "internal"
     groups:
       minor-and-patch:
         update-types:
