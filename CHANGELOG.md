@@ -2,6 +2,17 @@
 
 ## Release (2026-02-12)
 
+* vite-plugin-ember 0.1.0 (minor)
+
+#### :rocket: Enhancement
+* `vite-plugin-ember`
+  * [#19](https://github.com/aklkv/vite-plugin-ember/pull/19) feat: setupEmber() helper, @service support, and DX improvements ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-02-12)
+
 * vite-plugin-ember 0.0.5 (patch)
 
 #### :memo: Documentation
