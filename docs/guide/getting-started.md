@@ -64,6 +64,16 @@ export default {
 
 The component handles dynamic imports, `@ember/renderer` mounting, error display, and SSR safety out of the box.
 
+> **TypeScript:** If your editor can't resolve the `.vue` import, add this to an `env.d.ts` in your project root:
+>
+> ```ts
+> declare module 'vite-plugin-ember/components/code-preview.vue' {
+>   import type { DefineComponent } from 'vue';
+>   const component: DefineComponent<object, object, any>;
+>   export default component;
+> }
+> ```
+
 ### 4. Start the dev server
 
 ```sh

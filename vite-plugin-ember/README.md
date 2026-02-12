@@ -64,6 +64,16 @@ export default {
 } satisfies Theme;
 ```
 
+If TypeScript cannot resolve the `.vue` import, add this declaration to your project (e.g. `env.d.ts`):
+
+```ts
+declare module 'vite-plugin-ember/components/code-preview.vue' {
+  import type { DefineComponent } from 'vue';
+  const component: DefineComponent<object, object, any>;
+  export default component;
+}
+```
+
 ### 4. Write a live demo
 
 In any markdown file:
