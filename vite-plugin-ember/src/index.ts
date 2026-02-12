@@ -82,7 +82,8 @@ export interface VitePluginEmberOptions {
 
 export default function vitePluginEmber(
   options: VitePluginEmberOptions = {},
-): Plugin {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any {
   const preprocessor = new Preprocessor();
 
   // Locate ember-source's dist/packages directory on disk
@@ -323,7 +324,7 @@ export default function vitePluginEmber(
       if (!result?.code) return null;
       return { code: result.code, map: result.map as any };
     },
-  };
+  } satisfies Plugin;
 }
 
 // ── Re-exports for VitePress markdown integration ───────────────────────
