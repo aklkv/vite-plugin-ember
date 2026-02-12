@@ -1,18 +1,18 @@
 {
   "solution": {
     "vite-plugin-ember": {
-      "impact": "patch",
-      "oldVersion": "0.0.4",
-      "newVersion": "0.0.5",
+      "impact": "minor",
+      "oldVersion": "0.0.5",
+      "newVersion": "0.1.0",
       "tagName": "latest",
       "constraints": [
         {
-          "impact": "patch",
-          "reason": "Appears in changelog section :memo: Documentation"
+          "impact": "minor",
+          "reason": "Appears in changelog section :rocket: Enhancement"
         }
       ],
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.0.5 (patch)\n\n#### :memo: Documentation\n* `vite-plugin-ember`\n  * [#17](https://github.com/aklkv/vite-plugin-ember/pull/17) docs: add env.d.ts module declaration for CodePreview component ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.1.0 (minor)\n\n#### :rocket: Enhancement\n* `vite-plugin-ember`\n  * [#19](https://github.com/aklkv/vite-plugin-ember/pull/19) feat: setupEmber() helper, @service support, and DX improvements ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }
