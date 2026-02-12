@@ -125,6 +125,16 @@ pnpm dev
 └── pnpm-workspace.yaml
 ````
 
+## Limitations
+
+Components are rendered standalone via `@ember/renderer` — there is **no Ember application container**. This means:
+
+- **`@service` injection does not work** — there is no owner/DI container to resolve services from
+- **Initializers and instance-initializers** are not executed
+- **Routing** (`LinkTo`, `RouterService`) is not available
+
+Components that rely only on `@tracked` state, `@action`, modifiers, and helpers work as expected.
+
 ## Requirements
 
 - Node.js ≥ 20
