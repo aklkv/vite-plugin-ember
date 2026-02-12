@@ -53,25 +53,15 @@ export default defineConfig({
 ```ts
 // .vitepress/theme/index.ts
 import DefaultTheme from 'vitepress/theme';
-import CodePreview from 'vite-plugin-ember/components/code-preview.vue';
+import { setupEmber } from 'vite-plugin-ember/setup';
 import type { Theme } from 'vitepress';
 
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.component('CodePreview', CodePreview);
+    setupEmber(app);
   },
 } satisfies Theme;
-```
-
-If TypeScript cannot resolve the `.vue` import, add this declaration to your project (e.g. `env.d.ts`):
-
-```ts
-declare module 'vite-plugin-ember/components/code-preview.vue' {
-  import type { DefineComponent } from 'vue';
-  const component: DefineComponent<object, object, any>;
-  export default component;
-}
 ```
 
 ### 4. Write a live demo
@@ -117,7 +107,10 @@ pnpm dev
 │       ├── index.ts               # Plugin + Ember compilation pipeline
 │       └── vitepress/
 │           ├── ember-fence.ts     # markdown-it plugin for ```gjs live fences
-│           └── code-preview.vue     # Vue wrapper component
+│           ├── code-preview.vue   # Vue wrapper component
+│           ├── setup.ts           # One-call theme setup helper
+│           ├── create-owner.ts    # Minimal Ember owner factory
+│           └── constants.ts       # Shared injection keys
 ├── docs/                # VitePress documentation site
 │   ├── demos/           # .gjs/.gts demo components
 │   └── guide/           # Documentation pages
@@ -127,13 +120,38 @@ pnpm dev
 
 ## Limitations
 
-Components are rendered standalone via `@ember/renderer` — there is **no Ember application container**. This means:
+Components are rendered standalone via `@ember/renderer`. By default there is **no Ember application container**, which means:
 
-- **`@service` injection does not work** — there is no owner/DI container to resolve services from
+- **`@service` injection** requires calling `setupEmber` with a `services` option (see below)
 - **Initializers and instance-initializers** are not executed
 - **Routing** (`LinkTo`, `RouterService`) is not available
 
-Components that rely only on `@tracked` state, `@action`, modifiers, and helpers work as expected.
+Components that rely only on `@tracked` state, `@action`, modifiers, and helpers work out of the box.
+
+### Enabling service injection
+
+To support `@service` in your demos, pass a `services` map to `setupEmber`:
+
+```ts
+// .vitepress/theme/index.ts
+import DefaultTheme from 'vitepress/theme';
+import { setupEmber } from 'vite-plugin-ember/setup';
+import type { Theme } from 'vitepress';
+import GreetingService from '../demos/greeting-service';
+
+export default {
+  ...DefaultTheme,
+  enhanceApp({ app }) {
+    setupEmber(app, {
+      services: {
+        greeting: new GreetingService(),
+      },
+    });
+  },
+} satisfies Theme;
+```
+
+All `<CodePreview>` instances (including those from ` ```gjs live ` fences) will then use the `@service` decorator for dependency injection.
 
 ## Requirements
 

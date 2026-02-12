@@ -1,11 +1,19 @@
+<script lang="ts">
+import { EMBER_OWNER_KEY } from './constants';
+export { EMBER_OWNER_KEY };
+</script>
+
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, inject } from 'vue';
 import { inBrowser } from 'vitepress';
 
 const props = defineProps<{
   src?: string;
   loader?: () => Promise<any>;
+  owner?: object;
+  preview?: boolean;
 }>();
+const injectedOwner = inject<object | undefined>(EMBER_OWNER_KEY, undefined);
 const mountEl = ref<HTMLDivElement | null>(null);
 const error = ref<string | null>(null);
 let cleanup: undefined | { destroy?: () => void };
@@ -28,7 +36,11 @@ onMounted(async () => {
     ]);
 
     const component = mod?.default ?? mod;
-    cleanup = renderComponent(component, { into: mountEl.value });
+    const owner = props.owner ?? injectedOwner;
+    cleanup = renderComponent(component, {
+      into: mountEl.value,
+      ...(owner ? { owner } : {}),
+    });
   } catch (err) {
     console.error('[CodePreview] Failed to render:', err);
     error.value = String(err);

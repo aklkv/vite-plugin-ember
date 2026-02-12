@@ -286,6 +286,9 @@ export default function vitePluginEmber(
 
     /* ─── transform .gjs / .gts files ─────────────────────────────── */
     async transform(code, id) {
+      // Skip ?raw imports — let Vite serve the original source text
+      if (id.includes('?raw') || id.includes('&raw')) return null;
+
       const bareId = id.split('?', 1)[0];
       const isGJS = bareId.endsWith('.gjs');
       const isGTS = bareId.endsWith('.gts');

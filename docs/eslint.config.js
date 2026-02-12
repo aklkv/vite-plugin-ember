@@ -63,16 +63,8 @@ export default defineConfig([
     extends: [...ts.configs.recommended],
   },
   /**
-   * Relax rules for shims, declarations, and demo files
+   * Relax rules for demo files
    */
-  {
-    files: ['env.d.ts', '.vitepress/ember-renderer-shim.ts'],
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-    },
-  },
   {
     files: ['demos/**/*.{gjs,gts}'],
     rules: {

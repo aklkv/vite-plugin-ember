@@ -33,6 +33,14 @@
     },
     "./components/code-preview.vue": "./src/vitepress/code-preview.vue",
     "./components/CodePreview": "./src/vitepress/code-preview.vue",
+    "./owner": {
+      "types": "./dist/vitepress/create-owner.d.ts",
+      "default": "./dist/vitepress/create-owner.js"
+    },
+    "./setup": {
+      "types": "./dist/vitepress/setup.d.ts",
+      "default": "./dist/vitepress/setup.js"
+    },
     "./*": {
       "types": "./dist/*.d.ts",
       "default": "./dist/*.js"
@@ -40,7 +48,8 @@
   },
   "files": [
     "dist",
-    "src/vitepress/code-preview.vue"
+    "src/vitepress/code-preview.vue",
+    "src/vitepress/constants.ts"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
