@@ -6,16 +6,16 @@ updates:
     schedule:
       interval: weekly
     labels:
-      - "dependencies"
-      - "internal"
+      - 'dependencies'
+      - 'internal'
 
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
     labels:
-      - "dependencies"
-      - "internal"
+      - 'dependencies'
+      - 'internal'
     groups:
       minor-and-patch:
         update-types:
