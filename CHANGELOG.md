@@ -2,6 +2,17 @@
 
 ## Release (2026-02-12)
 
+* vite-plugin-ember 0.0.5 (patch)
+
+#### :memo: Documentation
+* `vite-plugin-ember`
+  * [#17](https://github.com/aklkv/vite-plugin-ember/pull/17) docs: add env.d.ts module declaration for CodePreview component ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-02-12)
+
 * vite-plugin-ember 0.0.4 (patch)
 
 #### :memo: Documentation
