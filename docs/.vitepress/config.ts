@@ -4,7 +4,7 @@ import vitePluginEmber, { emberFence } from 'vite-plugin-ember';
 export default defineConfig({
   title: 'Ember in VitePress',
   description: 'Render live Ember components inside VitePress documentation',
-  base: '/vite-plugin-ember/',
+  base: process.env.BASE_URL ?? '/',
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
@@ -24,8 +24,7 @@ export default defineConfig({
     ],
   },
   vite: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    plugins: [vitePluginEmber() as any],
+    plugins: [vitePluginEmber()],
   },
   markdown: {
     config(md) {
