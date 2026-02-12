@@ -82,8 +82,6 @@ import { emberFence } from 'vite-plugin-ember';
 | `md`        | `MarkdownIt` | _(required)_    | The markdown-it instance provided by VitePress |
 | `component` | `string`     | `'CodePreview'` | Name of the Vue wrapper component to render    |
 
-> > > > > > > 1fd3f2d (refactor: rename EmberPlayground to CodePreview, use kebab-case files)
-
 ### Usage
 
 Register it in your VitePress markdown config:
