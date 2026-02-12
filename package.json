@@ -1,27 +1,28 @@
 {
   "name": "vite-plugin-ember",
   "private": true,
-  "license": "MIT",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/aklkv/vite-plugin-ember.git"
   },
+  "license": "MIT",
+  "type": "module",
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -C docs dev",
-    "preview": "pnpm -C docs preview",
+    "format": "pnpm -r --if-present format",
+    "format:check": "pnpm -r --if-present format:check",
     "lint": "pnpm -r --if-present lint",
     "lint:fix": "pnpm -r --if-present lint:fix",
-    "format": "pnpm -r --if-present format",
-    "format:check": "pnpm -r --if-present format:check"
+    "preview": "pnpm -C docs preview"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "release-plan": "^0.17.4"
   },
   "packageManager": "pnpm@10.29.3+sha512.498e1fb4cca5aa06c1dcf2611e6fafc50972ffe7189998c409e90de74566444298ffe43e6cd2acdc775ba1aa7cc5e092a8b7054c811ba8c5770f84693d33d2dc",
   "engines": {
     "node": ">= 24",
     "pnpm": ">= 10.0.0"
-  },
-  "devDependencies": {
-    "prettier": "^3.8.1"
   }
 }
