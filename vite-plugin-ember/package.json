@@ -79,8 +79,15 @@
     "vue": "^3.5.28"
   },
   "peerDependencies": {
+    "@glimmer/component": ">=1",
+    "ember-source": ">=5",
     "vite": ">=5",
     "vitepress": ">=1",
     "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "@glimmer/component": {
+      "optional": true
+    }
   }
 }
