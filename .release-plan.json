@@ -1,18 +1,18 @@
 {
   "solution": {
     "vite-plugin-ember": {
-      "impact": "minor",
-      "oldVersion": "0.0.5",
-      "newVersion": "0.1.0",
+      "impact": "patch",
+      "oldVersion": "0.1.0",
+      "newVersion": "0.1.1",
       "tagName": "latest",
       "constraints": [
         {
-          "impact": "minor",
-          "reason": "Appears in changelog section :rocket: Enhancement"
+          "impact": "patch",
+          "reason": "Appears in changelog section :bug: Bug Fix"
         }
       ],
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.1.0 (minor)\n\n#### :rocket: Enhancement\n* `vite-plugin-ember`\n  * [#19](https://github.com/aklkv/vite-plugin-ember/pull/19) feat: setupEmber() helper, @service support, and DX improvements ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.1.1 (patch)\n\n#### :bug: Bug Fix\n* `vite-plugin-ember`\n  * [#21](https://github.com/aklkv/vite-plugin-ember/pull/21) fix: use Symbol.for() for EMBER_OWNER_KEY to fix production build ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }

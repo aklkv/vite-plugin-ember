@@ -2,6 +2,17 @@
 
 ## Release (2026-02-12)
 
+* vite-plugin-ember 0.1.1 (patch)
+
+#### :bug: Bug Fix
+* `vite-plugin-ember`
+  * [#21](https://github.com/aklkv/vite-plugin-ember/pull/21) fix: use Symbol.for() for EMBER_OWNER_KEY to fix production build ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-02-12)
+
 * vite-plugin-ember 0.1.0 (minor)
 
 #### :rocket: Enhancement
