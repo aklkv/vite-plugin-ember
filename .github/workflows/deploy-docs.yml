@@ -35,6 +35,8 @@ jobs:
 
       - name: Build docs
         run: pnpm -C docs build
+        env:
+          BASE_URL: /vite-plugin-ember/
 
       - uses: actions/upload-pages-artifact@v4
         with:

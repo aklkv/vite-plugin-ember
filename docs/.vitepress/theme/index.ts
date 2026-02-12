@@ -1,10 +1,10 @@
 import DefaultTheme from 'vitepress/theme';
-import EmberPlayground from 'vite-plugin-ember/components/EmberPlayground.vue';
+import CodePreview from 'vite-plugin-ember/components/code-preview.vue';
 import type { Theme } from 'vitepress';
 
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.component('EmberPlayground', EmberPlayground);
+    app.component('CodePreview', CodePreview);
   },
 } satisfies Theme;

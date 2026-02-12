@@ -31,8 +31,8 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./components/EmberPlayground.vue": "./src/vitepress/EmberPlayground.vue",
-    "./components/EmberPlayground": "./src/vitepress/EmberPlayground.vue",
+    "./components/code-preview.vue": "./src/vitepress/code-preview.vue",
+    "./components/CodePreview": "./src/vitepress/code-preview.vue",
     "./*": {
       "types": "./dist/*.d.ts",
       "default": "./dist/*.js"
@@ -40,7 +40,7 @@
   },
   "files": [
     "dist",
-    "src/vitepress/EmberPlayground.vue"
+    "src/vitepress/code-preview.vue"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

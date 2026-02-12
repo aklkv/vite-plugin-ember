@@ -7,7 +7,7 @@ const mountEl = ref<HTMLDivElement | null>(null);
 const error = ref<string | null>(null);
 let cleanup: undefined | { destroy?: () => void };
 
-// Cache the renderer import — shared across all EmberPlayground instances
+// Cache the renderer import — shared across all CodePreview instances
 let rendererPromise: Promise<{ renderComponent: Function }> | undefined;
 
 function getRenderer() {
@@ -27,7 +27,7 @@ onMounted(async () => {
     const component = mod?.default ?? mod;
     cleanup = renderComponent(component, { into: mountEl.value });
   } catch (err) {
-    console.error('[EmberPlayground] Failed to render:', err);
+    console.error('[CodePreview] Failed to render:', err);
     error.value = String(err);
   }
 });

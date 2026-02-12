@@ -10,8 +10,8 @@ function makeVirtualId(code: string, lang: 'gjs' | 'gts') {
   return moduleId;
 }
 
-/** Markdown-it plugin: ```gjs live → <EmberPlayground /> */
-export function emberFence(md: MarkdownIt, component = 'EmberPlayground') {
+/** Markdown-it plugin: ```gjs live → <CodePreview /> */
+export function emberFence(md: MarkdownIt, component = 'CodePreview') {
   const originalFence = md.renderer.rules.fence!;
   md.renderer.rules.fence = (tokens, idx, options, env, self) => {
     const token = tokens[idx];

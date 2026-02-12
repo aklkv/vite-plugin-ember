@@ -139,30 +139,30 @@ export default class StepCounter extends Component {
 
 Components loaded from `.gjs` / `.gts` files in the `demos/` directory:
 
-### Button.gjs
+### button.gjs
 
-<EmberPlayground src="/demos/Button.gjs" />
+<CodePreview src="/demos/button.gjs" />
 
-### Counter.gts
+### counter.gts
 
 An interactive counter with TypeScript, `@tracked` state, and arrow function methods.
 
-<EmberPlayground src="/demos/Counter.gts" />
+<CodePreview src="/demos/counter.gts" />
 
-### TodoList.gjs
+### todo-list.gjs
 
 A todo list demonstrating component composition and array state management.
 
-<EmberPlayground src="/demos/TodoList.gjs" />
+<CodePreview src="/demos/todo-list.gjs" />
 
-### TabPanel.gts
+### tab-panel.gts
 
 A tab panel written in GTS with TypeScript interfaces.
 
-<EmberPlayground src="/demos/TabPanel.gts" />
+<CodePreview src="/demos/tab-panel.gts" />
 
-### ColorPicker.gjs
+### color-picker.gjs
 
 A color picker showing child component extraction and dynamic inline styles.
 
-<EmberPlayground src="/demos/ColorPicker.gjs" />
+<CodePreview src="/demos/color-picker.gjs" />

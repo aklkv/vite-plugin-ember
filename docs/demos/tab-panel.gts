@@ -5,8 +5,8 @@ import { fn } from '@ember/helper';
 
 const eq = (a: unknown, b: unknown) => a === b;
 
-interface Signature {
-  Args: {};
+interface TabPanelSignature {
+  Element: HTMLDivElement;
 }
 
 type Tab = 'about' | 'features' | 'setup';
@@ -17,10 +17,10 @@ const TAB_CONTENT: Record<Tab, string> = {
   features:
     '• Inline GJS/GTS code fences with live rendering\n• File-based component demos\n• Full Glimmer component support with tracked state\n• TypeScript support via .gts files\n• Hot module replacement',
   setup:
-    '1. Install vite-plugin-ember\n2. Add it to your VitePress config\n3. Use ```gjs live fences or <EmberPlayground> components\n4. Write standard Ember/Glimmer components',
+    '1. Install vite-plugin-ember\n2. Add it to your VitePress config\n3. Use ```gjs live fences or <CodePreview> components\n4. Write standard Ember/Glimmer components',
 };
 
-export default class TabPanel extends Component<Signature> {
+export default class TabPanel extends Component<TabPanelSignature> {
   @tracked activeTab: Tab = 'about';
 
   selectTab = (tab: Tab) => {
@@ -37,25 +37,29 @@ export default class TabPanel extends Component<Signature> {
 
   <template>
     <div
-      style="font-family: system-ui; max-width: 500px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;"
+      style="font-family: var(--vp-font-family-base, system-ui); max-width: 500px; border: 1px solid var(--vp-c-divider); border-radius: 8px; overflow: hidden;"
     >
       <nav
-        style="display: flex; background: #f5f5f5; border-bottom: 1px solid #ddd;"
+        style="display: flex; background: var(--vp-c-bg-soft); border-bottom: 1px solid var(--vp-c-divider);"
       >
         {{#each this.tabs as |tab|}}
           <button
             type="button"
             {{on "click" (fn this.selectTab tab)}}
-            style="flex: 1; padding: 10px; border: none; cursor: pointer; font-weight: 600; text-transform: capitalize;
+            style="flex: 1; padding: 10px; border: none; cursor: pointer; font-weight: 600; text-transform: capitalize; transition: color 0.2s, background 0.2s;
                    background: {{if
               (eq tab this.activeTab)
-              'white'
+              'var(--vp-c-bg)'
               'transparent'
             }};
-                   color: {{if (eq tab this.activeTab) '#e04e39' '#666'}};
+                   color: {{if
+              (eq tab this.activeTab)
+              'var(--vp-c-brand-1, #e04e39)'
+              'var(--vp-c-text-2)'
+            }};
                    border-bottom: {{if
               (eq tab this.activeTab)
-              '2px solid #e04e39'
+              '2px solid var(--vp-c-brand-1, #e04e39)'
               '2px solid transparent'
             }};"
           >
@@ -65,7 +69,7 @@ export default class TabPanel extends Component<Signature> {
       </nav>
 
       <div
-        style="padding: 16px; min-height: 100px; white-space: pre-line; line-height: 1.6;"
+        style="padding: 16px; min-height: 100px; white-space: pre-line; line-height: 1.6; color: var(--vp-c-text-1);"
       >
         {{this.content}}
       </div>
