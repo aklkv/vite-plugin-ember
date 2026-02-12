@@ -77,10 +77,12 @@ import { emberFence } from 'vite-plugin-ember';
 
 ### Parameters
 
-| Parameter   | Type         | Default             | Description                                    |
-| ----------- | ------------ | ------------------- | ---------------------------------------------- |
-| `md`        | `MarkdownIt` | _(required)_        | The markdown-it instance provided by VitePress |
-| `component` | `string`     | `'EmberPlayground'` | Name of the Vue wrapper component to render    |
+| Parameter   | Type         | Default         | Description                                    |
+| ----------- | ------------ | --------------- | ---------------------------------------------- |
+| `md`        | `MarkdownIt` | _(required)_    | The markdown-it instance provided by VitePress |
+| `component` | `string`     | `'CodePreview'` | Name of the Vue wrapper component to render    |
+
+> > > > > > > 1fd3f2d (refactor: rename EmberPlayground to CodePreview, use kebab-case files)
 
 ### Usage
 
@@ -102,11 +104,11 @@ export default defineConfig({
 
 The plugin intercepts fences with `gjs` or `gts` language and a `live` flag:
 
-| Input                   | Output HTML                                                                                 |
-| ----------------------- | ------------------------------------------------------------------------------------------- |
-| ` ```gjs live `         | `<EmberPlayground src="/@id/virtual:ember-demo-HASH.gjs" />`                                |
-| ` ```gts live `         | `<EmberPlayground src="/@id/virtual:ember-demo-HASH.gts" />`                                |
-| ` ```gjs live preview ` | `<EmberPlayground src="..."><div v-pre><pre><code>...</code></pre></div></EmberPlayground>` |
+| Input                   | Output HTML                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| ` ```gjs live `         | `<CodePreview src="/@id/virtual:ember-demo-HASH.gjs" />`                            |
+| ` ```gts live `         | `<CodePreview src="/@id/virtual:ember-demo-HASH.gts" />`                            |
+| ` ```gjs live preview ` | `<CodePreview src="..."><div v-pre><pre><code>...</code></pre></div></CodePreview>` |
 
 Each fence body is hashed and stored in a shared registry. The Vite plugin's `load` hook serves the source when the browser requests the virtual module, and the `transform` hook compiles it.
 
