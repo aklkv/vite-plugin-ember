@@ -64,6 +64,16 @@ export default {
 } satisfies Theme;
 ```
 
+If TypeScript cannot resolve the `.vue` import, add this declaration to your project (e.g. `env.d.ts`):
+
+```ts
+declare module 'vite-plugin-ember/components/code-preview.vue' {
+  import type { DefineComponent } from 'vue';
+  const component: DefineComponent<object, object, any>;
+  export default component;
+}
+```
+
 ### 4. Write a live demo
 
 In any markdown file:
@@ -114,6 +124,16 @@ pnpm dev
 ├── package.json         # Workspace root
 └── pnpm-workspace.yaml
 ````
+
+## Limitations
+
+Components are rendered standalone via `@ember/renderer` — there is **no Ember application container**. This means:
+
+- **`@service` injection does not work** — there is no owner/DI container to resolve services from
+- **Initializers and instance-initializers** are not executed
+- **Routing** (`LinkTo`, `RouterService`) is not available
+
+Components that rely only on `@tracked` state, `@action`, modifiers, and helpers work as expected.
 
 ## Requirements
 
