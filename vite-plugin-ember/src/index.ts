@@ -284,7 +284,7 @@ export default function vitePluginEmber(
       return demoRegistry.get(id) ?? null;
     },
 
-    /* ─── transform .gjs / .gts files ─────────────────────────────── */
+    /* ─── transform .gjs / .gts / V2-addon .js files ────────────── */
     async transform(code, id) {
       // Skip ?raw imports — let Vite serve the original source text
       if (id.includes('?raw') || id.includes('&raw')) return null;
@@ -292,6 +292,27 @@ export default function vitePluginEmber(
       const bareId = id.split('?', 1)[0];
       const isGJS = bareId.endsWith('.gjs');
       const isGTS = bareId.endsWith('.gts');
+      const isJS = bareId.endsWith('.js');
+
+      // ── V2 addon support ──────────────────────────────────────────
+      // V2 addons published with targetFormat: 'hbs' emit .js files
+      // containing precompileTemplate() calls. The consuming app's
+      // build is expected to finish compilation. We detect these via a
+      // cheap string check and run only the template-compilation
+      // Babel plugin (no content-tag or decorator transforms needed).
+      if (isJS && code.includes('precompileTemplate')) {
+        const result = await transformAsync(code, {
+          filename: bareId,
+          babelrc: false,
+          configFile: false,
+          plugins: [[templateCompilation as any, { compiler: compilerObj }]],
+          parserOpts: { sourceType: 'module' },
+          sourceMaps: true,
+        });
+        if (!result?.code) return null;
+        return { code: result.code, map: result.map as any };
+      }
+
       if (!isGJS && !isGTS) return null;
 
       // ── Step 1: content-tag preprocessing ──
