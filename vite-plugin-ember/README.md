@@ -21,9 +21,13 @@ Write `.gjs` / `.gts` code fences in markdown and see them rendered on the page 
 
 ### 1. Install
 
+Install the plugin along with Ember packages your components need:
+
 ```sh
 pnpm add vite-plugin-ember ember-source @glimmer/component
 ```
+
+> **Note:** `ember-source` and `@glimmer/component` are peer dependencies — you manage their versions in your project.
 
 ### 2. Configure VitePress
 

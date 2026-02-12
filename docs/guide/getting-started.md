@@ -17,6 +17,8 @@ In your VitePress project, add the plugin and Ember packages:
 pnpm add vite-plugin-ember ember-source @glimmer/component
 ```
 
+> `ember-source` and `@glimmer/component` are **peer dependencies** — the plugin doesn't bundle them, so you install and control their versions in your project.
+
 The plugin bundles its own Babel toolchain (`@babel/core`, `content-tag`, `decorator-transforms`, etc.), so you don't need to install those separately.
 
 ### 2. Configure Vite
