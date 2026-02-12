@@ -36,9 +36,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Build plugin
         run: pnpm -C vite-plugin-ember build
-      - name: Copy README into package
-        run: cp README.md vite-plugin-ember/README.md
       - name: Publish to NPM
-        run: NPM_CONFIG_PROVENANCE=true pnpm release-plan publish --no-git-checks
+        run: NPM_CONFIG_PROVENANCE=true pnpm release-plan publish
         env:
           GITHUB_AUTH: ${{ secrets.GITHUB_TOKEN }}
