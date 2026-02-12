@@ -2,8 +2,8 @@
   "solution": {
     "vite-plugin-ember": {
       "impact": "patch",
-      "oldVersion": "0.0.3",
-      "newVersion": "0.0.4",
+      "oldVersion": "0.0.4",
+      "newVersion": "0.0.5",
       "tagName": "latest",
       "constraints": [
         {
@@ -14,5 +14,5 @@
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.0.4 (patch)\n\n#### :memo: Documentation\n* `vite-plugin-ember`\n  * [#15](https://github.com/aklkv/vite-plugin-ember/pull/15) chore: add ember-source and @glimmer/component as peer dependencies ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.0.5 (patch)\n\n#### :memo: Documentation\n* `vite-plugin-ember`\n  * [#17](https://github.com/aklkv/vite-plugin-ember/pull/17) docs: add env.d.ts module declaration for CodePreview component ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }
