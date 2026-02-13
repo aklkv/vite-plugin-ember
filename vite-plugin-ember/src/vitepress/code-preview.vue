@@ -12,6 +12,7 @@ const props = defineProps<{
   loader?: () => Promise<any>;
   owner?: object;
   preview?: boolean;
+  collapsible?: boolean;
 }>();
 const injectedOwner = inject<object | undefined>(EMBER_OWNER_KEY, undefined);
 const mountEl = ref<HTMLDivElement | null>(null);
@@ -57,10 +58,16 @@ onBeforeUnmount(() => {
   <div class="ember-playground">
     <div v-if="error" class="ember-playground__error">{{ error }}</div>
     <div ref="mountEl"></div>
-    <details v-if="$slots.default" class="ember-playground__source">
+    <details
+      v-if="$slots.default && collapsible"
+      class="ember-playground__source"
+    >
       <summary>Show code</summary>
       <slot />
     </details>
+    <div v-else-if="$slots.default" class="ember-playground__source">
+      <slot />
+    </div>
   </div>
 </template>
 
