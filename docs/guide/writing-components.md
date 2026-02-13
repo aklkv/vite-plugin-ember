@@ -24,7 +24,7 @@ The simplest demo — just a `<template>` tag:
 
 This renders the template inline in your page:
 
-```gjs live
+```gjs live preview
 <template>
   <p style='color: tomato; font-weight: bold;'>Hello from Ember!</p>
 </template>
@@ -57,7 +57,7 @@ export default class Counter extends Component {
 ```
 ````
 
-```gjs live
+```gjs live preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
@@ -109,17 +109,17 @@ The plugin automatically strips type annotations via `@babel/plugin-transform-ty
 
 ## Code fence flags
 
-| Syntax                  | Behavior                                            |
-| ----------------------- | --------------------------------------------------- |
-| ` ```gjs `              | Static, syntax-highlighted code only                |
-| ` ```gjs live `         | Live rendered component                             |
-| ` ```gjs live preview ` | Live component **with** source code displayed below |
-| ` ```gts live `         | Live TypeScript component                           |
-| ` ```gts live preview ` | Live TypeScript component with source code          |
+| Syntax                  | Behavior                                               |
+| ----------------------- | ------------------------------------------------------ |
+| ` ```gjs `              | Static, syntax-highlighted code only                   |
+| ` ```gjs live `         | Live rendered component                                |
+| ` ```gjs live preview ` | Live component with collapsible source code            |
+| ` ```gts live `         | Live TypeScript component                              |
+| ` ```gts live preview ` | Live TypeScript component with collapsible source code |
 
 ### Preview mode
 
-Adding `preview` shows both the rendered output and the source code:
+Adding `preview` shows the rendered output with a collapsible "Show code" toggle below it:
 
 ```gjs live preview
 <template>
@@ -139,7 +139,7 @@ For larger components, keep them in separate `.gjs` / `.gts` files and reference
 
 Place demo files in a `demos/` directory (or anywhere under `docs/`). The path is relative to your VitePress root.
 
-<CodePreview src="/demos/counter.gts" />
+<CodePreview src="/demos/counter.gts" preview />
 
 ::: tip
 File-based demos are useful when a component is too large for a code fence, or when you want to share the same component across multiple pages.
@@ -194,7 +194,7 @@ For addons that ship custom Babel plugins, use the [`babelPlugins` option](/guid
 
 Inline styles work as expected inside `<template>` tags. You can also use standard CSS approaches:
 
-```gjs live
+```gjs live preview
 <template>
   <div class='demo-card'>
     <h4>Styled card</h4>

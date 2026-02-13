@@ -18,7 +18,7 @@ A regular code fence without `live` — syntax-highlighted only, not rendered:
 
 The simplest live demo — a `<template>` tag with no class:
 
-```gjs live
+```gjs live preview
 <template>
   <p style='color: tomato; font-weight: bold;'>
     Hello from a live Ember template!
@@ -30,7 +30,7 @@ The simplest live demo — a `<template>` tag with no class:
 
 ## Live + Preview
 
-Adding `preview` shows both the rendered output and the source code:
+Adding `preview` shows the rendered output with a collapsible source code panel:
 
 ```gjs live preview
 <template>
@@ -46,7 +46,7 @@ Adding `preview` shows both the rendered output and the source code:
 
 A class-based component with `@tracked` state and the `on` modifier:
 
-```gjs live
+```gjs live preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
@@ -141,31 +141,31 @@ Components loaded from `.gjs` / `.gts` files in the `demos/` directory:
 
 ### button.gjs
 
-<CodePreview src="/demos/button.gjs" />
+<CodePreview src="/demos/button.gjs" preview />
 
 ### counter.gts
 
 An interactive counter with TypeScript, `@tracked` state, and arrow function methods.
 
-<CodePreview src="/demos/counter.gts" />
+<CodePreview src="/demos/counter.gts" preview />
 
 ### todo-list.gjs
 
 A todo list demonstrating component composition and array state management.
 
-<CodePreview src="/demos/todo-list.gjs" />
+<CodePreview src="/demos/todo-list.gjs" preview />
 
 ### tab-panel.gts
 
 A tab panel written in GTS with TypeScript interfaces.
 
-<CodePreview src="/demos/tab-panel.gts" />
+<CodePreview src="/demos/tab-panel.gts" preview />
 
 ### color-picker.gjs
 
 A color picker showing child component extraction and dynamic inline styles.
 
-<CodePreview src="/demos/color-picker.gjs" />
+<CodePreview src="/demos/color-picker.gjs" preview />
 
 ---
 
