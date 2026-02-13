@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2026-02-13)
+
+* vite-plugin-ember 0.3.0 (minor)
+
+#### :rocket: Enhancement
+* `vite-plugin-ember`
+  * [#26](https://github.com/aklkv/vite-plugin-ember/pull/26) feat: collapsible code preview in preview mode ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-02-12)
 
 * vite-plugin-ember 0.2.0 (minor)
