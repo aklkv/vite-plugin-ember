@@ -25,5 +25,5 @@ features:
     details: The plugin handles content-tag preprocessing, Babel template compilation, decorator transforms, and module resolution automatically.
   - icon: 👁️
     title: Preview mode
-    details: Add the preview flag to show the rendered component alongside its syntax-highlighted source code — great for API docs and tutorials.
+    details: Add the preview flag to show the rendered component with a collapsible source code panel — great for API docs and tutorials.
 ---

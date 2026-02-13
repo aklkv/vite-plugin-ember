@@ -12,6 +12,7 @@ Write `.gjs` / `.gts` code fences in markdown and see them rendered on the page 
 ## Features
 
 - **Inline code fences** — use ` ```gjs live ` in markdown for instant interactive previews
+- **Preview mode** — add `preview` to show a collapsible source code panel alongside the rendered component
 - **Full Ember support** — class components, `@tracked` state, `{{on}}` modifier, and TypeScript via `.gts`
 - **Zero-config compilation** — content-tag preprocessing, Babel template compilation, decorator transforms, and `@ember/*` / `@glimmer/*` module resolution handled automatically
 - **`@embroider/macros` shim** — runtime stubs so `ember-source` ESM imports just work

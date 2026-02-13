@@ -146,9 +146,9 @@ The Vue wrapper component that mounts Ember components into the page.
 
 ### Slots
 
-| Slot      | Description                                                                                 |
-| --------- | ------------------------------------------------------------------------------------------- |
-| `default` | Content displayed below the rendered component (used by `preview` mode to show source code) |
+| Slot      | Description                                                                                                        |
+| --------- | ------------------------------------------------------------------------------------------------------------------ |
+| `default` | Content displayed in a collapsible panel below the rendered component (used by `preview` mode to show source code) |
 
 ### How it works
 

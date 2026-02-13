@@ -57,7 +57,10 @@ onBeforeUnmount(() => {
   <div class="ember-playground">
     <div v-if="error" class="ember-playground__error">{{ error }}</div>
     <div ref="mountEl"></div>
-    <slot />
+    <details v-if="$slots.default" class="ember-playground__source">
+      <summary>Show code</summary>
+      <slot />
+    </details>
   </div>
 </template>
 
@@ -78,5 +81,27 @@ onBeforeUnmount(() => {
   font-family: var(--vp-font-family-mono);
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.ember-playground__source {
+  margin-top: 12px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.ember-playground__source summary {
+  padding: 8px 0 4px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+  user-select: none;
+}
+
+.ember-playground__source summary:hover {
+  color: var(--vp-c-text-1);
+}
+
+.ember-playground__source :deep(div[class*='language-']) {
+  margin: 0;
+  border-radius: 0 0 8px 8px;
 }
 </style>
