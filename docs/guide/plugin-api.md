@@ -138,17 +138,18 @@ The Vue wrapper component that mounts Ember components into the page.
 
 ### Props
 
-| Prop     | Type                 | Description                                                                          |
-| -------- | -------------------- | ------------------------------------------------------------------------------------ |
-| `loader` | `() => Promise<any>` | A function that returns a dynamic import of the Ember module (preferred)             |
-| `src`    | `string`             | URL of the module to import (fallback, uses `@vite-ignore`)                          |
-| `owner`  | `object`             | An Ember owner for dependency injection (`@service`). Overrides the injected default |
+| Prop          | Type                 | Description                                                                          |
+| ------------- | -------------------- | ------------------------------------------------------------------------------------ |
+| `loader`      | `() => Promise<any>` | A function that returns a dynamic import of the Ember module (preferred)             |
+| `src`         | `string`             | URL of the module to import (fallback, uses `@vite-ignore`)                          |
+| `owner`       | `object`             | An Ember owner for dependency injection (`@service`). Overrides the injected default |
+| `collapsible` | `boolean`            | Wrap the source code in a collapsible "Show code" toggle (default: `false`)          |
 
 ### Slots
 
-| Slot      | Description                                                                                                        |
-| --------- | ------------------------------------------------------------------------------------------------------------------ |
-| `default` | Content displayed in a collapsible panel below the rendered component (used by `preview` mode to show source code) |
+| Slot      | Description                                                                                                                                     |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | Content displayed below the rendered component (used by `preview` mode to show source code). Add the `collapsible` prop to wrap it in a toggle. |
 
 ### How it works
 

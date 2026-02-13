@@ -30,7 +30,7 @@ The simplest live demo — a `<template>` tag with no class:
 
 ## Live + Preview
 
-Adding `preview` shows the rendered output with a collapsible source code panel:
+Adding `preview` shows both the rendered output and the source code:
 
 ```gjs live preview
 <template>

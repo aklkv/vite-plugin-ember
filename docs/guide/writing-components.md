@@ -109,17 +109,19 @@ The plugin automatically strips type annotations via `@babel/plugin-transform-ty
 
 ## Code fence flags
 
-| Syntax                  | Behavior                                               |
-| ----------------------- | ------------------------------------------------------ |
-| ` ```gjs `              | Static, syntax-highlighted code only                   |
-| ` ```gjs live `         | Live rendered component                                |
-| ` ```gjs live preview ` | Live component with collapsible source code            |
-| ` ```gts live `         | Live TypeScript component                              |
-| ` ```gts live preview ` | Live TypeScript component with collapsible source code |
+| Syntax                              | Behavior                                               |
+| ----------------------------------- | ------------------------------------------------------ |
+| ` ```gjs `                          | Static, syntax-highlighted code only                   |
+| ` ```gjs live `                     | Live rendered component                                |
+| ` ```gjs live preview `             | Live component with source code displayed below        |
+| ` ```gjs live preview collapsible ` | Live component with collapsible source code            |
+| ` ```gts live `                     | Live TypeScript component                              |
+| ` ```gts live preview `             | Live TypeScript component with source code             |
+| ` ```gts live preview collapsible ` | Live TypeScript component with collapsible source code |
 
 ### Preview mode
 
-Adding `preview` shows the rendered output with a collapsible "Show code" toggle below it:
+Adding `preview` shows both the rendered output and the source code:
 
 ```gjs live preview
 <template>

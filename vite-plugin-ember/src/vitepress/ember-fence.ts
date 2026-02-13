@@ -82,7 +82,8 @@ export function emberFence(md: MarkdownIt, component = 'CodePreview') {
         token.info = lang;
         const highlighted = originalFence(tokens, idx, options, env, self);
         token.info = savedInfo;
-        return `<${component} :loader="() => import('${virtualId}')">${highlighted}</${component}>`;
+        const collapsible = flags.includes('collapsible') ? ' collapsible' : '';
+        return `<${component} :loader="() => import('${virtualId}')"${collapsible}>${highlighted}</${component}>`;
       }
       return `<${component} :loader="() => import('${virtualId}')" />`;
     }
