@@ -284,6 +284,31 @@ export default function vitePluginEmber(
       return demoRegistry.get(id) ?? null;
     },
 
+    /* ─── HMR: force full reload for Ember-related changes ──────── */
+    handleHotUpdate({ file, server, modules }) {
+      // Ember components can't be hot-swapped like Vue/React — the
+      // renderer keeps internal state that doesn't survive HMR.
+      // Force a full page reload for:
+      //  • .gjs / .gts component files
+      //  • .md files that triggered virtual ember-demo modules
+      //    (VitePress HMR re-renders Vue but Ember state is stale)
+      if (file.endsWith('.gjs') || file.endsWith('.gts')) {
+        server.ws.send({ type: 'full-reload' });
+        return [];
+      }
+
+      if (file.endsWith('.md') && demoRegistry.size > 0) {
+        // Clear stale virtual modules so they're re-created from
+        // the updated markdown on the next full page load.
+        for (const [id] of demoRegistry) {
+          const mod = server.moduleGraph.getModuleById(id);
+          if (mod) server.moduleGraph.invalidateModule(mod);
+        }
+        server.ws.send({ type: 'full-reload' });
+        return [];
+      }
+    },
+
     /* ─── transform .gjs / .gts / V2-addon .js files ────────────── */
     async transform(code, id) {
       // Skip ?raw imports — let Vite serve the original source text
