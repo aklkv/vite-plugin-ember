@@ -154,9 +154,10 @@ The Vue wrapper component that mounts Ember components into the page.
 ### How it works
 
 1. On mount, it calls the `loader()` prop (or falls back to `import(src)`) to load the module.
-2. It imports `renderComponent` from `@ember/renderer`.
-3. It calls `renderComponent(Component, { into: element, owner })` to mount the Ember component. The owner comes from the `owner` prop, or from the Vue-injected `EMBER_OWNER_KEY`, or defaults to `{}`.
-4. On Vue unmount, it calls `cleanup.destroy()` to tear down the Ember component tree.
+2. It imports `renderComponent` and `renderSettled` from `@ember/renderer`.
+3. It awaits `renderSettled()` to ensure any pending destroy operations from previous instances (e.g. after VitePress client-side navigation) have completed.
+4. It calls `renderComponent(Component, { into: element, owner })` to mount the Ember component. The owner comes from the `owner` prop, or from the Vue-injected `EMBER_OWNER_KEY`, or defaults to `{}`.
+5. On Vue unmount, it calls `cleanup.destroy()` to tear down the Ember component tree.
 
 ### Error handling
 
@@ -197,6 +198,17 @@ owner.register('service:auth', new AuthService());
 
 You can also import `createOwner` and `EMBER_OWNER_KEY` separately from `vite-plugin-ember/setup` or `vite-plugin-ember/owner` for full manual control.
 :::
+
+### `EmberOwner` interface {#ember-owner}
+
+The lightweight owner returned by `createOwner()` implements enough of Ember's internal owner API to satisfy `@service` injection, `getOwner()`, and the Glimmer VM's `ResolverImpl`:
+
+| Method                  | Description                                                    |
+| ----------------------- | -------------------------------------------------------------- |
+| `register(name, v)`     | Register an instance under a full name (e.g. `'service:intl'`) |
+| `lookup(name)`          | Look up a registered instance                                  |
+| `factoryFor(name)`      | Return `{ class, create }` for a registered name               |
+| `hasRegistration(name)` | Return `true` if a value has been registered under the name    |
 
 ## Build pipeline
 

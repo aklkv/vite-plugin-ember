@@ -20,7 +20,9 @@ const error = ref<string | null>(null);
 let cleanup: undefined | { destroy?: () => void };
 
 // Cache the renderer import — shared across all CodePreview instances
-let rendererPromise: Promise<{ renderComponent: Function }> | undefined;
+let rendererPromise:
+  | Promise<{ renderComponent: Function; renderSettled: Function }>
+  | undefined;
 
 function getRenderer() {
   rendererPromise ??= import('@ember/renderer') as any;
@@ -31,10 +33,20 @@ onMounted(async () => {
   if (!inBrowser || !mountEl.value) return;
 
   try {
-    const [mod, { renderComponent }] = await Promise.all([
+    const [mod, { renderComponent, renderSettled }] = await Promise.all([
       props.loader ? props.loader() : import(/* @vite-ignore */ props.src!),
       getRenderer(),
     ]);
+
+    // Wait for any pending render/destroy operations from previous
+    // CodePreview instances (e.g. after VitePress client-side navigation).
+    // Ember's `destroy()` is async — it schedules cleanup via the
+    // Backburner run loop.  Starting a new render while old destroys are
+    // still queued can corrupt Glimmer VM state and cause opcode errors.
+    await renderSettled();
+
+    // Guard: the element may have been unmounted while we were waiting
+    if (!mountEl.value) return;
 
     const component = mod?.default ?? mod;
     const owner = props.owner ?? injectedOwner;
