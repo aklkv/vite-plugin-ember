@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-ember",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Vite plugin for rendering live Ember components in VitePress documentation",
   "license": "MIT",
   "type": "module",

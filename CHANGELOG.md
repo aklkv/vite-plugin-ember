@@ -2,6 +2,17 @@
 
 ## Release (2026-02-13)
 
+* vite-plugin-ember 0.3.1 (patch)
+
+#### :bug: Bug Fix
+* `vite-plugin-ember`
+  * [#28](https://github.com/aklkv/vite-plugin-ember/pull/28) fix: force full page reload on HMR for Ember components ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-02-13)
+
 * vite-plugin-ember 0.3.0 (minor)
 
 #### :rocket: Enhancement
