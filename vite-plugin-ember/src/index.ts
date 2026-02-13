@@ -285,7 +285,7 @@ export default function vitePluginEmber(
     },
 
     /* ─── HMR: force full reload for Ember-related changes ──────── */
-    handleHotUpdate({ file, server, modules }) {
+    handleHotUpdate({ file, server }) {
       // Ember components can't be hot-swapped like Vue/React — the
       // renderer keeps internal state that doesn't survive HMR.
       // Force a full page reload for:
