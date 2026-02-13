@@ -2,8 +2,8 @@
   "solution": {
     "vite-plugin-ember": {
       "impact": "minor",
-      "oldVersion": "0.1.1",
-      "newVersion": "0.2.0",
+      "oldVersion": "0.2.0",
+      "newVersion": "0.3.0",
       "tagName": "latest",
       "constraints": [
         {
@@ -14,5 +14,5 @@
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-02-12)\n\n* vite-plugin-ember 0.2.0 (minor)\n\n#### :rocket: Enhancement\n* `vite-plugin-ember`\n  * [#24](https://github.com/aklkv/vite-plugin-ember/pull/24) feat: compile precompileTemplate calls in V2 addon .js files ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-02-13)\n\n* vite-plugin-ember 0.3.0 (minor)\n\n#### :rocket: Enhancement\n* `vite-plugin-ember`\n  * [#26](https://github.com/aklkv/vite-plugin-ember/pull/26) feat: collapsible code preview in preview mode ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }
