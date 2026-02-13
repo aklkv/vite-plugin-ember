@@ -1,0 +1,7 @@
+# Unlabeled Changes
+
+* `vite-plugin-ember`
+  * [#30](https://github.com/aklkv/vite-plugin-ember/pull/30) feat: make collapsible code preview opt-in via flag ([@aklkv](https://github.com/aklkv))
+
+
+*Cannot plan release until the above changes are labeled*.
