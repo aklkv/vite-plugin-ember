@@ -26,11 +26,11 @@
     "vue": "^3.5.28"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "@glint/ember-tsc": "^1.1.1",
     "@glint/template": "^1.7.4",
     "concurrently": "^9.2.1",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-ember": "^12.7.5",
     "globals": "^17.3.0",
