@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "baseUrl": ".",
     "module": "esnext",
     "moduleResolution": "bundler",
     "strict": true,
@@ -15,11 +14,11 @@
     "allowJs": true
   },
   "include": [
-    ".vitepress/**/*.ts",
-    ".vitepress/**/*.vue",
-    "**/*.md",
-    "demos/**/*.gts",
-    "demos/**/*.gjs"
+    "./.vitepress/**/*.ts",
+    "./.vitepress/**/*.vue",
+    "./**/*.md",
+    "./demos/**/*.gts",
+    "./demos/**/*.gjs"
   ],
   "exclude": ["node_modules"]
 }
