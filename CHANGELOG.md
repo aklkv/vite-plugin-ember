@@ -1,5 +1,20 @@
 # Changelog
 
+## Release (2026-04-01)
+
+* vite-plugin-ember 0.4.0 (minor)
+
+#### :rocket: Enhancement
+* `vite-plugin-ember`
+  * [#30](https://github.com/aklkv/vite-plugin-ember/pull/30) feat: make collapsible code preview opt-in via flag ([@aklkv](https://github.com/aklkv))
+
+#### :house: Internal
+* `vite-plugin-ember`
+  * [#36](https://github.com/aklkv/vite-plugin-ember/pull/36) chore: bump deps and pin ember-source to 6.12 ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-02-13)
 
 * vite-plugin-ember 0.3.1 (patch)
