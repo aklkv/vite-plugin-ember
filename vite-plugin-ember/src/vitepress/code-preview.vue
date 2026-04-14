@@ -57,7 +57,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="ember-playground">
     <div v-if="error" class="ember-playground__error">{{ error }}</div>
-    <div ref="mountEl"></div>
+    <div ref="mountEl" class="vp-raw"></div>
     <details
       v-if="$slots.default && collapsible"
       class="ember-playground__source"
