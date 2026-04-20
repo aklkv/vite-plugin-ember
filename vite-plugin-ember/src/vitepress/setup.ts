@@ -75,9 +75,7 @@ export function setupEmber(
     }
   }
 
-  const CodePreview = defineAsyncComponent(
-    () => import('../../src/vitepress/code-preview.vue'),
-  );
+  const CodePreview = defineAsyncComponent(() => import('./code-preview.js'));
   app.component(componentName, CodePreview);
   app.provide(EMBER_OWNER_KEY, owner);
 
