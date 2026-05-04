@@ -65,7 +65,7 @@ onBeforeUnmount(() => {
       <summary>Show code</summary>
       <slot />
     </details>
-    <div v-else-if="$slots.default" class="ember-playground__source">
+    <div v-else-if="$slots.default">
       <slot />
     </div>
   </div>
