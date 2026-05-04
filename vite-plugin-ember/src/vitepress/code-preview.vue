@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
     <div ref="mountEl"></div>
     <details
       v-if="$slots.default && collapsible"
-      class="ember-playground__source"
+      class="ember-playground__show-code"
     >
       <summary>Show code</summary>
       <slot />
@@ -90,12 +90,12 @@ onBeforeUnmount(() => {
   word-break: break-word;
 }
 
-.ember-playground__source {
+.ember-playground__show-code {
   margin-top: 12px;
   border-top: 1px solid var(--vp-c-divider);
 }
 
-.ember-playground__source summary {
+.ember-playground__show-code summary {
   padding: 8px 0 4px;
   cursor: pointer;
   font-size: 13px;
@@ -103,11 +103,11 @@ onBeforeUnmount(() => {
   user-select: none;
 }
 
-.ember-playground__source summary:hover {
+.ember-playground__show-code summary:hover {
   color: var(--vp-c-text-1);
 }
 
-.ember-playground__source :deep(div[class*='language-']) {
+.ember-playground__show-code :deep(div[class*='language-']) {
   margin: 0;
   border-radius: 0 0 8px 8px;
 }
