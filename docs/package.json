@@ -20,19 +20,19 @@
   },
   "dependencies": {
     "@glimmer/component": "^2.0.0",
-    "ember-source": "^6.12.0",
+    "ember-source": "^7.0.0",
     "vite-plugin-ember": "workspace:*",
     "vitepress": "^1.6.4",
     "vue": "^3.5.31"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
+    "@eslint/js": "^10.0.1",
     "@glint/ember-tsc": "^1.4.0",
     "@glint/template": "^1.7.7",
     "concurrently": "^9.2.1",
-    "eslint": "^9.39.4",
+    "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-ember": "^12.7.5",
+    "eslint-plugin-ember": "^13.2.1",
     "globals": "^17.4.0",
     "markdownlint-cli2": "^0.22.0",
     "prettier-plugin-ember-template-tag": "^2.1.3",
