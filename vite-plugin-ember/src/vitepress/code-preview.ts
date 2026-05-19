@@ -26,10 +26,10 @@ const STYLE_ID = 'vite-plugin-ember-code-preview';
 const CSS = [
   '.ember-playground{padding:12px;border:1px solid var(--vp-c-divider);border-radius:10px}',
   '.ember-playground__error{padding:8px 12px;margin-bottom:8px;border-radius:6px;background:var(--vp-c-danger-soft);color:var(--vp-c-danger-1);font-size:13px;font-family:var(--vp-font-family-mono);white-space:pre-wrap;word-break:break-word}',
-  '.ember-playground__source{margin-top:12px;border-top:1px solid var(--vp-c-divider)}',
-  '.ember-playground__source summary{padding:8px 0 4px;cursor:pointer;font-size:13px;color:var(--vp-c-text-2);user-select:none}',
-  '.ember-playground__source summary:hover{color:var(--vp-c-text-1)}',
-  ".ember-playground__source div[class*='language-']{margin:0;border-radius:0 0 8px 8px}",
+  '.ember-playground__show-code{margin-top:12px;border-top:1px solid var(--vp-c-divider)}',
+  '.ember-playground__show-code summary{padding:8px 0 4px;cursor:pointer;font-size:13px;color:var(--vp-c-text-2);user-select:none}',
+  '.ember-playground__show-code summary:hover{color:var(--vp-c-text-1)}',
+  ".ember-playground__show-code div[class*='language-']{margin:0;border-radius:0 0 8px 8px}",
 ].join('');
 
 function ensureStyle() {
@@ -93,20 +93,18 @@ export default defineComponent({
         );
       }
 
-      children.push(h('div', { ref: mountEl }));
+      children.push(h('div', { ref: mountEl, class: 'vp-raw' }));
 
       if (slots.default) {
         if (props.collapsible) {
           children.push(
-            h('details', { class: 'ember-playground__source' }, [
+            h('details', { class: 'ember-playground__show-code' }, [
               h('summary', 'Show code'),
               slots.default(),
             ]),
           );
         } else {
-          children.push(
-            h('div', { class: 'ember-playground__source' }, slots.default()),
-          );
+          children.push(h('div', slots.default()));
         }
       }
 
