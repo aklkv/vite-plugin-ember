@@ -32,13 +32,12 @@ This renders the template inline in your page:
 
 ### Class-based components
 
-Import from `@glimmer/component`, `@glimmer/tracking`, and `@ember/modifier` to build stateful components:
+Import from `@glimmer/component` and `@glimmer/tracking` to build stateful components. With `ember-source` ≥ 7.1, the `on` modifier and built-in helpers (`fn`, `eq`, `gt`, …) are auto-imported in strict-mode templates — just reference them by name:
 
 ````md
 ```gjs live
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
 
 export default class Counter extends Component {
   @tracked count = 0;
@@ -60,7 +59,6 @@ export default class Counter extends Component {
 ```gjs live preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
 
 export default class Counter extends Component {
   @tracked count = 0;
@@ -156,12 +154,24 @@ The plugin resolves these package namespaces automatically — no extra dependen
 | `@glimmer/component` | `Component` base class                      |
 | `@glimmer/tracking`  | `tracked`, `cached`                         |
 | `@ember/modifier`    | `on` modifier                               |
-| `@ember/helper`      | `fn`, `concat`, `get`, `hash`               |
+| `@ember/helper`      | `fn`, `concat`, `get`, `hash`, `eq`, `gt`, … |
 | `@ember/service`     | `service` decorator                         |
 | `@ember/owner`       | `getOwner`, `setOwner`                      |
 | `@ember/renderer`    | `renderComponent` (used by the Vue wrapper) |
 
 Any `@ember/*` or `@glimmer/*` import is resolved from `ember-source`'s ESM packages automatically.
+
+::: tip Built-in helpers & modifiers (Ember 7.1+)
+Starting with `ember-source` 7.1, the `on` modifier and the built-in helpers (`fn`, `eq`, `neq`, `and`, `or`, `not`, `gt`, `gte`, `lt`, `lte`, `array`, `hash`, `element`) are **auto-imported** into strict-mode `.gjs` / `.gts` templates. You can reference them by name without an explicit `import` — local bindings of the same name still take precedence.
+
+On older Ember versions, import them explicitly:
+
+```js
+import { on } from '@ember/modifier';
+import { fn, eq } from '@ember/helper';
+```
+
+:::
 
 ## Custom packages
 
@@ -171,7 +181,6 @@ You can use any npm package installed in your project — just import it in your
 ```gjs live
 import { TrackedArray } from 'tracked-built-ins';
 import Component from '@glimmer/component';
-import { on } from '@ember/modifier';
 
 export default class List extends Component {
   items = new TrackedArray(['hello', 'world']);
