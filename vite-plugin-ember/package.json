@@ -74,26 +74,25 @@
     "format:check": "prettier . --cache --check"
   },
   "dependencies": {
-    "decorator-transforms": "^2.3.2",
+    "decorator-transforms": "^2.4.0",
     "ember-live-compiler": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/babel__core": "^7.20.5",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.1",
     "concurrently": "^10.0.3",
-    "ember-source": "7.0.0",
-    "eslint": "^10.5.0",
+    "ember-source": "7.1.0",
+    "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.6.0",
+    "globals": "^17.7.0",
     "markdown-it": "^14.2.0",
     "markdown-it-async": "^2.2.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.1",
-    "vite": "^8.0.16",
+    "typescript-eslint": "^8.62.1",
+    "vite": "^8.1.2",
     "vitepress": "^1.6.4",
-    "vue": "^3.5.38"
+    "vue": "^3.5.39"
   },
   "peerDependencies": {
     "@glimmer/component": ">=1",

@@ -18,3 +18,7 @@ packages:
 
 allowBuilds:
   esbuild: false
+
+minimumReleaseAgeExclude:
+  - '@glint/ember-tsc@1.8.6'
+  - vite@8.1.2
