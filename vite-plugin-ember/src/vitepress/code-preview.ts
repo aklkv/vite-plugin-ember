@@ -23,7 +23,8 @@ const CSS = [
 ].join('');
 
 function ensureStyle() {
-  if (typeof document === 'undefined' || document.getElementById(STYLE_ID)) return;
+  if (typeof document === 'undefined' || document.getElementById(STYLE_ID))
+    return;
   const style = document.createElement('style');
   style.id = STYLE_ID;
   style.textContent = CSS;
@@ -40,14 +41,24 @@ export default defineComponent({
     collapsible: { type: Boolean },
   },
   setup(props, { slots }) {
-    const injectedOwner = inject<object | undefined>(EMBER_OWNER_KEY, undefined);
+    const injectedOwner = inject<object | undefined>(
+      EMBER_OWNER_KEY,
+      undefined,
+    );
     const mountEl = ref<HTMLDivElement | null>(null);
     const error = ref<string | null>(null);
     let cleanup: undefined | { destroy?: () => void };
 
-    let rendererPromise: Promise<{ renderComponent: Function }> | undefined;
+    type RendererModule = {
+      renderComponent: (
+        component: unknown,
+        options: { into: Element; owner?: object },
+      ) => { destroy?: () => void };
+    };
+
+    let rendererPromise: Promise<RendererModule> | undefined;
     function getRenderer() {
-      rendererPromise ??= import('@ember/renderer') as any;
+      rendererPromise ??= import('@ember/renderer') as Promise<RendererModule>;
       return rendererPromise!;
     }
 
@@ -82,7 +93,9 @@ export default defineComponent({
       const children = [];
 
       if (error.value) {
-        children.push(h('div', { class: 'ember-playground__error' }, error.value));
+        children.push(
+          h('div', { class: 'ember-playground__error' }, error.value),
+        );
       }
 
       children.push(h('div', { ref: mountEl }));
@@ -96,7 +109,9 @@ export default defineComponent({
             ]),
           );
         } else {
-          children.push(h('div', { class: 'ember-playground__source' }, slots.default()));
+          children.push(
+            h('div', { class: 'ember-playground__source' }, slots.default()),
+          );
         }
       }
 

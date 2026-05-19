@@ -2,13 +2,24 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { demoRegistry } from '../index.js';
-import MarkdownIt from 'markdown-it';
+import type MarkdownIt from 'markdown-it';
+import type { MarkdownItAsync } from 'markdown-it-async';
+
+/**
+ * Accepted markdown-it instance shape.
+ *
+ * VitePress v1 passes a `MarkdownIt` instance; VitePress v2 switched to
+ * `MarkdownItAsync` (see vuejs/vitepress#4507), whose `options.highlight`
+ * may return `Promise<string>`. The two are structurally incompatible at
+ * the `options.highlight` boundary, so accept the union here.
+ */
+export type MarkdownItLike = MarkdownIt | MarkdownItAsync;
 
 /** Fence render rule – extracted from the MarkdownIt instance shape. */
-type RenderRule = NonNullable<MarkdownIt['renderer']['rules']['fence']>;
+type RenderRule = NonNullable<MarkdownItLike['renderer']['rules']['fence']>;
 
 /** Core ruler state – extracted via Core.State constructor. */
-type StateCore = InstanceType<MarkdownIt['core']['State']>;
+type StateCore = InstanceType<MarkdownItLike['core']['State']>;
 
 function makeVirtualId(code: string, lang: 'gjs' | 'gts') {
   const hash = createHash('sha1').update(code).digest('hex').slice(0, 8);
@@ -58,7 +69,7 @@ function renderSourceBlock(
 }
 
 /** Markdown-it plugin: ```gjs live → <CodePreview /> */
-export function emberFence(md: MarkdownIt, component = 'CodePreview') {
+export function emberFence(md: MarkdownItLike, component = 'CodePreview') {
   const originalFence = md.renderer.rules.fence!;
 
   // Pre-compile regex once per plugin instance.
