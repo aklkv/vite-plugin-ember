@@ -1,9 +1,5 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
-import { fn } from '@ember/helper';
-
-const eq = (a, b) => a === b;
 
 const COLORS = [
   '#e04e39',
