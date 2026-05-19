@@ -41,9 +41,14 @@ const EMBER_PACKAGE_PREFIXES = ['@ember/', '@glimmer/'];
 export interface VitePluginEmberOptions {
   /**
    * Path to the template compiler module.
-   * Default: 'ember-source/dist/ember-template-compiler'
-   * The standalone "ember-template-compiler.js" bundle is used because the
-   * ESM '@ember/template-compiler' has runtime @embroider/macros calls.
+   *
+   * When omitted, resolution falls back through, in order:
+   *   1. `ember-source/dist/ember-template-compiler.js` (Ember ≤ 6.x ships a
+   *      self-contained CJS bundle here).
+   *   2. `ember-source/ember-template-compiler/index.js` (Ember 7+ via the
+   *      `babel-plugin-ember-template-compilation` lazy loader).
+   *
+   * Set this explicitly to force a particular compiler module.
    */
   compilerPath?: string;
 
@@ -88,10 +93,18 @@ export default function vitePluginEmber(
 
   // Locate ember-source's dist/packages directory on disk
   let emberSourcePackagesDir: string | undefined;
-  // The loaded template compiler object (passed directly to babel plugin)
+  // Preloaded template compiler (only available when the legacy CJS bundle
+  // ships with the installed ember-source — i.e. Ember ≤ 6.x). For Ember 7+
+  // we hand off resolution to babel-plugin-ember-template-compilation by
+  // passing `compilerPath` instead.
   let compilerObj: any;
-  // createRequire anchored to the project root — used to resolve node_modules
-  let rootRequire: NodeRequire;
+  // Explicit compiler path forwarded to babel-plugin-ember-template-compilation
+  // when we do not (or cannot) preload a compiler object ourselves.
+  let resolvedCompilerPath: string | undefined;
+  // createRequire anchored to the project root — used to resolve node_modules.
+  // Populated in `configResolved`; remains undefined if that hook hasn't run
+  // yet or if anchoring fails, so consumers must guard before using it.
+  let rootRequire: NodeJS.Require | undefined;
 
   // ── Resolution caches (avoid repeated fs lookups & require.resolve) ──
   const resolveCache = new Map<string, string | null>();
@@ -101,6 +114,16 @@ export default function vitePluginEmber(
   let babelConfigGJS: { plugins: any[]; parserPlugins: any[] };
   let babelConfigGTS: { plugins: any[]; parserPlugins: any[] };
 
+  // Prefer a preloaded compiler when present (fast path, no async resolve).
+  // Otherwise hand a path off to babel-plugin-ember-template-compilation —
+  // when neither `compiler` nor `compilerPath` is provided it will try the
+  // Ember 7+ ESM path first and fall back to the legacy CJS bundle.
+  function getTemplateCompilationOpts(): Record<string, unknown> {
+    if (compilerObj) return { compiler: compilerObj };
+    if (resolvedCompilerPath) return { compilerPath: resolvedCompilerPath };
+    return {};
+  }
+
   function buildBabelConfigs() {
     const baseParserPlugins: any[] = [
       'classProperties',
@@ -109,7 +132,7 @@ export default function vitePluginEmber(
     ];
 
     const basePlugins: any[] = [
-      [templateCompilation as any, { compiler: compilerObj }],
+      [templateCompilation as any, getTemplateCompilationOpts()],
       [
         'module:decorator-transforms',
         { runtime: { import: 'decorator-transforms/runtime' } },
@@ -141,13 +164,38 @@ export default function vitePluginEmber(
   /**
    * Look up a bare @ember/* or @glimmer/* specifier.
    * Results are cached to avoid repeated existsSync / require.resolve calls.
+   *
+   * Strategy (tried in order):
+   *   1. ember-source's package `exports` map (`ember-source/<id>`). Works for
+   *      Ember 7+, which serves `./dist/prod/packages/*` via its exports.
+   *   2. Legacy on-disk lookup under `<ember-source>/dist/packages/...` for
+   *      Ember <= 6.x (which didn't expose subpath exports).
+   *   3. node_modules fallback for standalone packages such as
+   *      `@glimmer/component`.
    */
   function resolveEmberPackage(id: string): string | null {
     if (resolveCache.has(id)) return resolveCache.get(id)!;
 
     let resolved: string | null = null;
 
-    if (emberSourcePackagesDir) {
+    // 1. ember-source subpath exports (Ember 7+).
+    if (rootRequire) {
+      for (const candidate of [
+        `ember-source/${id}/index.js`,
+        `ember-source/${id}.js`,
+        `ember-source/${id}`,
+      ]) {
+        try {
+          resolved = rootRequire.resolve(candidate);
+          break;
+        } catch {
+          /* try next candidate */
+        }
+      }
+    }
+
+    // 2. Legacy on-disk layout (Ember <= 6.x).
+    if (!resolved && emberSourcePackagesDir) {
       const dirPath = `${emberSourcePackagesDir}/${id}/index.js`;
       if (existsSync(dirPath)) {
         resolved = dirPath;
@@ -159,7 +207,7 @@ export default function vitePluginEmber(
       }
     }
 
-    // Fallback: resolve from node_modules (e.g. @glimmer/component@2)
+    // 3. Fallback: resolve from node_modules (e.g. @glimmer/component@2)
     if (!resolved && rootRequire) {
       try {
         resolved = rootRequire.resolve(id);
@@ -178,41 +226,79 @@ export default function vitePluginEmber(
 
     /* ─── locate ember-source from the project root ───────────────── */
     configResolved(config) {
-      if (!emberSourcePackagesDir) {
+      if (emberSourcePackagesDir) return;
+
+      try {
+        rootRequire = createRequire(config.root + '/package.json');
+      } catch (err: any) {
+        config.logger.error(
+          `[vite-plugin-ember] Unable to create require anchor at ${config.root}: ${err.message}`,
+        );
+        return;
+      }
+
+      let emberPkg: string;
+      try {
+        emberPkg = rootRequire.resolve('ember-source/package.json');
+      } catch (err: any) {
+        config.logger.error(
+          `[vite-plugin-ember] Could not resolve ember-source from ${config.root}. ` +
+            `Add ember-source as a dependency of your project. (${err.message})`,
+        );
+        return;
+      }
+      emberSourcePackagesDir = emberPkg.replace(
+        /package\.json$/,
+        'dist/packages',
+      );
+
+      // Resolve the template compiler.
+      //  • If the user pinned `compilerPath`, honor it (preload when possible,
+      //    otherwise pass it through for the babel plugin to import lazily).
+      //  • Else try the legacy self-contained CJS bundle shipped by Ember ≤ 6.x.
+      //  • Else defer to babel-plugin-ember-template-compilation, which will
+      //    locate the Ember 7+ ESM compiler on its own.
+      if (options.compilerPath) {
         try {
-          rootRequire = createRequire(config.root + '/package.json');
-          const emberPkg = rootRequire.resolve('ember-source/package.json');
-          emberSourcePackagesDir = emberPkg.replace(
-            /package\.json$/,
-            'dist/packages',
-          );
-
-          // Load the standalone template compiler (CJS bundle)
-          if (options.compilerPath) {
-            compilerObj = rootRequire(options.compilerPath);
+          compilerObj = rootRequire(options.compilerPath);
+        } catch (err: any) {
+          // Only treat ESM / exports-map failures as "defer to the babel plugin".
+          // Any other failure (typo, missing module, syntax error, etc.) is a
+          // real misconfiguration and should surface immediately rather than
+          // being silently deferred to transform time.
+          if (
+            err?.code === 'ERR_REQUIRE_ESM' ||
+            err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+          ) {
+            resolvedCompilerPath = options.compilerPath;
           } else {
-            compilerObj = rootRequire(
-              'ember-source/dist/ember-template-compiler.js',
+            config.logger.error(
+              `[vite-plugin-ember] Failed to load compilerPath "${options.compilerPath}": ${err?.message ?? err}`,
             );
+            throw err;
           }
-
-          // Pre-resolve decorator-transforms runtime (CJS → ESM)
-          try {
-            const cjsPath = rootRequire.resolve('decorator-transforms/runtime');
-            decoratorRuntimePath = cjsPath.replace(
-              /runtime\.cjs$/,
-              'runtime.js',
-            );
-          } catch {
-            // not installed
-          }
-
-          // Build reusable babel config objects now that compiler is loaded
-          buildBabelConfigs();
+        }
+      } else {
+        try {
+          compilerObj = rootRequire(
+            'ember-source/dist/ember-template-compiler.js',
+          );
         } catch {
-          // ember-source not found
+          // Ember 7+ removed the legacy bundle. Leave both compilerObj and
+          // resolvedCompilerPath undefined so the babel plugin runs its own
+          // newer-path → legacy-path fallback at transform time.
         }
       }
+
+      // Pre-resolve decorator-transforms runtime (CJS → ESM)
+      try {
+        const cjsPath = rootRequire.resolve('decorator-transforms/runtime');
+        decoratorRuntimePath = cjsPath.replace(/runtime\.cjs$/, 'runtime.js');
+      } catch {
+        // not installed
+      }
+
+      buildBabelConfigs();
     },
 
     /* ─── serve virtual modules before VitePress catches them ─────── */
@@ -330,7 +416,7 @@ export default function vitePluginEmber(
           filename: bareId,
           babelrc: false,
           configFile: false,
-          plugins: [[templateCompilation as any, { compiler: compilerObj }]],
+          plugins: [[templateCompilation as any, getTemplateCompilationOpts()]],
           parserOpts: { sourceType: 'module' },
           sourceMaps: true,
         });

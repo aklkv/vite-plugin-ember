@@ -19,3 +19,6 @@ onlyBuiltDependencies:
 packages:
   - vite-plugin-ember
   - docs
+
+allowBuilds:
+  esbuild: false
