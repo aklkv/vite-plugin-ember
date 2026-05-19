@@ -104,7 +104,9 @@ export default defineComponent({
             ]),
           );
         } else {
-          children.push(h('div', slots.default()));
+          children.push(
+            h('div', { class: 'ember-playground__code' }, slots.default()),
+          );
         }
       }
 

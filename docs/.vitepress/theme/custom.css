@@ -2,19 +2,18 @@
  * Docs-side overrides for vite-plugin-ember's <CodePreview>.
  *
  * The plugin intentionally ships minimal defaults for the non-collapsible
- * source wrapper so consumers can style it however they want. These rules
- * give our own docs the same "rendered demo above, syntax-highlighted source
- * below, divided by a thin border" look that the collapsible variant uses.
+ * source wrapper (just a styleless `.ember-playground__code` hook) so
+ * consumers can style it however they want. These rules give our own docs
+ * the same "rendered demo above, syntax-highlighted source below, divided
+ * by a thin border" look that the collapsible variant uses.
  */
 
-/* Non-collapsible: the source <div> is the last child of .ember-playground
- * and contains a Shiki language block. */
-.ember-playground > div:last-child:has(> div[class*='language-']) {
+.ember-playground__code {
   margin-top: 12px;
   border-top: 1px solid var(--vp-c-divider);
 }
 
-.ember-playground > div:last-child > div[class*='language-'] {
+.ember-playground__code > div[class*='language-'] {
   margin: 0;
   border-radius: 0 0 8px 8px;
 }
