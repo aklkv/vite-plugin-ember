@@ -149,15 +149,15 @@ File-based demos are useful when a component is too large for a code fence, or w
 
 The plugin resolves these package namespaces automatically — no extra dependencies needed:
 
-| Package              | Common imports                              |
-| -------------------- | ------------------------------------------- |
-| `@glimmer/component` | `Component` base class                      |
-| `@glimmer/tracking`  | `tracked`, `cached`                         |
-| `@ember/modifier`    | `on` modifier                               |
+| Package              | Common imports                               |
+| -------------------- | -------------------------------------------- |
+| `@glimmer/component` | `Component` base class                       |
+| `@glimmer/tracking`  | `tracked`, `cached`                          |
+| `@ember/modifier`    | `on` modifier                                |
 | `@ember/helper`      | `fn`, `concat`, `get`, `hash`, `eq`, `gt`, … |
-| `@ember/service`     | `service` decorator                         |
-| `@ember/owner`       | `getOwner`, `setOwner`                      |
-| `@ember/renderer`    | `renderComponent` (used by the Vue wrapper) |
+| `@ember/service`     | `service` decorator                          |
+| `@ember/owner`       | `getOwner`, `setOwner`                       |
+| `@ember/renderer`    | `renderComponent` (used by the Vue wrapper)  |
 
 Any `@ember/*` or `@glimmer/*` import is resolved from `ember-source`'s ESM packages automatically.
 
