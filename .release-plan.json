@@ -1,18 +1,18 @@
 {
   "solution": {
     "vite-plugin-ember": {
-      "impact": "minor",
-      "oldVersion": "0.4.0",
-      "newVersion": "0.5.0",
+      "impact": "patch",
+      "oldVersion": "0.5.0",
+      "newVersion": "0.5.1",
       "tagName": "latest",
       "constraints": [
         {
-          "impact": "minor",
-          "reason": "Appears in changelog section :rocket: Enhancement"
+          "impact": "patch",
+          "reason": "Appears in changelog section :bug: Bug Fix"
         }
       ],
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-05-20)\n\n* vite-plugin-ember 0.5.0 (minor)\n\n#### :rocket: Enhancement\n* `vite-plugin-ember`\n  * [#57](https://github.com/aklkv/vite-plugin-ember/pull/57) fix(vitepress): accept MarkdownItAsync for VitePress v2 compatibility ([@aklkv](https://github.com/aklkv))\n  * [#44](https://github.com/aklkv/vite-plugin-ember/pull/44) fix: replace code-preview.vue with TypeScript render function to fix SSR ERR_UNKNOWN_FILE_EXTENSION ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))\n  * [#50](https://github.com/aklkv/vite-plugin-ember/pull/50) feat: ember v7 ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 2\n- @NullVoxPopuli's reduced-access machine account for AI usage ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-05-20)\n\n* vite-plugin-ember 0.5.1 (patch)\n\n#### :bug: Bug Fix\n* `vite-plugin-ember`\n  * [#61](https://github.com/aklkv/vite-plugin-ember/pull/61) fix(deps): teach Vite's optimizer about @ember/* virtual specifiers (#40) ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }
