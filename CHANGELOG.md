@@ -2,6 +2,17 @@
 
 ## Release (2026-05-20)
 
+* vite-plugin-ember 0.5.1 (patch)
+
+#### :bug: Bug Fix
+* `vite-plugin-ember`
+  * [#61](https://github.com/aklkv/vite-plugin-ember/pull/61) fix(deps): teach Vite's optimizer about @ember/* virtual specifiers (#40) ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-05-20)
+
 * vite-plugin-ember 0.5.0 (minor)
 
 #### :rocket: Enhancement
