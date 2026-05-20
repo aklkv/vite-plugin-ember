@@ -1,5 +1,19 @@
 # Changelog
 
+## Release (2026-05-20)
+
+* vite-plugin-ember 0.5.0 (minor)
+
+#### :rocket: Enhancement
+* `vite-plugin-ember`
+  * [#57](https://github.com/aklkv/vite-plugin-ember/pull/57) fix(vitepress): accept MarkdownItAsync for VitePress v2 compatibility ([@aklkv](https://github.com/aklkv))
+  * [#44](https://github.com/aklkv/vite-plugin-ember/pull/44) fix: replace code-preview.vue with TypeScript render function to fix SSR ERR_UNKNOWN_FILE_EXTENSION ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#50](https://github.com/aklkv/vite-plugin-ember/pull/50) feat: ember v7 ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 2
+- @NullVoxPopuli's reduced-access machine account for AI usage ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-04-01)
 
 * vite-plugin-ember 0.4.0 (minor)
