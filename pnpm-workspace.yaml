@@ -11,11 +11,6 @@ peerDependencyRules:
   ignoreMissing:
     - search-insights
 
-# only allow these packages to run install scripts (postinstall, etc.)
-onlyBuiltDependencies:
-  - content-tag
-  - esbuild
-
 packages:
   - vite-plugin-ember
   - docs

@@ -1,5 +1,5 @@
-import js from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
+import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
 import ember from 'eslint-plugin-ember/recommended';
 import ts from 'typescript-eslint';
