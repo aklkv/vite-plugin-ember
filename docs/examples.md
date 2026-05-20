@@ -167,6 +167,15 @@ A color picker showing child component extraction and dynamic inline styles.
 
 <CodePreview src="/demos/color-picker.gjs" preview />
 
+### autofocus-modifier.gjs
+
+Repro for [#40](https://github.com/aklkv/vite-plugin-ember/issues/40) — uses the
+`ember-modifier` addon to define a tiny `autofocus` element modifier. Pre-bundling
+this dep should trigger `Could not resolve "@ember/*"` until the plugin teaches
+Vite's optimizer how to resolve those specifiers.
+
+<CodePreview src="/demos/autofocus-modifier.gjs" preview />
+
 ---
 
 ## Service injection

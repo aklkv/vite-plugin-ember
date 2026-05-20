@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@glimmer/component": "^2.1.1",
+    "ember-modifier": "^4.3.0",
     "ember-source": "^7.0.0",
     "vite-plugin-ember": "workspace:*",
     "vitepress": "^1.6.4",
