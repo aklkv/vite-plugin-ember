@@ -74,7 +74,7 @@
     "@eslint/js": "^10.0.1",
     "@types/babel__core": "^7.20.5",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^25.8.0",
+    "@types/node": "^25.9.1",
     "concurrently": "^9.2.1",
     "ember-source": "7.0.0",
     "eslint": "^10.4.0",
@@ -83,7 +83,7 @@
     "markdown-it": "^14.1.1",
     "markdown-it-async": "^2.2.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.3",
+    "typescript-eslint": "^8.59.4",
     "vite": "^8.0.13",
     "vitepress": "^1.6.4",
     "vue": "^3.5.34"
