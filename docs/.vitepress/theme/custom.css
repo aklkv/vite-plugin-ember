@@ -1,19 +1,24 @@
 /*
- * Docs-side overrides for vite-plugin-ember's <CodePreview>.
+ * Docs-side styling for vite-plugin-ember's <CodePreview>.
  *
- * The plugin intentionally ships minimal defaults for the non-collapsible
- * source wrapper (just a styleless `.ember-playground__code` hook) so
- * consumers can style it however they want. These rules give our own docs
- * the same "rendered demo above, syntax-highlighted source below, divided
- * by a thin border" look that the collapsible variant uses.
+ * The plugin only ships functional defaults (container chrome, error styling,
+ * and the <summary> toggle UX inside the collapsible details). Aesthetic
+ * styling for the two source wrappers — `.ember-playground__code` (non-
+ * collapsible) and `.ember-playground__show-code` (collapsible) — is left to
+ * the consumer theme so both can be treated symmetrically.
+ *
+ * These rules give our docs the "rendered demo above, syntax-highlighted
+ * source below, divided by a thin border" look in both modes.
  */
 
-.ember-playground__code {
+.ember-playground__code,
+.ember-playground__show-code {
   margin-top: 12px;
   border-top: 1px solid var(--vp-c-divider);
 }
 
-.ember-playground__code > div[class*='language-'] {
+.ember-playground__code > div[class*='language-'],
+.ember-playground__show-code div[class*='language-'] {
   margin: 0;
   border-radius: 0 0 8px 8px;
 }
