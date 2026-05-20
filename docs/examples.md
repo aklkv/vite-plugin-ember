@@ -167,6 +167,15 @@ A color picker showing child component extraction and dynamic inline styles.
 
 <CodePreview src="/demos/color-picker.gjs" preview />
 
+### tick-modifier.gjs
+
+A live clock built with the [`ember-modifier`](https://github.com/ember-modifier/ember-modifier)
+addon. The modifier sets up an interval on insert and tears it down on destroy,
+showing how Ember addons that ship with their own setup/teardown lifecycle plug
+straight into a template.
+
+<CodePreview src="/demos/tick-modifier.gjs" preview />
+
 ---
 
 ## Service injection

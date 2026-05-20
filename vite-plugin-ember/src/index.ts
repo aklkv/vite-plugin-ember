@@ -224,6 +224,71 @@ export default function vitePluginEmber(
     name: 'vite-plugin-ember',
     enforce: 'pre',
 
+    /* ─── teach Vite's dep optimizer about Ember virtual specifiers ─
+     *
+     * Vite pre-bundles bare-specifier dependencies with esbuild on a separate
+     * pipeline that does NOT invoke Rollup plugin `resolveId` hooks. When a
+     * consumer pulls in an Ember addon (e.g. `ember-modifier`) whose built
+     * `dist/index.js` imports `@ember/application` / `@ember/modifier` / etc.,
+     * esbuild can't resolve those virtual specifiers and aborts with:
+     *
+     *     ✘ Could not resolve "@ember/application"
+     *     [vitepress] error while updating dependencies
+     *
+     * (see https://github.com/aklkv/vite-plugin-ember/issues/40)
+     *
+     * Fix: register an esbuild plugin that marks every `@ember/*`,
+     * `@glimmer/*`, `@embroider/macros`, and `decorator-transforms/runtime`
+     * import as EXTERNAL during dep optimization. Esbuild then preserves
+     * those bare specifiers verbatim in the optimized output, and Vite's
+     * import-analysis transform — which DOES call this plugin's `resolveId`
+     * hook — rewrites them to real on-disk paths at request time. This way
+     * we keep a single source of truth for the resolver (no duplicated
+     * `@ember/*` → `ember-source/dist/...` logic across two build tools).
+     *
+     * We also exclude `ember-source` itself from pre-bundling: it ships
+     * native ESM, is enormous, and pre-bundling it would just duplicate
+     * everything our `resolveId` already serves.
+     */
+    config() {
+      return {
+        optimizeDeps: {
+          exclude: ['ember-source'],
+          esbuildOptions: {
+            plugins: [
+              {
+                name: 'vite-plugin-ember:externalize-virtual-specifiers',
+                setup(build: {
+                  onResolve: (
+                    opts: { filter: RegExp },
+                    cb: (args: { path: string }) => {
+                      path: string;
+                      external: boolean;
+                    },
+                  ) => void;
+                }) {
+                  const externalize = (args: { path: string }) => ({
+                    path: args.path,
+                    external: true,
+                  });
+                  build.onResolve({ filter: /^@ember\// }, externalize);
+                  build.onResolve({ filter: /^@glimmer\// }, externalize);
+                  build.onResolve(
+                    { filter: /^@embroider\/macros$/ },
+                    externalize,
+                  );
+                  build.onResolve(
+                    { filter: /^decorator-transforms\/runtime$/ },
+                    externalize,
+                  );
+                },
+              },
+            ],
+          },
+        },
+      };
+    },
+
     /* ─── locate ember-source from the project root ───────────────── */
     configResolved(config) {
       if (emberSourcePackagesDir) return;

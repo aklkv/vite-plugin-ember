@@ -20,6 +20,9 @@ importers:
       '@glimmer/component':
         specifier: ^2.1.1
         version: 2.1.1
+      ember-modifier:
+        specifier: ^4.3.0
+        version: 4.3.0
       ember-source:
         specifier: ^7.0.0
         version: 7.0.0(@glimmer/component@2.1.1)
@@ -2296,6 +2299,9 @@ packages:
 
   ember-estree@0.6.4:
     resolution: {integrity: sha512-/0+JLFt200RB/gUfLfRALTFWby6fGS7Bu+NN985Y8gadEntX4KoiYHhOl2hkzvy+AmBi+PbHxBa9QVCV7K/PUg==}
+
+  ember-modifier@4.3.0:
+    resolution: {integrity: sha512-O0rirSLQbGg0VJ/NqoQ4uN1bh2iAekZC/Ykma+FkjCM2ofrO38u+d8n3+AK6uVWeMJmogGX2KL+Is5fofoInJg==}
 
   ember-rfc176-data@0.3.18:
     resolution: {integrity: sha512-JtuLoYGSjay1W3MQAxt3eINWXNYYQliK90tLwtb8aeCuQK8zKGCRbBodVIrkcTqshULMnRuTOS6t1P7oQk3g6Q==}
@@ -6611,6 +6617,14 @@ snapshots:
       '@glimmer/syntax': 0.95.0
       content-tag: 4.2.0
       oxc-parser: 0.130.0
+
+  ember-modifier@4.3.0:
+    dependencies:
+      '@embroider/addon-shim': 1.10.2
+      decorator-transforms: 2.3.2(@babel/core@7.29.0)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - supports-color
 
   ember-rfc176-data@0.3.18: {}
 
