@@ -84,19 +84,66 @@ export interface VitePluginEmberOptions {
 
   /**
    * Additional Babel plugins to run during .gjs/.gts transformation.
-   * These are appended after the built-in template compilation and
-   * decorator transform plugins.
+   *
+   * Accepts either an array (appended **after** the built-in template
+   * compilation and decorator transform plugins — same as previous behaviour)
+   * or an object with `before` / `after` arrays for fine-grained ordering
+   * relative to the built-ins:
+   *
+   * 1. `before` plugins
+   * 2. `babel-plugin-ember-template-compilation`
+   * 3. `decorator-transforms`
+   * 4. `after` plugins
+   * 5. `@babel/plugin-transform-typescript` (only for `.gts`)
    *
    * @example
    * ```ts
    * vitePluginEmber({
-   *   babelPlugins: [
-   *     'ember-concurrency/async-arrow-task-transform',
-   *   ]
+   *   babelPlugins: ['ember-concurrency/async-arrow-task-transform'],
+   * })
+   *
+   * // or, with explicit ordering:
+   * vitePluginEmber({
+   *   babelPlugins: {
+   *     before: ['my-instrumentation-plugin'],
+   *     after: ['ember-concurrency/async-arrow-task-transform'],
+   *   },
    * })
    * ```
    */
-  babelPlugins?: PluginItem[];
+  babelPlugins?: PluginItem[] | { before?: PluginItem[]; after?: PluginItem[] };
+
+  /**
+   * Additional Babel presets to apply during .gjs/.gts transformation.
+   * Presets are passed through to Babel as-is and run after plugins,
+   * following Babel's normal preset ordering (last to first).
+   *
+   * @example
+   * ```ts
+   * vitePluginEmber({
+   *   babelPresets: [['@babel/preset-env', { targets: { esmodules: true } }]],
+   * })
+   * ```
+   */
+  babelPresets?: PluginItem[];
+
+  /**
+   * Additional Babel parser plugins (forwarded to `parserOpts.plugins`).
+   * Use this to enable syntax features such as legacy decorators,
+   * the pipeline operator, or other proposals that are not enabled by
+   * default.
+   *
+   * The built-in parser plugins (class fields/private methods, plus
+   * `typescript` for `.gts`) are always included; these are appended.
+   *
+   * @example
+   * ```ts
+   * vitePluginEmber({
+   *   parserPlugins: ['decorators-legacy'],
+   * })
+   * ```
+   */
+  parserPlugins?: NonNullable<ParserOptions['plugins']>;
 }
 
 export default function vitePluginEmber(
@@ -128,10 +175,12 @@ export default function vitePluginEmber(
   type ParserPluginList = NonNullable<ParserOptions['plugins']>;
   let babelConfigGJS: {
     plugins: PluginItem[];
+    presets: PluginItem[];
     parserPlugins: ParserPluginList;
   };
   let babelConfigGTS: {
     plugins: PluginItem[];
+    presets: PluginItem[];
     parserPlugins: ParserPluginList;
   };
 
@@ -152,18 +201,34 @@ export default function vitePluginEmber(
       'classPrivateMethods',
     ];
 
+    // Normalize `babelPlugins` (array | { before, after }) into ordered slots
+    // around the built-ins.
+    let userBefore: PluginItem[] = [];
+    let userAfter: PluginItem[] = [];
+    if (Array.isArray(options.babelPlugins)) {
+      userAfter = options.babelPlugins;
+    } else if (options.babelPlugins) {
+      userBefore = options.babelPlugins.before ?? [];
+      userAfter = options.babelPlugins.after ?? [];
+    }
+
     const basePlugins: PluginItem[] = [
+      ...userBefore,
       [templateCompilation as PluginItem, getTemplateCompilationOpts()],
       [
         'module:decorator-transforms',
         { runtime: { import: 'decorator-transforms/runtime' } },
       ],
-      ...(options.babelPlugins ?? []),
+      ...userAfter,
     ];
+
+    const presets: PluginItem[] = [...(options.babelPresets ?? [])];
+    const userParserPlugins = options.parserPlugins ?? [];
 
     babelConfigGJS = {
       plugins: basePlugins,
-      parserPlugins: baseParserPlugins,
+      presets,
+      parserPlugins: [...baseParserPlugins, ...userParserPlugins],
     };
 
     babelConfigGTS = {
@@ -178,7 +243,8 @@ export default function vitePluginEmber(
           },
         ],
       ],
-      parserPlugins: [...baseParserPlugins, 'typescript'],
+      presets,
+      parserPlugins: [...baseParserPlugins, 'typescript', ...userParserPlugins],
     };
   }
 
@@ -557,6 +623,7 @@ export default function vitePluginEmber(
         babelrc: false,
         configFile: false,
         plugins: cfg.plugins,
+        presets: cfg.presets,
         parserOpts: {
           sourceType: 'module',
           plugins: cfg.parserPlugins,

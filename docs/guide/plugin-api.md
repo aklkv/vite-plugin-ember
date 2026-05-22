@@ -10,11 +10,13 @@ import vitePluginEmber from 'vite-plugin-ember';
 
 ### Options
 
-| Option         | Type                     | Default                                          | Description                                                                                                  |
-| -------------- | ------------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| `compilerPath` | `string`                 | `'ember-source/dist/ember-template-compiler.js'` | Path to the Ember template compiler module. Override this only if you need a custom or pre-release compiler. |
-| `resolve`      | `Record<string, string>` | `{}`                                             | Custom import resolution map. Keys are bare specifiers, values are resolved paths or package names.          |
-| `babelPlugins` | `any[]`                  | `[]`                                             | Additional Babel plugins appended after the built-in template compilation and decorator transforms.          |
+| Option          | Type                                                              | Default                                          | Description                                                                                                                                                |
+| --------------- | ----------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `compilerPath`  | `string`                                                          | `'ember-source/dist/ember-template-compiler.js'` | Path to the Ember template compiler module. Override this only if you need a custom or pre-release compiler.                                               |
+| `resolve`       | `Record<string, string>`                                          | `{}`                                             | Custom import resolution map. Keys are bare specifiers, values are resolved paths or package names.                                                        |
+| `babelPlugins`  | `PluginItem[] \| { before?: PluginItem[]; after?: PluginItem[] }` | `[]`                                             | Additional Babel plugins. Array form appends after the built-ins; object form lets you place plugins before or after the built-in template/decorator pass. |
+| `babelPresets`  | `PluginItem[]`                                                    | `[]`                                             | Additional Babel presets forwarded to the `.gjs`/`.gts` transform.                                                                                         |
+| `parserPlugins` | `ParserPlugin[]`                                                  | `[]`                                             | Additional Babel parser plugins (e.g. `'decorators-legacy'`, `'pipelineOperator'`). Appended to the built-in parser plugins.                               |
 
 ### `resolve` option
 
@@ -52,6 +54,51 @@ vitePluginEmber({
 ```
 
 These plugins run after the built-in template compilation and decorator transforms.
+
+If you need a plugin to run **before** the built-ins (e.g. an instrumentation transform that needs to see the original source), use the object form:
+
+```ts
+vitePluginEmber({
+  babelPlugins: {
+    before: ['my-instrumentation-plugin'],
+    after: ['ember-concurrency/async-arrow-task-transform'],
+  },
+});
+```
+
+The full Babel plugin order is:
+
+1. `before` plugins
+2. `babel-plugin-ember-template-compilation`
+3. `decorator-transforms`
+4. `after` plugins
+5. `@babel/plugin-transform-typescript` (only for `.gts`)
+
+### `babelPresets` option
+
+Forward additional Babel presets to the `.gjs`/`.gts` transform. Presets follow Babel's normal ordering rules (applied last to first).
+
+```ts
+vitePluginEmber({
+  babelPresets: [['@babel/preset-env', { targets: { esmodules: true } }]],
+});
+```
+
+### `parserPlugins` option
+
+Enable additional Babel parser plugins for syntax that is not on by default — for example, legacy decorators, the pipeline operator, or other proposals.
+
+```ts
+vitePluginEmber({
+  parserPlugins: ['decorators-legacy'],
+});
+```
+
+The built-in parser plugins (`classProperties`, `classPrivateProperties`, `classPrivateMethods`, plus `typescript` for `.gts`) are always included; yours are appended.
+
+### Why not auto-load `babel.config.js`?
+
+`vite-plugin-ember` owns the `.gjs`/`.gts` pipeline; it does not read your project's `babel.config.js` or `.babelrc`. Those files belong to your application build and frequently contain transforms that don't apply (or actively conflict) here. Provide what you need explicitly via the options above.
 
 ### What the plugin does
 
