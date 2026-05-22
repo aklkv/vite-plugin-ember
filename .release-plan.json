@@ -2,17 +2,17 @@
   "solution": {
     "vite-plugin-ember": {
       "impact": "patch",
-      "oldVersion": "0.5.3",
-      "newVersion": "0.5.4",
+      "oldVersion": "0.5.4",
+      "newVersion": "0.5.5",
       "tagName": "latest",
       "constraints": [
         {
           "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
+          "reason": "Appears in changelog section :memo: Documentation"
         }
       ],
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-05-22)\n\n* vite-plugin-ember 0.5.4 (patch)\n\n#### :house: Internal\n* `vite-plugin-ember`\n  * [#70](https://github.com/aklkv/vite-plugin-ember/pull/70) clean up ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-05-22)\n\n* vite-plugin-ember 0.5.5 (patch)\n\n#### :memo: Documentation\n* `vite-plugin-ember`\n  * [#67](https://github.com/aklkv/vite-plugin-ember/pull/67) docs(meta): sharpen VitePress framing + expand npm keywords (refs #64) ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }

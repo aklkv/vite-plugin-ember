@@ -2,6 +2,17 @@
 
 ## Release (2026-05-22)
 
+* vite-plugin-ember 0.5.5 (patch)
+
+#### :memo: Documentation
+* `vite-plugin-ember`
+  * [#67](https://github.com/aklkv/vite-plugin-ember/pull/67) docs(meta): sharpen VitePress framing + expand npm keywords (refs #64) ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-05-22)
+
 * vite-plugin-ember 0.5.4 (patch)
 
 #### :house: Internal
