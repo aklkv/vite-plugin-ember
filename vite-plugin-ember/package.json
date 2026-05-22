@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-ember",
   "version": "0.5.4",
-  "description": "Vite plugin for rendering live Ember components in VitePress documentation",
+  "description": "VitePress plugin for live, interactive Ember components in your documentation — write .gjs/.gts in markdown and see them render",
   "license": "MIT",
   "type": "module",
   "author": "Alexey Kulakov",
@@ -15,13 +15,23 @@
     "url": "https://github.com/aklkv/vite-plugin-ember/issues"
   },
   "keywords": [
+    "vitepress",
+    "vitepress-plugin",
     "vite",
     "vite-plugin",
     "ember",
+    "emberjs",
+    "ember-source",
+    "ember-modifier",
     "glimmer",
-    "vitepress",
+    "glimmer-component",
+    "template-tag",
     "gjs",
-    "gts"
+    "gts",
+    "documentation",
+    "docs",
+    "live-preview",
+    "playground"
   ],
   "sideEffects": false,
   "main": "dist/index.js",
