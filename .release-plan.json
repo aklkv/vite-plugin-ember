@@ -2,8 +2,8 @@
   "solution": {
     "vite-plugin-ember": {
       "impact": "patch",
-      "oldVersion": "0.5.1",
-      "newVersion": "0.5.2",
+      "oldVersion": "0.5.2",
+      "newVersion": "0.5.3",
       "tagName": "latest",
       "constraints": [
         {
@@ -14,5 +14,5 @@
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-05-22)\n\n* vite-plugin-ember 0.5.2 (patch)\n\n#### :bug: Bug Fix\n* `vite-plugin-ember`\n  * [#65](https://github.com/aklkv/vite-plugin-ember/pull/65) fix(ssr): keep ember-related deps inside Vite's pipeline during SSR (#40) ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-05-22)\n\n* vite-plugin-ember 0.5.3 (patch)\n\n#### :bug: Bug Fix\n* `vite-plugin-ember`\n  * [#68](https://github.com/aklkv/vite-plugin-ember/pull/68) fix(ssr): inline inBrowser check to avoid top-level vitepress import (#40) ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }
