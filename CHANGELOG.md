@@ -2,6 +2,17 @@
 
 ## Release (2026-05-22)
 
+* vite-plugin-ember 0.6.0 (minor)
+
+#### :rocket: Enhancement
+* `vite-plugin-ember`
+  * [#73](https://github.com/aklkv/vite-plugin-ember/pull/73) feat(babel): extensible Babel pipeline (presets, parser plugins, ordering) ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-05-22)
+
 * vite-plugin-ember 0.5.5 (patch)
 
 #### :memo: Documentation
