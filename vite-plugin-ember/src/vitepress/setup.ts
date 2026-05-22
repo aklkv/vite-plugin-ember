@@ -1,7 +1,8 @@
 import { defineAsyncComponent } from 'vue';
-import type { App } from 'vue';
 import { EMBER_OWNER_KEY } from './constants.js';
 import { createOwner } from './create-owner.js';
+
+import type { App } from 'vue';
 import type { EmberOwner } from './create-owner.js';
 
 export type { EmberOwner };

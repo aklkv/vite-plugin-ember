@@ -108,7 +108,7 @@ pnpm dev
 │       ├── index.ts               # Plugin + Ember compilation pipeline
 │       └── vitepress/
 │           ├── ember-fence.ts     # markdown-it plugin for ```gjs live fences
-│           ├── code-preview.vue   # Vue wrapper component
+│           ├── code-preview.ts    # Vue wrapper component (defineComponent in TS)
 │           ├── setup.ts           # One-call theme setup helper
 │           ├── create-owner.ts    # Minimal Ember owner factory
 │           └── constants.ts       # Shared injection keys

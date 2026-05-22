@@ -88,7 +88,10 @@ export default class StepCounter extends Component {
   @tracked value = 0;
 
   changeStep = (e) => {
-    this.step = Number(e.target.value) || 1;
+    const n = Number(e.target.value);
+    if (Number.isFinite(n) && n >= 1) {
+      this.step = n;
+    }
   };
 
   add = () => {
@@ -108,7 +111,7 @@ export default class StepCounter extends Component {
         <input
           type='number'
           value={{this.step}}
-          {{on 'input' this.changeStep}}
+          {{on 'change' this.changeStep}}
           min='1'
           style='width: 50px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;'
         />

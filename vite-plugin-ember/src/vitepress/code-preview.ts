@@ -5,9 +5,10 @@ import {
   ref,
   inject,
   h,
-  type PropType,
 } from 'vue';
 import { EMBER_OWNER_KEY } from './constants.js';
+
+import type { PropType } from 'vue';
 
 // Inlined to avoid a top-level static import from `vitepress`. The `vitepress`
 // package uses conditional exports, and when this module is loaded by Node's

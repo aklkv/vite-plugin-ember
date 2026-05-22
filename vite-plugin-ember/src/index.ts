@@ -1,12 +1,26 @@
-import type { Plugin } from 'vite';
-import { transformAsync } from '@babel/core';
 import templateCompilation from 'babel-plugin-ember-template-compilation';
+import { transformAsync } from '@babel/core';
 import { Preprocessor } from 'content-tag';
 import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
 
+import type { ParserOptions, PluginItem } from '@babel/core';
+import type { Plugin, Rollup } from 'vite';
+
 // ── Shared demo registry (populated by ember-fence, read by load hook) ──
 export const demoRegistry = new Map<string, string>();
+
+// ── Error narrowing helpers (catch defaults to unknown) ─────────────────
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+function errorCode(err: unknown): string | undefined {
+  if (typeof err === 'object' && err !== null && 'code' in err) {
+    const code = (err as { code: unknown }).code;
+    return typeof code === 'string' ? code : undefined;
+  }
+  return undefined;
+}
 
 // ── Virtual-module helpers (for inline markdown demos) ──────────────────
 const PUBLIC_PREFIX = 'virtual:ember-demo-';
@@ -82,7 +96,7 @@ export interface VitePluginEmberOptions {
    * })
    * ```
    */
-  babelPlugins?: any[];
+  babelPlugins?: PluginItem[];
 }
 
 export default function vitePluginEmber(
@@ -97,7 +111,7 @@ export default function vitePluginEmber(
   // ships with the installed ember-source — i.e. Ember ≤ 6.x). For Ember 7+
   // we hand off resolution to babel-plugin-ember-template-compilation by
   // passing `compilerPath` instead.
-  let compilerObj: any;
+  let compilerObj: unknown;
   // Explicit compiler path forwarded to babel-plugin-ember-template-compilation
   // when we do not (or cannot) preload a compiler object ourselves.
   let resolvedCompilerPath: string | undefined;
@@ -111,8 +125,15 @@ export default function vitePluginEmber(
   let decoratorRuntimePath: string | undefined;
 
   // ── Pre-built babel configs (allocated once, cloned per-transform) ──
-  let babelConfigGJS: { plugins: any[]; parserPlugins: any[] };
-  let babelConfigGTS: { plugins: any[]; parserPlugins: any[] };
+  type ParserPluginList = NonNullable<ParserOptions['plugins']>;
+  let babelConfigGJS: {
+    plugins: PluginItem[];
+    parserPlugins: ParserPluginList;
+  };
+  let babelConfigGTS: {
+    plugins: PluginItem[];
+    parserPlugins: ParserPluginList;
+  };
 
   // Prefer a preloaded compiler when present (fast path, no async resolve).
   // Otherwise hand a path off to babel-plugin-ember-template-compilation —
@@ -125,14 +146,14 @@ export default function vitePluginEmber(
   }
 
   function buildBabelConfigs() {
-    const baseParserPlugins: any[] = [
+    const baseParserPlugins: ParserPluginList = [
       'classProperties',
       'classPrivateProperties',
       'classPrivateMethods',
     ];
 
-    const basePlugins: any[] = [
-      [templateCompilation as any, getTemplateCompilationOpts()],
+    const basePlugins: PluginItem[] = [
+      [templateCompilation as PluginItem, getTemplateCompilationOpts()],
       [
         'module:decorator-transforms',
         { runtime: { import: 'decorator-transforms/runtime' } },
@@ -315,9 +336,9 @@ export default function vitePluginEmber(
 
       try {
         rootRequire = createRequire(config.root + '/package.json');
-      } catch (err: any) {
+      } catch (err) {
         config.logger.error(
-          `[vite-plugin-ember] Unable to create require anchor at ${config.root}: ${err.message}`,
+          `[vite-plugin-ember] Unable to create require anchor at ${config.root}: ${errorMessage(err)}`,
         );
         return;
       }
@@ -325,10 +346,10 @@ export default function vitePluginEmber(
       let emberPkg: string;
       try {
         emberPkg = rootRequire.resolve('ember-source/package.json');
-      } catch (err: any) {
+      } catch (err) {
         config.logger.error(
           `[vite-plugin-ember] Could not resolve ember-source from ${config.root}. ` +
-            `Add ember-source as a dependency of your project. (${err.message})`,
+            `Add ember-source as a dependency of your project. (${errorMessage(err)})`,
         );
         return;
       }
@@ -346,19 +367,20 @@ export default function vitePluginEmber(
       if (options.compilerPath) {
         try {
           compilerObj = rootRequire(options.compilerPath);
-        } catch (err: any) {
+        } catch (err) {
           // Only treat ESM / exports-map failures as "defer to the babel plugin".
           // Any other failure (typo, missing module, syntax error, etc.) is a
           // real misconfiguration and should surface immediately rather than
           // being silently deferred to transform time.
+          const code = errorCode(err);
           if (
-            err?.code === 'ERR_REQUIRE_ESM' ||
-            err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+            code === 'ERR_REQUIRE_ESM' ||
+            code === 'ERR_PACKAGE_PATH_NOT_EXPORTED'
           ) {
             resolvedCompilerPath = options.compilerPath;
           } else {
             config.logger.error(
-              `[vite-plugin-ember] Failed to load compilerPath "${options.compilerPath}": ${err?.message ?? err}`,
+              `[vite-plugin-ember] Failed to load compilerPath "${options.compilerPath}": ${errorMessage(err)}`,
             );
             throw err;
           }
@@ -407,7 +429,7 @@ export default function vitePluginEmber(
           res.setHeader('Content-Type', 'application/javascript');
           res.setHeader('Cache-Control', 'no-cache');
           res.end(result.code);
-        } catch (err: any) {
+        } catch (err) {
           console.error('[vite-plugin-ember] middleware error:', err);
           next();
         }
@@ -501,12 +523,14 @@ export default function vitePluginEmber(
           filename: bareId,
           babelrc: false,
           configFile: false,
-          plugins: [[templateCompilation as any, getTemplateCompilationOpts()]],
+          plugins: [
+            [templateCompilation as PluginItem, getTemplateCompilationOpts()],
+          ],
           parserOpts: { sourceType: 'module' },
           sourceMaps: true,
         });
         if (!result?.code) return null;
-        return { code: result.code, map: result.map as any };
+        return { code: result.code, map: result.map as Rollup.SourceMapInput };
       }
 
       if (!isGJS && !isGTS) return null;
@@ -514,14 +538,13 @@ export default function vitePluginEmber(
       // ── Step 1: content-tag preprocessing ──
       let preprocessed: string;
       try {
-        const result = preprocessor.process(code, { filename: bareId });
-        preprocessed =
-          typeof result === 'string'
-            ? result
-            : ((result as any).code ?? result);
-      } catch (err: any) {
+        const result = preprocessor.process(code, { filename: bareId }) as
+          | string
+          | { code: string };
+        preprocessed = typeof result === 'string' ? result : result.code;
+      } catch (err) {
         this.error(
-          `[vite-plugin-ember] content-tag failed for ${bareId}: ${err.message}`,
+          `[vite-plugin-ember] content-tag failed for ${bareId}: ${errorMessage(err)}`,
         );
         return null;
       }
@@ -542,7 +565,7 @@ export default function vitePluginEmber(
       });
 
       if (!result?.code) return null;
-      return { code: result.code, map: result.map as any };
+      return { code: result.code, map: result.map as Rollup.SourceMapInput };
     },
   } satisfies Plugin;
 }
