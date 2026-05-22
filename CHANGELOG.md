@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2026-05-22)
+
+* vite-plugin-ember 0.5.2 (patch)
+
+#### :bug: Bug Fix
+* `vite-plugin-ember`
+  * [#65](https://github.com/aklkv/vite-plugin-ember/pull/65) fix(ssr): keep ember-related deps inside Vite's pipeline during SSR (#40) ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-05-20)
 
 * vite-plugin-ember 0.5.1 (patch)
