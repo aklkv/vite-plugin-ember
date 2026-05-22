@@ -2,6 +2,17 @@
 
 ## Release (2026-05-22)
 
+* vite-plugin-ember 0.5.3 (patch)
+
+#### :bug: Bug Fix
+* `vite-plugin-ember`
+  * [#68](https://github.com/aklkv/vite-plugin-ember/pull/68) fix(ssr): inline inBrowser check to avoid top-level vitepress import (#40) ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-05-22)
+
 * vite-plugin-ember 0.5.2 (patch)
 
 #### :bug: Bug Fix
