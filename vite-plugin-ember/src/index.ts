@@ -249,6 +249,16 @@ export default function vitePluginEmber(
      * We also exclude `ember-source` itself from pre-bundling: it ships
      * native ESM, is enormous, and pre-bundling it would just duplicate
      * everything our `resolveId` already serves.
+     *
+     * SSR has the mirror-image problem. By default Vite externalizes every
+     * npm dep for SSR, handing import resolution off to Node's native ESM
+     * loader. That loader has no plugin pipeline, so when something in the
+     * SSR module graph pulls in (e.g.) `ember-modifier`, Node sees
+     * `import { setOwner } from '@ember/application'`, finds no such
+     * package on disk, and dies with `ERR_MODULE_NOT_FOUND`. We force
+     * every ember-related dep to be bundled by Vite during SSR instead, so
+     * this plugin's `resolveId` gets the chance to rewrite the virtual
+     * specifiers.
      */
     config() {
       return {
@@ -285,6 +295,16 @@ export default function vitePluginEmber(
               },
             ],
           },
+        },
+        ssr: {
+          noExternal: [
+            'ember-source',
+            /^ember-[^/]+$/,
+            /^@ember\//,
+            /^@glimmer\//,
+            /^@embroider\//,
+            'decorator-transforms',
+          ],
         },
       };
     },
