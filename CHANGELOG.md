@@ -2,6 +2,17 @@
 
 ## Release (2026-05-22)
 
+* vite-plugin-ember 0.5.4 (patch)
+
+#### :house: Internal
+* `vite-plugin-ember`
+  * [#70](https://github.com/aklkv/vite-plugin-ember/pull/70) clean up ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-05-22)
+
 * vite-plugin-ember 0.5.3 (patch)
 
 #### :bug: Bug Fix
