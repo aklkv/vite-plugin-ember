@@ -7,8 +7,15 @@ import {
   h,
   type PropType,
 } from 'vue';
-import { inBrowser } from 'vitepress';
 import { EMBER_OWNER_KEY } from './constants.js';
+
+// Inlined to avoid a top-level static import from `vitepress`. The `vitepress`
+// package uses conditional exports, and when this module is loaded by Node's
+// native ESM loader (e.g. during SSR after Vite externalizes it as an npm dep),
+// Node resolves to an entry that does not re-export `inBrowser`, which crashes
+// at parse time. The check itself is a one-liner, so we just inline it.
+// See https://github.com/aklkv/vite-plugin-ember/issues/40#issuecomment-4517523496
+const inBrowser = typeof document !== 'undefined';
 
 export { EMBER_OWNER_KEY };
 
