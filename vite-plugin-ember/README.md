@@ -9,6 +9,12 @@ Write `.gjs` / `.gts` code fences in markdown and see them rendered on the page 
 
 **[View the live documentation →](https://aklkv.github.io/vite-plugin-ember/)**
 
+## Is this for me?
+
+- ✅ **You're using VitePress** for docs or a blog and you want to embed live Ember components — yes, this is exactly what this plugin does.
+- ☑️ **You're using plain Vite** (not VitePress) and want `.gjs`/`.gts` support — the core resolver and `.gjs`/`.gts` transform also work standalone; the VitePress-specific helpers (`<CodePreview>`, `setupEmber`, `emberFence`) live under separate subpath exports that you can simply not import.
+- ❌ **You want to build a full Ember app with Vite** as a replacement for `ember-cli` / `@embroider/vite` — that's a much larger problem and is **not** this plugin's goal.
+
 ## Features
 
 - **Inline code fences** — use ` ```gjs live ` in markdown for instant interactive previews
