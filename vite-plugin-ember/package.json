@@ -8,7 +8,7 @@
   "homepage": "https://github.com/aklkv/vite-plugin-ember#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aklkv/vite-plugin-ember.git",
+    "url": "git+https://github.com/aklkv/vite-plugin-ember.git",
     "directory": "vite-plugin-ember"
   },
   "bugs": {
