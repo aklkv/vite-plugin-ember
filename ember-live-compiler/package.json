@@ -67,8 +67,10 @@
     "decorator-transforms": "^2.3.2"
   },
   "devDependencies": {
+    "@babel/standalone": "^7.29.0",
     "@eslint/js": "^10.0.1",
     "@types/babel__core": "^7.20.5",
+    "@types/babel__standalone": "^7.1.9",
     "@types/node": "^25.9.1",
     "concurrently": "^9.2.1",
     "ember-source": "^7.0.0",
@@ -79,9 +81,13 @@
     "typescript-eslint": "^8.59.4"
   },
   "peerDependencies": {
+    "@babel/standalone": "^7.29.0",
     "ember-source": ">= 6.8.0"
   },
   "peerDependenciesMeta": {
+    "@babel/standalone": {
+      "optional": true
+    },
     "ember-source": {
       "optional": true
     }
