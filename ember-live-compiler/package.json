@@ -1,6 +1,6 @@
 {
   "name": "ember-live-compiler",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Bundler-agnostic engine for compiling and rendering .gjs/.gts Ember components — the core that powers live Ember demos in VitePress, Docusaurus, Storybook, Backstage TechDocs, kolay, and more.",
   "keywords": [
     "ember",

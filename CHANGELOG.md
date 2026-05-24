@@ -2,6 +2,18 @@
 
 ## Release (2026-05-24)
 
+* ember-live-compiler 0.2.2 (patch)
+* vite-plugin-ember 0.7.2 (patch)
+
+#### :house: Internal
+* `ember-live-compiler`, `vite-plugin-ember`
+  * [#81](https://github.com/aklkv/vite-plugin-ember/pull/81) chore: normalize repository.url to git+https form ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-05-24)
+
 * ember-live-compiler 0.2.1 (patch)
 * vite-plugin-ember 0.7.1 (patch)
 
