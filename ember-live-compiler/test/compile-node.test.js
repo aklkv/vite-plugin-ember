@@ -25,9 +25,12 @@ export default class Hello extends Component {
 
 const GTS_SOURCE = `import Component from '@glimmer/component';
 
-interface Args { name: string }
+interface HelloSignature {
+  Args: { name: string };
+  Element: HTMLHeadingElement;
+}
 
-export default class Hello extends Component<{ Args: Args }> {
+export default class Hello extends Component<HelloSignature> {
   greeting: string = 'hello';
 
   <template>
@@ -76,8 +79,8 @@ test('compiles a .gts source and strips TypeScript syntax', async () => {
   assert.equal(typeof result.code, 'string');
   assert.match(result.code, /@ember\/template-factory/);
   // No leftover TS-only syntax in emitted JS.
-  assert.doesNotMatch(result.code, /interface Args/);
-  assert.doesNotMatch(result.code, /Component<\{ Args: Args \}>/);
+  assert.doesNotMatch(result.code, /interface HelloSignature/);
+  assert.doesNotMatch(result.code, /Component<HelloSignature>/);
   assert.doesNotMatch(result.code, /greeting:\s*string\s*=/);
 });
 
