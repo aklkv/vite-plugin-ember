@@ -22,23 +22,16 @@ export interface RenderOptions {
   owner?: EmberOwner | object;
 }
 
-type RendererModule = {
-  renderComponent: (
-    component: unknown,
-    options: { into: Element; owner?: object },
-  ) => { destroy?: () => void } | undefined;
-};
+type RendererModule = typeof import('@ember/renderer');
 
 let rendererPromise: Promise<RendererModule> | undefined;
 function loadRenderer(): Promise<RendererModule> {
-  // `@ember/renderer` is a virtual subpath provided by ember-source 6.8+ in
-  // the consumer app. It does not exist on disk during library type-checking,
-  // so we route the import through a variable to keep TS from trying to
-  // resolve it. The actual resolution happens in the browser at runtime.
-  const specifier = '@ember/renderer';
-  rendererPromise ??= import(
-    /* @vite-ignore */ specifier
-  ) as Promise<RendererModule>;
+  // `@ember/renderer` is a virtual subpath provided by ember-source 6.8+ and
+  // resolved by the host bundler (vite-plugin-ember maps `@ember/*` onto
+  // `ember-source/dist/...`). The literal specifier is intentional so Vite's
+  // import analyzer can see it and pre-bundle the module — wrapping it in a
+  // variable would ship the bare specifier to the browser unresolved.
+  rendererPromise ??= import('@ember/renderer');
   return rendererPromise;
 }
 
