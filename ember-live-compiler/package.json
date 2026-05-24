@@ -56,7 +56,8 @@
     "lint:format:fix": "prettier . --cache --write",
     "lint:js": "eslint .",
     "lint:js:fix": "eslint . --fix",
-    "lint:types": "tsc --noEmit"
+    "lint:types": "tsc --noEmit",
+    "test": "node --test --test-reporter=spec test/*.test.js"
   },
   "dependencies": {
     "@babel/core": "^7.29.0",
@@ -70,6 +71,7 @@
     "@types/babel__core": "^7.20.5",
     "@types/node": "^25.9.1",
     "concurrently": "^9.2.1",
+    "ember-source": "^7.0.0",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",

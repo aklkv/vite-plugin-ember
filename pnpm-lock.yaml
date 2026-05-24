@@ -106,6 +106,9 @@ importers:
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
+      ember-source:
+        specifier: ^7.0.0
+        version: 7.0.0(@glimmer/component@2.1.1)
       eslint:
         specifier: ^10.4.0
         version: 10.4.0

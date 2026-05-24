@@ -14,7 +14,8 @@
     "format:check": "pnpm -r --if-present format:check",
     "lint": "pnpm -r --if-present lint",
     "lint:fix": "pnpm -r --if-present lint:fix",
-    "preview": "pnpm -C docs preview"
+    "preview": "pnpm -C docs preview",
+    "test": "pnpm -r --if-present test"
   },
   "devDependencies": {
     "prettier": "^3.8.3",
