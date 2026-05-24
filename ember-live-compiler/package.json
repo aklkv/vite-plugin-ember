@@ -1,37 +1,31 @@
 {
-  "name": "vite-plugin-ember",
-  "version": "0.6.0",
-  "description": "VitePress plugin for live, interactive Ember components in your documentation — write .gjs/.gts in markdown and see them render",
+  "name": "ember-live-compiler",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Bundler-agnostic engine for compiling and rendering .gjs/.gts Ember components — the core that powers live Ember demos in VitePress, Docusaurus, Storybook, Backstage TechDocs, kolay, and more.",
   "license": "MIT",
   "type": "module",
   "author": "Alexey Kulakov",
-  "homepage": "https://github.com/aklkv/vite-plugin-ember#readme",
+  "homepage": "https://github.com/aklkv/vite-plugin-ember/tree/main/ember-live-compiler#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/aklkv/vite-plugin-ember.git",
-    "directory": "vite-plugin-ember"
+    "directory": "ember-live-compiler"
   },
   "bugs": {
     "url": "https://github.com/aklkv/vite-plugin-ember/issues"
   },
   "keywords": [
-    "vitepress",
-    "vitepress-plugin",
-    "vite",
-    "vite-plugin",
     "ember",
     "emberjs",
     "ember-source",
-    "ember-modifier",
     "glimmer",
-    "glimmer-component",
-    "template-tag",
     "gjs",
     "gts",
-    "documentation",
-    "docs",
+    "template-tag",
+    "compiler",
     "live-preview",
-    "playground"
+    "documentation"
   ],
   "sideEffects": false,
   "main": "dist/index.js",
@@ -41,21 +35,13 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./components/CodePreview": {
-      "types": "./dist/vitepress/code-preview.d.ts",
-      "default": "./dist/vitepress/code-preview.js"
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "default": "./dist/runtime/index.js"
     },
-    "./owner": {
-      "types": "./dist/vitepress/create-owner.d.ts",
-      "default": "./dist/vitepress/create-owner.js"
-    },
-    "./setup": {
-      "types": "./dist/vitepress/setup.d.ts",
-      "default": "./dist/vitepress/setup.js"
-    },
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./dist/*.js"
+    "./resolver": {
+      "types": "./dist/resolver/index.d.ts",
+      "default": "./dist/resolver/index.js"
     }
   },
   "files": [
@@ -78,37 +64,17 @@
     "@babel/plugin-transform-typescript": "^7.28.6",
     "babel-plugin-ember-template-compilation": "^4.0.0",
     "content-tag": "^4.2.0",
-    "ember-live-compiler": "workspace:*",
     "decorator-transforms": "^2.3.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/babel__core": "^7.20.5",
-    "@types/markdown-it": "^14.1.2",
     "@types/node": "^25.9.1",
     "concurrently": "^9.2.1",
-    "ember-source": "7.0.0",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
-    "markdown-it": "^14.1.1",
-    "markdown-it-async": "^2.2.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.4",
-    "vite": "^8.0.14",
-    "vitepress": "^1.6.4",
-    "vue": "^3.5.34"
-  },
-  "peerDependencies": {
-    "@glimmer/component": ">=1",
-    "ember-source": ">=6.12.0",
-    "vite": ">=5",
-    "vitepress": ">=1 || >=2.0.0-alpha",
-    "vue": ">=3"
-  },
-  "peerDependenciesMeta": {
-    "@glimmer/component": {
-      "optional": true
-    }
+    "typescript-eslint": "^8.59.4"
   }
 }

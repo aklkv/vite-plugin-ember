@@ -26,8 +26,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Build plugin
-        run: pnpm -C vite-plugin-ember build
+      - name: Build (all workspace packages)
+        run: pnpm build
 
       - name: Lint
         run: pnpm lint
@@ -47,8 +47,5 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Build plugin
-        run: pnpm -C vite-plugin-ember build
-
-      - name: Build docs
-        run: pnpm -C docs build
+      - name: Build (all workspace packages)
+        run: pnpm build
