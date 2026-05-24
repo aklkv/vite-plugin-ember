@@ -6,8 +6,10 @@ import {
   inject,
   h,
 } from 'vue';
+import { render } from 'ember-live-compiler/runtime';
 import { EMBER_OWNER_KEY } from './constants.js';
 
+import type { Mount } from 'ember-live-compiler/runtime';
 import type { PropType } from 'vue';
 
 // Inlined to avoid a top-level static import from `vitepress`. The `vitepress`
@@ -55,34 +57,19 @@ export default defineComponent({
     );
     const mountEl = ref<HTMLDivElement | null>(null);
     const error = ref<string | null>(null);
-    let cleanup: undefined | { destroy?: () => void };
-
-    type RendererModule = {
-      renderComponent: (
-        component: unknown,
-        options: { into: Element; owner?: object },
-      ) => { destroy?: () => void };
-    };
-
-    let rendererPromise: Promise<RendererModule> | undefined;
-    function getRenderer() {
-      rendererPromise ??= import('@ember/renderer') as Promise<RendererModule>;
-      return rendererPromise!;
-    }
+    let mount: Mount | undefined;
 
     onMounted(async () => {
       ensureStyle();
       if (!inBrowser || !mountEl.value) return;
 
       try {
-        const [mod, { renderComponent }] = await Promise.all([
-          props.loader ? props.loader() : import(/* @vite-ignore */ props.src!),
-          getRenderer(),
-        ]);
+        const mod = await (props.loader
+          ? props.loader()
+          : import(/* @vite-ignore */ props.src!));
 
-        const component = mod?.default ?? mod;
         const owner = props.owner ?? injectedOwner;
-        cleanup = renderComponent(component, {
+        mount = await render(mod, {
           into: mountEl.value,
           ...(owner ? { owner } : {}),
         });
@@ -93,8 +80,8 @@ export default defineComponent({
     });
 
     onBeforeUnmount(() => {
-      cleanup?.destroy?.();
-      cleanup = undefined;
+      mount?.destroy();
+      mount = undefined;
     });
 
     return () => {
