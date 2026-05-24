@@ -124,18 +124,6 @@ importers:
 
   vite-plugin-ember:
     dependencies:
-      '@babel/core':
-        specifier: ^7.29.0
-        version: 7.29.0
-      '@babel/plugin-transform-typescript':
-        specifier: ^7.28.6
-        version: 7.28.6(@babel/core@7.29.0)
-      babel-plugin-ember-template-compilation:
-        specifier: ^4.0.0
-        version: 4.0.0
-      content-tag:
-        specifier: ^4.2.0
-        version: 4.2.0
       decorator-transforms:
         specifier: ^2.3.2
         version: 2.3.2(@babel/core@7.29.0)

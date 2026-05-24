@@ -74,12 +74,8 @@
     "format:check": "prettier . --cache --check"
   },
   "dependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/plugin-transform-typescript": "^7.28.6",
-    "babel-plugin-ember-template-compilation": "^4.0.0",
-    "content-tag": "^4.2.0",
-    "ember-live-compiler": "workspace:*",
-    "decorator-transforms": "^2.3.2"
+    "decorator-transforms": "^2.3.2",
+    "ember-live-compiler": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
