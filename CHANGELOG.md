@@ -2,6 +2,18 @@
 
 ## Release (2026-05-24)
 
+* ember-live-compiler 0.2.1 (patch)
+* vite-plugin-ember 0.7.1 (patch)
+
+#### :memo: Documentation
+* `ember-live-compiler`
+  * [#79](https://github.com/aklkv/vite-plugin-ember/pull/79) docs: split root README from vite-plugin-ember; refresh engine README ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-05-24)
+
 * ember-live-compiler 0.2.0 (minor)
 * vite-plugin-ember 0.7.0 (minor)
 
