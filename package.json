@@ -3,7 +3,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/aklkv/vite-plugin-ember.git"
+    "url": "git+https://github.com/aklkv/vite-plugin-ember.git"
   },
   "license": "MIT",
   "type": "module",
