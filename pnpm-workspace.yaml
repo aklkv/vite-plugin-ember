@@ -12,6 +12,7 @@ peerDependencyRules:
     - search-insights
 
 packages:
+  - ember-live-compiler
   - vite-plugin-ember
   - docs
 

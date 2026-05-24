@@ -30,8 +30,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Build plugin
-        run: pnpm -C vite-plugin-ember build
+      - name: Build plugin (and engine deps)
+        run: pnpm -F vite-plugin-ember... build
 
       - name: Build docs
         run: pnpm -C docs build

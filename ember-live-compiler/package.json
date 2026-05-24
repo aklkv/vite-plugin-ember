@@ -1,0 +1,88 @@
+{
+  "name": "ember-live-compiler",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Bundler-agnostic engine for compiling and rendering .gjs/.gts Ember components — the core that powers live Ember demos in VitePress, Docusaurus, Storybook, Backstage TechDocs, kolay, and more.",
+  "license": "MIT",
+  "type": "module",
+  "author": "Alexey Kulakov",
+  "homepage": "https://github.com/aklkv/vite-plugin-ember/tree/main/ember-live-compiler#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aklkv/vite-plugin-ember.git",
+    "directory": "ember-live-compiler"
+  },
+  "bugs": {
+    "url": "https://github.com/aklkv/vite-plugin-ember/issues"
+  },
+  "keywords": [
+    "ember",
+    "emberjs",
+    "ember-source",
+    "glimmer",
+    "gjs",
+    "gts",
+    "template-tag",
+    "compiler",
+    "live-preview",
+    "documentation"
+  ],
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "default": "./dist/runtime/index.js"
+    },
+    "./resolver": {
+      "types": "./dist/resolver/index.d.ts",
+      "default": "./dist/resolver/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "concurrently 'pnpm:lint:*(!fix)' --names 'lint:'",
+    "lint:fix": "concurrently 'pnpm:lint:*:fix' --names 'fix:'",
+    "lint:js": "eslint .",
+    "lint:js:fix": "eslint . --fix",
+    "lint:format": "prettier . --cache --check",
+    "lint:format:fix": "prettier . --cache --write",
+    "lint:types": "tsc --noEmit",
+    "format": "prettier . --cache --write",
+    "format:check": "prettier . --cache --check"
+  },
+  "dependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/plugin-transform-typescript": "^7.28.6",
+    "babel-plugin-ember-template-compilation": "^4.0.0",
+    "content-tag": "^4.2.0",
+    "decorator-transforms": "^2.3.2"
+  },
+  "peerDependencies": {
+    "ember-source": ">= 6.8.0"
+  },
+  "peerDependenciesMeta": {
+    "ember-source": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/babel__core": "^7.20.5",
+    "@types/node": "^25.9.1",
+    "concurrently": "^9.2.1",
+    "eslint": "^10.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.4"
+  }
+}

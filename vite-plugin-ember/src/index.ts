@@ -1,9 +1,14 @@
-import templateCompilation from 'babel-plugin-ember-template-compilation';
-import { transformAsync } from '@babel/core';
-import { Preprocessor } from 'content-tag';
 import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
 
+import { createNodeCompiler } from 'ember-live-compiler';
+import {
+  EMBROIDER_MACROS_VIRTUAL_ID,
+  EMBROIDER_MACROS_SHIM_SOURCE,
+  EMBER_PACKAGE_PREFIXES,
+} from 'ember-live-compiler/resolver';
+
+import type { NodeCompiler } from 'ember-live-compiler';
 import type { ParserOptions, PluginItem } from '@babel/core';
 import type { Plugin, Rollup } from 'vite';
 
@@ -24,33 +29,6 @@ function errorCode(err: unknown): string | undefined {
 
 // ── Virtual-module helpers (for inline markdown demos) ──────────────────
 const PUBLIC_PREFIX = 'virtual:ember-demo-';
-
-/**
- * Virtual module ID for the @embroider/macros runtime shim.
- * ember-source's ESM modules import from @embroider/macros and call compile-time
- * functions like isDevelopingApp(). Outside of the Ember build pipeline these need
- * runtime implementations instead of throwing.
- */
-const EMBROIDER_MACROS_ID = '\0embroider-macros-shim';
-const EMBROIDER_MACROS_CODE = `
-export function isDevelopingApp() { return true; }
-export function isTesting() { return false; }
-export function macroCondition(condition) { return condition; }
-export function dependencySatisfies() { return true; }
-export function getOwnConfig() { return {}; }
-export function getConfig() { return {}; }
-export function importSync(specifier) {
-  throw new Error('[embroider-macros shim] importSync is not supported at runtime: ' + specifier);
-}
-export function getGlobalConfig() { return { isDevelopingApp: true, isTesting: false }; }
-`;
-
-/**
- * Bare-specifier prefixes that should be resolved into ember-source's
- * dist/packages tree.  E.g. `@ember/renderer` →
- * `<ember-source>/dist/packages/@ember/renderer/index.js`
- */
-const EMBER_PACKAGE_PREFIXES = ['@ember/', '@glimmer/'];
 
 export interface VitePluginEmberOptions {
   /**
@@ -150,8 +128,6 @@ export default function vitePluginEmber(
   options: VitePluginEmberOptions = {},
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
-  const preprocessor = new Preprocessor();
-
   // Locate ember-source's dist/packages directory on disk
   let emberSourcePackagesDir: string | undefined;
   // Preloaded template compiler (only available when the legacy CJS bundle
@@ -171,81 +147,20 @@ export default function vitePluginEmber(
   const resolveCache = new Map<string, string | null>();
   let decoratorRuntimePath: string | undefined;
 
-  // ── Pre-built babel configs (allocated once, cloned per-transform) ──
-  type ParserPluginList = NonNullable<ParserOptions['plugins']>;
-  let babelConfigGJS: {
-    plugins: PluginItem[];
-    presets: PluginItem[];
-    parserPlugins: ParserPluginList;
-  };
-  let babelConfigGTS: {
-    plugins: PluginItem[];
-    presets: PluginItem[];
-    parserPlugins: ParserPluginList;
-  };
+  // Compile pipeline (built once `configResolved` has located the template
+  // compiler so the engine sees the right `compiler` / `compilerPath`).
+  let compiler: NodeCompiler | undefined;
 
-  // Prefer a preloaded compiler when present (fast path, no async resolve).
-  // Otherwise hand a path off to babel-plugin-ember-template-compilation —
-  // when neither `compiler` nor `compilerPath` is provided it will try the
-  // Ember 7+ ESM path first and fall back to the legacy CJS bundle.
-  function getTemplateCompilationOpts(): Record<string, unknown> {
-    if (compilerObj) return { compiler: compilerObj };
-    if (resolvedCompilerPath) return { compilerPath: resolvedCompilerPath };
-    return {};
-  }
-
-  function buildBabelConfigs() {
-    const baseParserPlugins: ParserPluginList = [
-      'classProperties',
-      'classPrivateProperties',
-      'classPrivateMethods',
-    ];
-
-    // Normalize `babelPlugins` (array | { before, after }) into ordered slots
-    // around the built-ins.
-    let userBefore: PluginItem[] = [];
-    let userAfter: PluginItem[] = [];
-    if (Array.isArray(options.babelPlugins)) {
-      userAfter = options.babelPlugins;
-    } else if (options.babelPlugins) {
-      userBefore = options.babelPlugins.before ?? [];
-      userAfter = options.babelPlugins.after ?? [];
-    }
-
-    const basePlugins: PluginItem[] = [
-      ...userBefore,
-      [templateCompilation as PluginItem, getTemplateCompilationOpts()],
-      [
-        'module:decorator-transforms',
-        { runtime: { import: 'decorator-transforms/runtime' } },
-      ],
-      ...userAfter,
-    ];
-
-    const presets: PluginItem[] = [...(options.babelPresets ?? [])];
-    const userParserPlugins = options.parserPlugins ?? [];
-
-    babelConfigGJS = {
-      plugins: basePlugins,
-      presets,
-      parserPlugins: [...baseParserPlugins, ...userParserPlugins],
-    };
-
-    babelConfigGTS = {
-      plugins: [
-        ...basePlugins,
-        [
-          '@babel/plugin-transform-typescript',
-          {
-            allExtensions: true,
-            onlyRemoveTypeImports: true,
-            allowDeclareFields: true,
-          },
-        ],
-      ],
-      presets,
-      parserPlugins: [...baseParserPlugins, 'typescript', ...userParserPlugins],
-    };
+  function buildCompiler() {
+    compiler = createNodeCompiler({
+      templateCompiler: {
+        compiler: compilerObj,
+        compilerPath: resolvedCompilerPath,
+      },
+      babelPlugins: options.babelPlugins,
+      babelPresets: options.babelPresets,
+      parserPlugins: options.parserPlugins,
+    });
   }
 
   /**
@@ -471,7 +386,7 @@ export default function vitePluginEmber(
         // not installed
       }
 
-      buildBabelConfigs();
+      buildCompiler();
     },
 
     /* ─── serve virtual modules before VitePress catches them ─────── */
@@ -507,7 +422,7 @@ export default function vitePluginEmber(
       if (id.startsWith('\0')) return null;
 
       // Shim @embroider/macros with runtime implementations
-      if (id === '@embroider/macros') return EMBROIDER_MACROS_ID;
+      if (id === '@embroider/macros') return EMBROIDER_MACROS_VIRTUAL_ID;
 
       // Resolve decorator-transforms runtime (pre-cached ESM path)
       if (id === 'decorator-transforms/runtime') {
@@ -538,7 +453,8 @@ export default function vitePluginEmber(
 
     /* ─── load virtual module source from registry ────────────────── */
     load(id) {
-      if (id === EMBROIDER_MACROS_ID) return EMBROIDER_MACROS_CODE;
+      if (id === EMBROIDER_MACROS_VIRTUAL_ID)
+        return EMBROIDER_MACROS_SHIM_SOURCE;
       if (!id.startsWith(PUBLIC_PREFIX)) return null;
       return demoRegistry.get(id) ?? null;
     },
@@ -570,6 +486,8 @@ export default function vitePluginEmber(
 
     /* ─── transform .gjs / .gts / V2-addon .js files ────────────── */
     async transform(code, id) {
+      if (!compiler) return null;
+
       // Skip ?raw imports — let Vite serve the original source text
       if (id.includes('?raw') || id.includes('&raw')) return null;
 
@@ -585,54 +503,29 @@ export default function vitePluginEmber(
       // cheap string check and run only the template-compilation
       // Babel plugin (no content-tag or decorator transforms needed).
       if (isJS && code.includes('precompileTemplate')) {
-        const result = await transformAsync(code, {
+        const result = await compiler.compile(code, {
           filename: bareId,
-          babelrc: false,
-          configFile: false,
-          plugins: [
-            [templateCompilation as PluginItem, getTemplateCompilationOpts()],
-          ],
-          parserOpts: { sourceType: 'module' },
-          sourceMaps: true,
+          kind: 'precompiled-template',
         });
-        if (!result?.code) return null;
+        if (!result) return null;
         return { code: result.code, map: result.map as Rollup.SourceMapInput };
       }
 
       if (!isGJS && !isGTS) return null;
 
-      // ── Step 1: content-tag preprocessing ──
-      let preprocessed: string;
       try {
-        const result = preprocessor.process(code, { filename: bareId }) as
-          | string
-          | { code: string };
-        preprocessed = typeof result === 'string' ? result : result.code;
+        const result = await compiler.compile(code, {
+          filename: bareId,
+          kind: isGTS ? 'gts' : 'gjs',
+        });
+        if (!result) return null;
+        return { code: result.code, map: result.map as Rollup.SourceMapInput };
       } catch (err) {
         this.error(
-          `[vite-plugin-ember] content-tag failed for ${bareId}: ${errorMessage(err)}`,
+          `[vite-plugin-ember] compile failed for ${bareId}: ${errorMessage(err)}`,
         );
         return null;
       }
-
-      // ── Step 2: Babel (template compilation + decorators + optional TS) ──
-      const cfg = isGTS ? babelConfigGTS : babelConfigGJS;
-
-      const result = await transformAsync(preprocessed, {
-        filename: bareId,
-        babelrc: false,
-        configFile: false,
-        plugins: cfg.plugins,
-        presets: cfg.presets,
-        parserOpts: {
-          sourceType: 'module',
-          plugins: cfg.parserPlugins,
-        },
-        sourceMaps: true,
-      });
-
-      if (!result?.code) return null;
-      return { code: result.code, map: result.map as Rollup.SourceMapInput };
     },
   } satisfies Plugin;
 }

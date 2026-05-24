@@ -76,7 +76,7 @@ importers:
         specifier: ^8.0.14
         version: 8.0.14(@types/node@25.9.1)
 
-  vite-plugin-ember:
+  ember-live-compiler:
     dependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -93,6 +93,43 @@ importers:
       decorator-transforms:
         specifier: ^2.3.2
         version: 2.3.2(@babel/core@7.29.0)
+    devDependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.4.0)
+      '@types/babel__core':
+        specifier: ^7.20.5
+        version: 7.20.5
+      '@types/node':
+        specifier: ^25.9.1
+        version: 25.9.1
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
+      eslint:
+        specifier: ^10.4.0
+        version: 10.4.0
+      eslint-config-prettier:
+        specifier: ^10.1.8
+        version: 10.1.8(eslint@10.4.0)
+      globals:
+        specifier: ^17.6.0
+        version: 17.6.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      typescript-eslint:
+        specifier: ^8.59.4
+        version: 8.59.4(eslint@10.4.0)(typescript@6.0.3)
+
+  vite-plugin-ember:
+    dependencies:
+      decorator-transforms:
+        specifier: ^2.3.2
+        version: 2.3.2(@babel/core@7.29.0)
+      ember-live-compiler:
+        specifier: workspace:*
+        version: link:../ember-live-compiler
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
