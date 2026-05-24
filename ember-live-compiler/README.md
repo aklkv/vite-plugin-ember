@@ -33,11 +33,11 @@ call `render()`, since it dynamically imports `@ember/renderer`.
 
 ## Subpath exports
 
-| Import                         | Environment   | Purpose                                                        |
-| ------------------------------ | ------------- | -------------------------------------------------------------- |
-| `ember-live-compiler`          | Node          | Build-time `createNodeCompiler()` — Babel + content-tag.       |
-| `ember-live-compiler/runtime`  | Browser       | `render()` + `createOwner()` for mounting compiled components. |
-| `ember-live-compiler/resolver` | Node, Browser | Pure helpers for resolving `@ember/*` / `@glimmer/*`.          |
+| Import                         | Environment   | Purpose                                                                                  |
+| ------------------------------ | ------------- | ---------------------------------------------------------------------------------------- |
+| `ember-live-compiler`          | Node          | Build-time `createNodeCompiler()` — Babel + content-tag.                                 |
+| `ember-live-compiler/runtime`  | Browser       | `createBrowserCompiler()` + `render()` + `createOwner()` — compile and mount in-browser. |
+| `ember-live-compiler/resolver` | Node, Browser | Pure helpers for resolving `@ember/*` / `@glimmer/*`.                                    |
 
 ## Node — build-time compile
 
@@ -84,6 +84,44 @@ call it don't pay the import cost. The host bundler must be able to resolve
 `ssr.noExternal` rule already handle this; equivalent wiring is needed for
 other bundlers.
 
+## Browser — compile
+
+```ts
+import { createBrowserCompiler } from 'ember-live-compiler/runtime';
+
+const compiler = createBrowserCompiler({
+  // Required in real browsers — the babel plugin can't resolve ember-source
+  // from disk. Pass a pre-loaded compiler module.
+  templateCompiler: { compiler: await import('@ember/template-compiler') },
+});
+
+const { code, map } = await compiler.compile(source, {
+  filename: 'inline.gts',
+  kind: 'gts', // 'gjs' | 'gts' | 'precompiled-template'
+  sourceMaps: true,
+});
+
+// Feed `code` into a blob-URL / dynamic import / `Function(...)` and then
+// `render()` the resulting module.
+```
+
+Mirrors the Node pipeline (content-tag → Babel with
+`babel-plugin-ember-template-compilation` + `decorator-transforms` + optional
+`@babel/plugin-transform-typescript`) but runs through `@babel/standalone` so
+it can execute in a worker or on the main thread. Every dependency
+(`@babel/standalone`, `content-tag`, the babel plugins, the TS transform) is
+**lazy-imported on first compile**, so apps that only use `render` /
+`createOwner` pay no extra cost.
+
+Consumer checklist:
+
+- Add `@babel/standalone` to your app (declared as an **optional** peer here).
+- Ensure your bundler honors `content-tag`'s `browser` export condition (Vite,
+  Rollup, webpack 5, esbuild all do by default) — that picks the wasm bundle
+  instead of the Node native binding.
+- Pre-load `@ember/template-compiler` from your host app and pass it via
+  `templateCompiler.compiler`. (`compilerPath` is Node-only.)
+
 ## Resolver helpers
 
 For bundler authors who need to wire up `@ember/*` resolution themselves:
@@ -101,12 +139,11 @@ Pure, bundler-free. No I/O, no Babel, safe to import from anywhere.
 
 ## Status
 
-`0.1.x` — public but pre-stable. The Node compile pipeline and runtime
-`render()` are exercised in production by `vite-plugin-ember`'s VitePress
-docs. Planned for upcoming minors:
+`0.2.x` — public but pre-stable. The Node compile pipeline, browser
+`createBrowserCompiler()`, and runtime `render()` are all exercised by the
+20-test suite (node `--test`) running against ember-source LTS + latest in
+CI. Planned for upcoming minors:
 
-- `compile()` in `runtime` (lazy `@babel/standalone` + content-tag wasm) for
-  fully in-browser source → component.
 - Stable 1.0 once at least one additional bundler integration ships against
   the engine.
 
