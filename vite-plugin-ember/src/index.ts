@@ -252,6 +252,13 @@ export default function vitePluginEmber(
      * native ESM, is enormous, and pre-bundling it would just duplicate
      * everything our `resolveId` already serves.
      *
+     * Likewise, `content-tag` (used by `ember-live-compiler`'s runtime
+     * compile pipeline) ships a wasm bundle whose browser entry uses
+     * top-level await. Vite's default esbuild dep-optimizer targets
+     * safari14, which rejects TLA, so excluding it lets Vite serve the
+     * package as-is to the (TLA-capable) dev browser instead of trying
+     * to pre-bundle it.
+     *
      * SSR has the mirror-image problem. By default Vite externalizes every
      * npm dep for SSR, handing import resolution off to Node's native ESM
      * loader. That loader has no plugin pipeline, so when something in the
@@ -265,7 +272,7 @@ export default function vitePluginEmber(
     config() {
       return {
         optimizeDeps: {
-          exclude: ['ember-source'],
+          exclude: ['ember-source', 'content-tag'],
           esbuildOptions: {
             plugins: [
               {
