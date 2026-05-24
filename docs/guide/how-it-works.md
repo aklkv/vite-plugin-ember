@@ -100,3 +100,15 @@ Ember's ESM packages call functions like `isDevelopingApp()` and `macroCondition
 ### Why `content-tag` + Babel (two stages)?
 
 Ember's `<template>` tag syntax is not valid JavaScript — it needs a custom preprocessor (`content-tag`) to convert it first. Then Babel handles template compilation to wire format and decorator transforms. This two-stage approach matches how the Ember ecosystem processes `.gjs`/`.gts` files.
+
+## Beyond VitePress: the engine
+
+The build-time pipeline and the browser-side renderer live in [`ember-live-compiler`](https://www.npmjs.com/package/ember-live-compiler), a separate bundler-agnostic package that `vite-plugin-ember` depends on. Other doc tools (Docusaurus, Storybook, Backstage TechDocs, kolay) can share the same engine instead of reimplementing it.
+
+Three subpath exports cover the typical needs:
+
+- **`ember-live-compiler`** — Node-only `createNodeCompiler()`. Wrap it in any bundler plugin to get `.gjs` / `.gts` support.
+- **`ember-live-compiler/runtime`** — Browser-safe `render()`, `createOwner()`, and **`createBrowserCompiler()`** for fully in-browser source → component (lazy `@babel/standalone` + `content-tag` wasm). Useful for live REPLs and playgrounds where there is no build step.
+- **`ember-live-compiler/resolver`** — Pure `@ember/*` / `@glimmer/*` helpers with no I/O, safe to import anywhere.
+
+See the engine [README](https://www.npmjs.com/package/ember-live-compiler) for the full API.
