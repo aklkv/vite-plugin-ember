@@ -1,5 +1,21 @@
 # Changelog
 
+## Release (2026-05-24)
+
+* ember-live-compiler 0.2.0 (minor)
+* vite-plugin-ember 0.7.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-live-compiler`, `vite-plugin-ember`
+  * [#75](https://github.com/aklkv/vite-plugin-ember/pull/75) feat(ember-live-compiler): extract bundler-agnostic compile engine (Phase 0) ([@aklkv](https://github.com/aklkv))
+
+#### :house: Internal
+* `ember-live-compiler`
+  * [#77](https://github.com/aklkv/vite-plugin-ember/pull/77) feat(ember-live-compiler): publish as 0.1.0 (un-private) ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-05-22)
 
 * vite-plugin-ember 0.6.0 (minor)

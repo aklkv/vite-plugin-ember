@@ -1,11 +1,32 @@
 {
   "solution": {
-    "vite-plugin-ember": {
+    "ember-live-compiler": {
       "impact": "minor",
-      "oldVersion": "0.5.5",
-      "newVersion": "0.6.0",
+      "oldVersion": "0.1.0",
+      "newVersion": "0.2.0",
       "tagName": "latest",
       "constraints": [
+        {
+          "impact": "minor",
+          "reason": "Appears in changelog section :rocket: Enhancement"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
+        }
+      ],
+      "pkgJSONPath": "./ember-live-compiler/package.json"
+    },
+    "vite-plugin-ember": {
+      "impact": "minor",
+      "oldVersion": "0.6.0",
+      "newVersion": "0.7.0",
+      "tagName": "latest",
+      "constraints": [
+        {
+          "impact": "patch",
+          "reason": "Has dependency `workspace:*` on ember-live-compiler"
+        },
         {
           "impact": "minor",
           "reason": "Appears in changelog section :rocket: Enhancement"
@@ -14,5 +35,5 @@
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-05-22)\n\n* vite-plugin-ember 0.6.0 (minor)\n\n#### :rocket: Enhancement\n* `vite-plugin-ember`\n  * [#73](https://github.com/aklkv/vite-plugin-ember/pull/73) feat(babel): extensible Babel pipeline (presets, parser plugins, ordering) ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-05-24)\n\n* ember-live-compiler 0.2.0 (minor)\n* vite-plugin-ember 0.7.0 (minor)\n\n#### :rocket: Enhancement\n* `ember-live-compiler`, `vite-plugin-ember`\n  * [#75](https://github.com/aklkv/vite-plugin-ember/pull/75) feat(ember-live-compiler): extract bundler-agnostic compile engine (Phase 0) ([@aklkv](https://github.com/aklkv))\n\n#### :house: Internal\n* `ember-live-compiler`\n  * [#77](https://github.com/aklkv/vite-plugin-ember/pull/77) feat(ember-live-compiler): publish as 0.1.0 (un-private) ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }
