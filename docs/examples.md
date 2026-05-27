@@ -49,7 +49,6 @@ A class-based component with `@tracked` state and the `on` modifier:
 ```gjs live preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
 
 export default class Toggle extends Component {
   @tracked isOn = false;
@@ -81,7 +80,6 @@ A more complex component showing input binding, multiple actions, and preview mo
 ```gjs live preview
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
 
 export default class StepCounter extends Component {
   @tracked step = 1;

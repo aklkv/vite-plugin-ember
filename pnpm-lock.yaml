@@ -24,8 +24,8 @@ importers:
         specifier: ^4.3.0
         version: 4.3.0
       ember-source:
-        specifier: ^7.0.0
-        version: 7.0.0(@glimmer/component@2.1.1)
+        specifier: ^7.1.0-beta.1
+        version: 7.1.0-beta.1(@glimmer/component@2.1.1)
       vite-plugin-ember:
         specifier: workspace:*
         version: link:../vite-plugin-ember
@@ -41,7 +41,7 @@ importers:
         version: 10.0.1(eslint@10.4.0)
       '@glint/ember-tsc':
         specifier: ^1.7.5
-        version: 1.7.5(ember-source@7.0.0(@glimmer/component@2.1.1))(typescript@6.0.3)
+        version: 1.7.5(ember-source@7.1.0-beta.1(@glimmer/component@2.1.1))(typescript@6.0.3)
       '@glint/template':
         specifier: ^1.7.7
         version: 1.7.7
@@ -156,8 +156,8 @@ importers:
         specifier: ^9.2.1
         version: 9.2.1
       ember-source:
-        specifier: 7.0.0
-        version: 7.0.0(@glimmer/component@2.1.1)
+        specifier: 7.1.0-beta.1
+        version: 7.1.0-beta.1(@glimmer/component@2.1.1)
       eslint:
         specifier: ^10.4.0
         version: 10.4.0
@@ -2439,8 +2439,8 @@ packages:
     resolution: {integrity: sha512-89oVHVJwmLDvGvAUWgS87KpBoRhy3aZ6U0Ql6HOmU4TrPkyaa8pM0W81wj9cIwjYprcQtN9EwzZMHnq46+oUyw==}
     engines: {node: 8.* || 10.* || >= 12}
 
-  ember-source@7.0.0:
-    resolution: {integrity: sha512-30dv3f4jMKAFhUmyjbb5V8B+hhkhwn2Y+GbwIxbb4SuEXtJf0uPr1Ppp1g5s6LzrxU5zPlCXh2bfN3LCwqqGog==}
+  ember-source@7.1.0-beta.1:
+    resolution: {integrity: sha512-G4fEzISgB8rK9fqvmSbm0PNwrEsC/KQduC/DKC9Lhl7+kNqv9ldCeZM5soe5rUXvlCK2mvCQHVqbYcq1j2peZg==}
     engines: {node: '>= 20.19'}
     peerDependencies:
       '@glimmer/component': '>= 1.1.2'
@@ -5538,7 +5538,7 @@ snapshots:
     dependencies:
       '@glimmer/interfaces': 0.94.6
 
-  '@glint/ember-tsc@1.7.5(ember-source@7.0.0(@glimmer/component@2.1.1))(typescript@6.0.3)':
+  '@glint/ember-tsc@1.7.5(ember-source@7.1.0-beta.1(@glimmer/component@2.1.1))(typescript@6.0.3)':
     dependencies:
       '@glimmer/syntax': 0.95.0
       '@glint/template': 1.7.7
@@ -5558,7 +5558,7 @@ snapshots:
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
     optionalDependencies:
-      ember-source: 7.0.0(@glimmer/component@2.1.1)
+      ember-source: 7.1.0-beta.1(@glimmer/component@2.1.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -6958,7 +6958,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  ember-source@7.0.0(@glimmer/component@2.1.1):
+  ember-source@7.1.0-beta.1(@glimmer/component@2.1.1):
     dependencies:
       '@babel/core': 7.29.0
       '@embroider/addon-shim': 1.10.2
