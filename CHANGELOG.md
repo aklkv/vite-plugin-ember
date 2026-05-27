@@ -1,5 +1,28 @@
 # Changelog
 
+## Release (2026-05-27)
+
+* ember-live-compiler 0.2.3 (patch)
+* vite-plugin-ember 0.7.3 (patch)
+
+#### :bug: Bug Fix
+* `vite-plugin-ember`
+  * [#88](https://github.com/aklkv/vite-plugin-ember/pull/88) fix(vite-plugin-ember): exclude content-tag from optimizeDeps ([@aklkv](https://github.com/aklkv))
+
+#### :memo: Documentation
+* `ember-live-compiler`
+  * [#87](https://github.com/aklkv/vite-plugin-ember/pull/87) docs: showcase new browser createBrowserCompiler() API ([@aklkv](https://github.com/aklkv))
+
+#### :house: Internal
+* `ember-live-compiler`
+  * [#86](https://github.com/aklkv/vite-plugin-ember/pull/86) feat(ember-live-compiler): browser createBrowserCompiler() ([@aklkv](https://github.com/aklkv))
+  * [#83](https://github.com/aklkv/vite-plugin-ember/pull/83) feat(ember-live-compiler): add test harness using node:test ([@aklkv](https://github.com/aklkv))
+* Other
+  * [#85](https://github.com/aklkv/vite-plugin-ember/pull/85) ci: smoke-test engine against ember-source LTS and latest ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-05-24)
 
 * ember-live-compiler 0.2.2 (patch)
