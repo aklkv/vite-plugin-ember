@@ -3,7 +3,6 @@ import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { fn } from '@ember/helper';
 
-// @ts-expect-error: we still need this
 const eq = (a: unknown, b: unknown) => a === b;
 
 interface TabPanelSignature {
