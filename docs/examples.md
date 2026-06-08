@@ -12,8 +12,6 @@ A regular code fence without `live` — syntax-highlighted only, not rendered:
 </template>
 ```
 
----
-
 ## Template-only component
 
 The simplest live demo — a `<template>` tag with no class:
@@ -26,8 +24,6 @@ The simplest live demo — a `<template>` tag with no class:
 </template>
 ```
 
----
-
 ## Live + Preview
 
 Adding `preview` shows both the rendered output and the source code:
@@ -39,8 +35,6 @@ Adding `preview` shows both the rendered output and the source code:
   </p>
 </template>
 ```
-
----
 
 ## Toggle button
 
@@ -71,8 +65,6 @@ export default class Toggle extends Component {
   </template>
 }
 ```
-
----
 
 ## Step counter (with preview)
 
@@ -135,8 +127,6 @@ export default class StepCounter extends Component {
   </template>
 }
 ```
-
----
 
 ## File-based demos
 
