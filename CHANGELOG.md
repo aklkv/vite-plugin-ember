@@ -1,5 +1,17 @@
 # Changelog
 
+## Release (2026-07-01)
+
+* ember-live-compiler 0.2.4 (patch)
+* vite-plugin-ember 0.8.1 (patch)
+
+#### :house: Internal
+* `ember-live-compiler`, `vite-plugin-ember`
+  * [#60](https://github.com/aklkv/vite-plugin-ember/pull/60) chore: bump ember 7.1 and drop expelicit imports for new builtin helpers/modifers ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-06-08)
 
 * ember-live-compiler 0.2.3 (patch)
