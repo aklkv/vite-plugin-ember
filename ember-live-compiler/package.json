@@ -64,7 +64,7 @@
     "@babel/plugin-transform-typescript": "^7.29.7",
     "babel-plugin-ember-template-compilation": "^4.0.0",
     "content-tag": "^4.2.0",
-    "decorator-transforms": "^2.3.2"
+    "decorator-transforms": "^2.4.0"
   },
   "devDependencies": {
     "@babel/standalone": "^7.29.7",
@@ -73,12 +73,12 @@
     "@types/babel__standalone": "^7.1.9",
     "@types/node": "^25.9.3",
     "concurrently": "^10.0.3",
-    "ember-source": "^7.0.0",
-    "eslint": "^10.5.0",
+    "ember-source": "^7.1.0",
+    "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.6.0",
+    "globals": "^17.7.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.1"
+    "typescript-eslint": "^8.62.1"
   },
   "peerDependencies": {
     "@babel/standalone": "^7.29.7",
