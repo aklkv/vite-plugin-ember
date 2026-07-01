@@ -8,8 +8,12 @@ import {
   EMBER_PACKAGE_PREFIXES,
 } from 'ember-live-compiler/resolver';
 
-import type { NodeCompiler } from 'ember-live-compiler';
-import type { ParserOptions, PluginItem } from '@babel/core';
+import type {
+  NodeCompiler,
+  ParserOptions,
+  PluginItem,
+  PresetItem,
+} from 'ember-live-compiler';
 import type { Plugin, Rollup } from 'vite';
 
 // ── Shared demo registry (populated by ember-fence, read by load hook) ──
@@ -103,7 +107,7 @@ export interface VitePluginEmberOptions {
    * })
    * ```
    */
-  babelPresets?: PluginItem[];
+  babelPresets?: PresetItem[];
 
   /**
    * Additional Babel parser plugins (forwarded to `parserOpts.plugins`).

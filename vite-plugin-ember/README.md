@@ -79,7 +79,6 @@ In any markdown file:
 ```gjs live
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { on } from '@ember/modifier';
 
 export default class Counter extends Component {
   @tracked count = 0;
@@ -94,6 +93,8 @@ export default class Counter extends Component {
 }
 ```
 ````
+
+> **Note:** With `ember-source` ≥ 7.1, built-in helpers (`fn`, `eq`, `gt`, …) and the `on` modifier are auto-imported in strict-mode templates — no explicit `import { on } from '@ember/modifier'` is needed. On older Ember versions, import them explicitly from `@ember/helper` / `@ember/modifier`.
 
 Start the dev server with `pnpm dev` and see it live.
 

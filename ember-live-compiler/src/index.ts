@@ -21,3 +21,4 @@ export type {
   CompileResult,
 } from './compile.node.js';
 export type { EmberOwner } from './create-owner.js';
+export type { PluginItem, PresetItem, ParserOptions } from './compile.node.js';

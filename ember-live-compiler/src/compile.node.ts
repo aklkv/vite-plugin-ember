@@ -29,7 +29,16 @@ import templateCompilation from 'babel-plugin-ember-template-compilation';
 import { transformAsync } from '@babel/core';
 import { Preprocessor } from 'content-tag';
 
-import type { ParserOptions, PluginItem } from '@babel/core';
+import type {
+  InputOptions,
+  PluginItem,
+  PluginTarget,
+  PresetItem,
+} from '@babel/core';
+
+// `@babel/core` v8 no longer re-exports `ParserOptions`; derive it from the
+// (exported) `InputOptions` shape instead.
+type ParserOptions = NonNullable<InputOptions['parserOpts']>;
 
 type ParserPluginList = NonNullable<ParserOptions['plugins']>;
 
@@ -77,13 +86,11 @@ export interface NodeCompilerOptions {
   babelPlugins?: PluginItem[] | { before?: PluginItem[]; after?: PluginItem[] };
 
   /** Additional Babel presets (forwarded as-is). */
-  babelPresets?: PluginItem[];
+  babelPresets?: PresetItem[];
 
   /**
    * Additional Babel parser plugins (forwarded to `parserOpts.plugins`).
-   * The built-ins (`classProperties`, `classPrivateProperties`,
-   * `classPrivateMethods`, plus `typescript` for `.gts`) are always
-   * included; these are appended.
+   * `typescript` is always included for `.gts`; these are appended.
    */
   parserPlugins?: ParserPluginList;
 }
@@ -120,11 +127,11 @@ export interface NodeCompiler {
   ): Promise<CompileResult | null>;
 }
 
-const BASE_PARSER_PLUGINS: ParserPluginList = [
-  'classProperties',
-  'classPrivateProperties',
-  'classPrivateMethods',
-];
+// In Babel 8 the class-features parser plugins (`classProperties`,
+// `classPrivateProperties`, `classPrivateMethods`) are enabled by default and
+// were removed from the parser, so `typescript` (for `.gts`) is now the only
+// built-in parser plugin.
+const BASE_PARSER_PLUGINS: ParserPluginList = [];
 
 /**
  * Build the shared Babel configs (one for `.gjs`, one for `.gts`,
@@ -156,7 +163,7 @@ export function createNodeCompiler(
 
   const basePlugins: PluginItem[] = [
     ...userBefore,
-    [templateCompilation as PluginItem, templateCompilationOpts],
+    [templateCompilation as PluginTarget, templateCompilationOpts],
     [
       'module:decorator-transforms',
       { runtime: { import: 'decorator-transforms/runtime' } },
@@ -164,7 +171,7 @@ export function createNodeCompiler(
     ...userAfter,
   ];
 
-  const presets: PluginItem[] = [...(options.babelPresets ?? [])];
+  const presets: PresetItem[] = [...(options.babelPresets ?? [])];
   const userParserPlugins = options.parserPlugins ?? [];
 
   const gjsConfig = {
@@ -195,7 +202,7 @@ export function createNodeCompiler(
 
   // V2-addon `.js` with precompileTemplate calls: template-compilation only.
   const precompiledTemplatePlugins: PluginItem[] = [
-    [templateCompilation as PluginItem, templateCompilationOpts],
+    [templateCompilation as PluginTarget, templateCompilationOpts],
   ];
 
   async function compile(
@@ -246,4 +253,5 @@ export function createNodeCompiler(
   return { compile };
 }
 
-export type { PluginItem, ParserOptions } from '@babel/core';
+export type { PluginItem, PresetItem } from '@babel/core';
+export type { ParserOptions };

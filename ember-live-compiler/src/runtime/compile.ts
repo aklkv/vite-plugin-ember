@@ -43,7 +43,7 @@
  * ```
  */
 
-import type { PluginItem } from '@babel/core';
+import type { PluginItem, PluginTarget, PresetItem } from '@babel/core';
 
 /** @see {@link import('../compile.node.js').CompileKind} */
 export type CompileKind = 'gjs' | 'gts' | 'precompiled-template';
@@ -63,7 +63,8 @@ export interface BrowserCompilerOptions {
   babelPlugins?: PluginItem[] | { before?: PluginItem[]; after?: PluginItem[] };
 
   /** Extra Babel presets (forwarded as-is). */
-  babelPresets?: PluginItem[];
+  /** Additional Babel presets (forwarded as-is). */
+  babelPresets?: PresetItem[];
 }
 
 export interface BrowserCompileFileOptions {
@@ -95,7 +96,7 @@ interface BabelStandalone {
       babelrc?: boolean;
       configFile?: boolean;
       plugins?: PluginItem[];
-      presets?: PluginItem[];
+      presets?: PresetItem[];
       parserOpts?: { sourceType?: 'module' | 'script'; plugins?: unknown[] };
       sourceMaps?: boolean;
     },
@@ -121,8 +122,7 @@ function loadContentTag(): Promise<ContentTagModule> {
 }
 
 let templateCompilationPromise:
-  | Promise<typeof import('babel-plugin-ember-template-compilation')>
-  | undefined;
+  Promise<typeof import('babel-plugin-ember-template-compilation')> | undefined;
 function loadTemplateCompilation() {
   templateCompilationPromise ??=
     import('babel-plugin-ember-template-compilation');
@@ -130,8 +130,7 @@ function loadTemplateCompilation() {
 }
 
 let decoratorTransformsPromise:
-  | Promise<typeof import('decorator-transforms')>
-  | undefined;
+  Promise<typeof import('decorator-transforms')> | undefined;
 function loadDecoratorTransforms() {
   decoratorTransformsPromise ??= import('decorator-transforms');
   return decoratorTransformsPromise;
@@ -147,11 +146,9 @@ function loadTsPlugin(): Promise<unknown> {
   return tsPluginPromise;
 }
 
-const BASE_PARSER_PLUGINS = [
-  'classProperties',
-  'classPrivateProperties',
-  'classPrivateMethods',
-] as const;
+// In Babel 8 the class-features parser plugins are enabled by default and were
+// removed from the parser, so `typescript` (for `.gts`) is the only built-in.
+const BASE_PARSER_PLUGINS = [] as const;
 
 /**
  * Build a stateful browser compiler. Heavy work (deciding plugin order) is
@@ -174,7 +171,7 @@ export function createBrowserCompiler(
     userAfter = options.babelPlugins.after ?? [];
   }
 
-  const presets: PluginItem[] = [...(options.babelPresets ?? [])];
+  const presets: PresetItem[] = [...(options.babelPresets ?? [])];
 
   async function buildPlugins(kind: CompileKind): Promise<PluginItem[]> {
     const [templateCompilation, decoratorTransforms] = await Promise.all([
@@ -183,11 +180,11 @@ export function createBrowserCompiler(
     ]);
 
     const tc = (templateCompilation.default ??
-      templateCompilation) as PluginItem;
+      templateCompilation) as PluginTarget;
     // `decorator-transforms` ships its babel plugin as the default export of
     // its main entry point.
     const dt = ((decoratorTransforms as { default?: unknown }).default ??
-      decoratorTransforms) as PluginItem;
+      decoratorTransforms) as PluginTarget;
 
     if (kind === 'precompiled-template') {
       return [[tc, templateCompilationOpts]];
@@ -228,7 +225,7 @@ export function createBrowserCompiler(
     if (opts.kind === 'gts') {
       const tsPluginMod = await loadTsPlugin();
       const tsPlugin = ((tsPluginMod as { default?: unknown }).default ??
-        tsPluginMod) as PluginItem;
+        tsPluginMod) as PluginTarget;
       allPlugins = [
         ...plugins,
         [
