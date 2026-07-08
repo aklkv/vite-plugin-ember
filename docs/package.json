@@ -28,17 +28,17 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@glint/ember-tsc": "^1.8.6",
+    "@glint/ember-tsc": "^1.8.11",
     "@glint/template": "^1.7.8",
     "concurrently": "^10.0.3",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-ember": "^13.4.0",
+    "eslint-plugin-ember": "^13.4.1",
     "globals": "^17.7.0",
-    "markdownlint-cli2": "^0.22.1",
-    "prettier-plugin-ember-template-tag": "^2.1.6",
+    "markdownlint-cli2": "^0.23.0",
+    "prettier-plugin-ember-template-tag": "^2.1.7",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1",
-    "vite": "^8.1.2"
+    "typescript-eslint": "^8.63.0",
+    "vite": "^8.1.3"
   }
 }

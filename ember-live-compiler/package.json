@@ -69,14 +69,14 @@
   "devDependencies": {
     "@babel/standalone": "^8.0.3",
     "@eslint/js": "^10.0.1",
-    "@types/node": "^26.0.1",
+    "@types/node": "^26.1.0",
     "concurrently": "^10.0.3",
     "ember-source": "^7.1.0",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.7.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1"
+    "typescript-eslint": "^8.63.0"
   },
   "peerDependencies": {
     "@babel/standalone": "^7.29.7",

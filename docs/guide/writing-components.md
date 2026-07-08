@@ -97,7 +97,10 @@ export default class Greeter extends Component<Signature> {
   @tracked name = 'world';
 
   <template>
-    <p>Hello, {{this.name}}!</p>
+    <p>
+      Hello,
+      {{this.name}}!
+    </p>
   </template>
 }
 ```
