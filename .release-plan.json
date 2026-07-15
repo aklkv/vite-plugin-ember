@@ -1,35 +1,11 @@
 {
   "solution": {
     "ember-live-compiler": {
-      "impact": "patch",
-      "oldVersion": "0.2.3",
-      "newVersion": "0.2.4",
-      "tagName": "latest",
-      "constraints": [
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
-        }
-      ],
-      "pkgJSONPath": "./ember-live-compiler/package.json"
+      "oldVersion": "0.2.4"
     },
     "vite-plugin-ember": {
-      "impact": "patch",
-      "oldVersion": "0.8.0",
-      "newVersion": "0.8.1",
-      "tagName": "latest",
-      "constraints": [
-        {
-          "impact": "patch",
-          "reason": "Has dependency `workspace:*` on ember-live-compiler"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
-        }
-      ],
-      "pkgJSONPath": "./vite-plugin-ember/package.json"
+      "oldVersion": "0.8.1"
     }
   },
-  "description": "## Release (2026-07-01)\n\n* ember-live-compiler 0.2.4 (patch)\n* vite-plugin-ember 0.8.1 (patch)\n\n#### :house: Internal\n* `ember-live-compiler`, `vite-plugin-ember`\n  * [#60](https://github.com/aklkv/vite-plugin-ember/pull/60) chore: bump ember 7.1 and drop expelicit imports for new builtin helpers/modifers ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "\n\n\n\n"
 }
