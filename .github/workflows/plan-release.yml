@@ -46,6 +46,15 @@ jobs:
           GITHUB_AUTH: ${{ secrets.GITHUB_TOKEN }}
         id: explanation
 
+      # release-plan 0.20 writes package.json without a trailing newline,
+      # which then fails `prettier --check` in CI. Remove once
+      # https://github.com/release-plan/release-plan/pull/281 is released.
+      - name: Restore trailing newline in package.json files
+        run: |
+          for f in package.json */package.json; do
+            if [ -n "$(tail -c1 "$f")" ]; then echo >> "$f"; fi
+          done
+
       - uses: peter-evans/create-pull-request@v8
         name: Create Prepare Release PR
         with:
