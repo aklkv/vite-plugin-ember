@@ -3,8 +3,9 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { demoRegistry } from '../index.js';
 
-import type MarkdownIt from 'markdown-it';
+import type { MarkdownIt, RendererRule, StateCore } from 'markdown-it';
 import type { MarkdownItAsync } from 'markdown-it-async';
+import type { MarkdownRenderer } from 'vitepress';
 
 /**
  * Accepted markdown-it instance shape.
@@ -13,14 +14,12 @@ import type { MarkdownItAsync } from 'markdown-it-async';
  * `MarkdownItAsync` (see vuejs/vitepress#4507), whose `options.highlight`
  * may return `Promise<string>`. The two are structurally incompatible at
  * the `options.highlight` boundary, so accept the union here.
+ *
+ * Both are typed against markdown-it 14, which is not assignable to the
+ * markdown-it 15 `MarkdownIt` type, so also accept VitePress's own
+ * `MarkdownRenderer` (resolved from whichever VitePress is installed).
  */
-export type MarkdownItLike = MarkdownIt | MarkdownItAsync;
-
-/** Fence render rule – extracted from the MarkdownIt instance shape. */
-type RenderRule = NonNullable<MarkdownItLike['renderer']['rules']['fence']>;
-
-/** Core ruler state – extracted via Core.State constructor. */
-type StateCore = InstanceType<MarkdownItLike['core']['State']>;
+export type MarkdownItLike = MarkdownIt | MarkdownItAsync | MarkdownRenderer;
 
 function makeVirtualId(code: string, lang: 'gjs' | 'gts') {
   const hash = createHash('sha1').update(code).digest('hex').slice(0, 8);
@@ -38,7 +37,7 @@ function renderSourceBlock(
   src: string,
   srcDir: string,
   state: StateCore,
-  originalFence: RenderRule,
+  originalFence: RendererRule,
 ): string | null {
   const filePath = resolve(srcDir, src.replace(/^\//, ''));
   let source: string;
@@ -71,7 +70,11 @@ function renderSourceBlock(
 
 /** Markdown-it plugin: ```gjs live → <CodePreview /> */
 export function emberFence(md: MarkdownItLike, component = 'CodePreview') {
-  const originalFence = md.renderer.rules.fence!;
+  // VitePress and markdown-it-async are still typed against markdown-it 14,
+  // whose types clash with the ones bundled in markdown-it 15. The runtime API
+  // used here is the same in both, so work against the v15 types internally.
+  const { renderer, core } = md as MarkdownIt;
+  const originalFence = renderer.rules.fence!;
 
   // Pre-compile regex once per plugin instance.
   // Captures: (1) attrs before src, (2) src value, (3) attrs after src, (4) optional self-close slash
@@ -80,7 +83,7 @@ export function emberFence(md: MarkdownItLike, component = 'CodePreview') {
     'g',
   );
 
-  md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  renderer.rules.fence = (tokens, idx, options, env, self) => {
     const token = tokens[idx];
     const info = (token.info || '').trim();
     const [lang, ...flags] = info.split(/\s+/);
@@ -106,13 +109,13 @@ export function emberFence(md: MarkdownItLike, component = 'CodePreview') {
   //  1. Inject `:loader="() => import('…')"` so Vite can bundle the import.
   //  2. When `preview` is present on a self-closing tag, read the source file
   //     and embed a Shiki-highlighted code block as slot content.
-  md.core.ruler.push('ember-loader-transform', loaderTransform);
+  core.ruler.push('ember-loader-transform', loaderTransform);
 
   function loaderTransform(state: StateCore): void {
     // Compute srcDir once per markdown file
     const { env } = state;
     const srcDir =
-      env?.path && env?.relativePath
+      typeof env?.path === 'string' && typeof env.relativePath === 'string'
         ? env.path.slice(0, -env.relativePath.length)
         : null;
 
