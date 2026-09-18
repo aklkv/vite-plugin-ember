@@ -21,24 +21,24 @@
   "dependencies": {
     "@glimmer/component": "^2.1.1",
     "ember-modifier": "^4.3.0",
-    "ember-source": "^7.1.0",
+    "ember-source": "^7.3.0",
     "vite-plugin-ember": "workspace:*",
     "vitepress": "^1.6.4",
-    "vue": "^3.5.39"
+    "vue": "^3.5.42"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@glint/ember-tsc": "^1.8.12",
-    "@glint/template": "^1.7.8",
-    "concurrently": "^10.0.3",
-    "eslint": "^10.7.0",
+    "@glint/ember-tsc": "^1.11.4",
+    "@glint/template": "^1.9.0",
+    "concurrently": "^10.0.5",
+    "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-ember": "^13.4.1",
-    "globals": "^17.7.0",
-    "markdownlint-cli2": "^0.23.0",
-    "prettier-plugin-ember-template-tag": "^2.1.7",
+    "eslint-plugin-ember": "^13.5.0",
+    "globals": "^17.12.0",
+    "markdownlint-cli2": "^0.23.2",
+    "prettier-plugin-ember-template-tag": "^2.1.8",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.64.0",
-    "vite": "^8.1.4"
+    "typescript-eslint": "^8.70.0",
+    "vite": "^8.3.0"
   }
 }
