@@ -26,6 +26,8 @@
  */
 
 import templateCompilation from 'babel-plugin-ember-template-compilation';
+import typescriptPlugin from '@babel/plugin-transform-typescript';
+import decoratorTransforms from 'decorator-transforms';
 import { transformAsync } from '@babel/core';
 import { Preprocessor } from 'content-tag';
 
@@ -161,11 +163,16 @@ export function createNodeCompiler(
     userAfter = options.babelPlugins.after ?? [];
   }
 
+  // Built-in plugins are passed as imported functions, not by name: Babel
+  // resolves names from `cwd`, which can pick up a different (e.g. hoisted
+  // Babel 7) copy from the consumer's tree instead of our own dependency.
   const basePlugins: PluginItem[] = [
     ...userBefore,
     [templateCompilation as PluginTarget, templateCompilationOpts],
     [
-      'module:decorator-transforms',
+      // Its plugin is typed with a custom `State`, which Babel's generic
+      // `PluginTarget` doesn't accept.
+      decoratorTransforms as unknown as PluginTarget,
       { runtime: { import: 'decorator-transforms/runtime' } },
     ],
     ...userAfter,
@@ -184,7 +191,7 @@ export function createNodeCompiler(
     plugins: [
       ...basePlugins,
       [
-        '@babel/plugin-transform-typescript',
+        typescriptPlugin,
         {
           allExtensions: true,
           onlyRemoveTypeImports: true,
