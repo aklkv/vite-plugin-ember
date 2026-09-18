@@ -1,11 +1,21 @@
 import { defineConfig } from 'vitepress';
 import vitePluginEmber, { emberFence } from 'vite-plugin-ember';
 
+const base = process.env.BASE_URL ?? '/';
+
 export default defineConfig({
   title: 'Ember in VitePress',
   description: 'Render live Ember components inside VitePress documentation',
-  base: process.env.BASE_URL ?? '/',
+  base,
+  // `head` URLs are not rewritten with `base`, so prefix it here.
+  head: [
+    [
+      'link',
+      { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.svg` },
+    ],
+  ],
   themeConfig: {
+    logo: '/favicon.svg',
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'API', link: '/guide/plugin-api' },
