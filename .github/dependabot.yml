@@ -8,6 +8,16 @@ updates:
     labels:
       - 'dependencies'
       - 'internal'
+    # Actions are pinned to commit SHAs, so every release becomes an update;
+    # batch them like the npm updates below.
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+      major:
+        update-types:
+          - major
 
   - package-ecosystem: npm
     directory: /
