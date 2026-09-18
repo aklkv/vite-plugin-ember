@@ -1,5 +1,27 @@
 # Changelog
 
+## Release (2026-09-18)
+
+* ember-live-compiler 0.2.5 (patch)
+* vite-plugin-ember 0.8.2 (patch)
+
+#### :bug: Bug Fix
+* `ember-live-compiler`, `vite-plugin-ember`
+  * [#107](https://github.com/aklkv/vite-plugin-ember/pull/107) Upgrade dependencies, markdown-it 15 and pnpm 12 ([@aklkv](https://github.com/aklkv))
+
+#### :memo: Documentation
+* [#112](https://github.com/aklkv/vite-plugin-ember/pull/112) Add favicon and nav logo to docs ([@aklkv](https://github.com/aklkv))
+
+#### :house: Internal
+* Other
+  * [#111](https://github.com/aklkv/vite-plugin-ember/pull/111) Pin GitHub Actions to commit SHAs ([@aklkv](https://github.com/aklkv))
+  * [#110](https://github.com/aklkv/vite-plugin-ember/pull/110) Ignore TypeScript major updates in dependabot ([@aklkv](https://github.com/aklkv))
+* `ember-live-compiler`, `vite-plugin-ember`
+  * [#108](https://github.com/aklkv/vite-plugin-ember/pull/108) Declare prettier per package and fix Prepare Release lint failure ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-07-01)
 
 * ember-live-compiler 0.2.4 (patch)
