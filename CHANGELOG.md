@@ -1,5 +1,10 @@
 # Changelog
 
+
+
+
+
+
 ## Release (2026-09-18)
 
 * ember-live-compiler 0.2.5 (patch)
