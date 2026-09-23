@@ -60,22 +60,22 @@
     "test": "node --test --test-reporter=spec test/*.test.js"
   },
   "dependencies": {
-    "@babel/core": "^8.0.5",
-    "@babel/plugin-transform-typescript": "^8.0.5",
+    "@babel/core": "^8.0.6",
+    "@babel/plugin-transform-typescript": "^8.0.6",
     "babel-plugin-ember-template-compilation": "^4.0.0",
     "content-tag": "^4.2.0",
     "decorator-transforms": "^2.4.0"
   },
   "devDependencies": {
-    "@babel/standalone": "^8.0.5",
+    "@babel/standalone": "^8.0.6",
     "@eslint/js": "^10.0.1",
-    "@types/node": "^26.6.1",
+    "@types/node": "^26.6.2",
     "concurrently": "^10.0.5",
     "ember-source": "^7.3.0",
-    "eslint": "^10.10.0",
+    "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.12.0",
-    "prettier": "^3.9.7",
+    "prettier": "^3.9.8",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.70.0"
   },
