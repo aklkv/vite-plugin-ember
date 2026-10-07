@@ -1,43 +1,11 @@
 {
   "solution": {
     "ember-live-compiler": {
-      "impact": "patch",
-      "oldVersion": "0.2.4",
-      "newVersion": "0.2.5",
-      "tagName": "latest",
-      "constraints": [
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :bug: Bug Fix"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
-        }
-      ],
-      "pkgJSONPath": "./ember-live-compiler/package.json"
+      "oldVersion": "0.2.5"
     },
     "vite-plugin-ember": {
-      "impact": "patch",
-      "oldVersion": "0.8.1",
-      "newVersion": "0.8.2",
-      "tagName": "latest",
-      "constraints": [
-        {
-          "impact": "patch",
-          "reason": "Has dependency `workspace:*` on ember-live-compiler"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :bug: Bug Fix"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
-        }
-      ],
-      "pkgJSONPath": "./vite-plugin-ember/package.json"
+      "oldVersion": "0.8.2"
     }
   },
-  "description": "## Release (2026-09-18)\n\n* ember-live-compiler 0.2.5 (patch)\n* vite-plugin-ember 0.8.2 (patch)\n\n#### :bug: Bug Fix\n* `ember-live-compiler`, `vite-plugin-ember`\n  * [#107](https://github.com/aklkv/vite-plugin-ember/pull/107) Upgrade dependencies, markdown-it 15 and pnpm 12 ([@aklkv](https://github.com/aklkv))\n\n#### :memo: Documentation\n* [#112](https://github.com/aklkv/vite-plugin-ember/pull/112) Add favicon and nav logo to docs ([@aklkv](https://github.com/aklkv))\n\n#### :house: Internal\n* Other\n  * [#111](https://github.com/aklkv/vite-plugin-ember/pull/111) Pin GitHub Actions to commit SHAs ([@aklkv](https://github.com/aklkv))\n  * [#110](https://github.com/aklkv/vite-plugin-ember/pull/110) Ignore TypeScript major updates in dependabot ([@aklkv](https://github.com/aklkv))\n* `ember-live-compiler`, `vite-plugin-ember`\n  * [#108](https://github.com/aklkv/vite-plugin-ember/pull/108) Declare prettier per package and fix Prepare Release lint failure ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "\n\n\n\n"
 }
