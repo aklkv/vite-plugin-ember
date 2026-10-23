@@ -150,7 +150,7 @@ File-based demos are useful when a component is too large for a code fence, or w
 
 ## Available imports
 
-The plugin resolves these package namespaces automatically — no extra dependencies needed:
+The imports demos use most. `@glimmer/component` is the peer dependency you installed with the plugin; the others are part of `ember-source`:
 
 | Package              | Common imports                               |
 | -------------------- | -------------------------------------------- |
@@ -162,7 +162,7 @@ The plugin resolves these package namespaces automatically — no extra dependen
 | `@ember/owner`       | `getOwner`, `setOwner`                       |
 | `@ember/renderer`    | `renderComponent` (used by the Vue wrapper)  |
 
-Any `@ember/*` or `@glimmer/*` import is resolved from `ember-source`'s ESM packages automatically.
+Any `@ember/*` or `@glimmer/*` import that's part of `ember-source` is resolved from its ESM packages automatically. Standalone packages in those scopes, such as `@ember/test-waiters` or `@glimmer/component`, are installed and resolved like any other dependency.
 
 ::: tip Built-in helpers & modifiers (Ember 7.1+)
 Starting with `ember-source` 7.1, the `on` modifier and the built-in helpers (`fn`, `eq`, `neq`, `and`, `or`, `not`, `gt`, `gte`, `lt`, `lte`, `array`, `hash`, `element`) are **auto-imported** into strict-mode `.gjs` / `.gts` templates. You can reference them by name without an explicit `import` — local bindings of the same name still take precedence.

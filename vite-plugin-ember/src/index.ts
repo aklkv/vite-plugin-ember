@@ -208,9 +208,12 @@ export default function vitePluginEmber(
   }
 
   /**
-   * Options for the build-time `@embroider/macros` transform. `importSync()`
-   * of a specifier only this plugin resolves (`@ember/*`, `@glimmer/*`, …)
-   * counts as resolvable; everything else falls back to Node's resolution.
+   * Options for the build-time `@embroider/macros` transform. For
+   * `importSync()` and `moduleExists()`, a specifier only this plugin resolves
+   * (`@ember/*`, `@glimmer/*`, …) counts as resolvable; everything else falls
+   * back to Node's resolution,
+   * including `@ember/*` packages that aren't part of ember-source and that
+   * only the importing addon depends on (e.g. `@ember/test-waiters`).
    */
   function macrosOptions(): MacrosOptions {
     return {
@@ -221,8 +224,8 @@ export default function vitePluginEmber(
           return decoratorRuntimePath !== undefined;
         }
         if (options.resolve?.[specifier]) return true;
-        if (isEmberSpecifier(specifier)) {
-          return resolveEmberPackage(specifier) !== null;
+        if (isEmberSpecifier(specifier) && resolveEmberPackage(specifier)) {
+          return true;
         }
         return undefined;
       },
@@ -310,14 +313,20 @@ export default function vitePluginEmber(
      *
      * (see https://github.com/aklkv/vite-plugin-ember/issues/40)
      *
-     * Fix: register an esbuild plugin that marks every `@ember/*`,
-     * `@glimmer/*`, `@embroider/macros`, and `decorator-transforms/runtime`
-     * import as EXTERNAL during dep optimization. Esbuild then preserves
-     * those bare specifiers verbatim in the optimized output, and Vite's
-     * import-analysis transform — which DOES call this plugin's `resolveId`
-     * hook — rewrites them to real on-disk paths at request time. This way
-     * we keep a single source of truth for the resolver (no duplicated
-     * `@ember/*` → `ember-source/dist/...` logic across two build tools).
+     * Fix: register an esbuild plugin that marks the `@ember/*` and
+     * `@glimmer/*` imports this plugin resolves, `@embroider/macros`, and
+     * `decorator-transforms/runtime` as EXTERNAL during dep optimization.
+     * Esbuild then preserves those bare specifiers verbatim in the optimized
+     * output, and Vite's import-analysis transform — which DOES call this
+     * plugin's `resolveId` hook — rewrites them to real on-disk paths at
+     * request time. This way we keep a single source of truth for the
+     * resolver (no duplicated `@ember/*` → `ember-source/dist/...` logic
+     * across two build tools).
+     *
+     * `@ember/*` packages that aren't part of ember-source and that the app
+     * doesn't install (e.g. `@ember/test-waiters`, only a dependency of the
+     * addon) stay with esbuild: resolved from the addon importing them and
+     * bundled, since from the project root they'd be missing with pnpm.
      *
      * We also exclude `ember-source` itself from pre-bundling: it ships
      * native ESM, is enormous, and pre-bundling it would just duplicate
@@ -351,18 +360,22 @@ export default function vitePluginEmber(
                 setup(build: {
                   onResolve: (
                     opts: { filter: RegExp },
-                    cb: (args: { path: string }) => {
+                    cb: (args: {
                       path: string;
-                      external: boolean;
-                    },
+                    }) => { path: string; external: boolean } | undefined,
                   ) => void;
                 }) {
                   const externalize = (args: { path: string }) => ({
                     path: args.path,
                     external: true,
                   });
-                  build.onResolve({ filter: /^@ember\// }, externalize);
-                  build.onResolve({ filter: /^@glimmer\// }, externalize);
+                  // the ones `resolveId` serves; esbuild resolves the rest
+                  const externalizeEmber = (args: { path: string }) =>
+                    resolveEmberPackage(args.path)
+                      ? externalize(args)
+                      : undefined;
+                  build.onResolve({ filter: /^@ember\// }, externalizeEmber);
+                  build.onResolve({ filter: /^@glimmer\// }, externalizeEmber);
                   build.onResolve(
                     { filter: /^@embroider\/macros$/ },
                     externalize,
