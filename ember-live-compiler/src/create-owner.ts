@@ -2,8 +2,16 @@
  * A minimal Ember-compatible owner backed by a simple `Map`.
  */
 export interface EmberOwner {
-  /** Register a pre-built instance under a full name (e.g. `'service:greeting'`). */
-  register(fullName: string, instance: unknown): void;
+  /**
+   * Register a pre-built instance under a full name (e.g. `'service:greeting'`).
+   * `options` matches Ember's `owner.register()`, so a real Ember owner can
+   * take instances with `{ instantiate: false }`; this owner ignores it.
+   */
+  register(
+    fullName: string,
+    instance: unknown,
+    options?: { instantiate?: boolean; singleton?: boolean },
+  ): void;
   /** Look up a previously registered instance. */
   lookup(fullName: string): unknown;
 }

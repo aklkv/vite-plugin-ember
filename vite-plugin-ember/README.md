@@ -21,7 +21,7 @@ Write `.gjs` / `.gts` code fences in markdown and see them rendered on the page 
 - **Preview mode** — add `preview` to show source code alongside the rendered component, or `collapsible` to hide it behind a toggle
 - **Full Ember support** — class components, `@tracked` state, `{{on}}` modifier, and TypeScript via `.gts`
 - **Zero-config compilation** — content-tag preprocessing, Babel template compilation, decorator transforms, and `@ember/*` / `@glimmer/*` module resolution handled automatically
-- **`@embroider/macros` shim** — runtime stubs so `ember-source` ESM imports just work
+- **`@embroider/macros` shim** — runtime stubs so `ember-source` ESM imports just work, plus build-time `dependencySatisfies()`, `macroCondition()` and `importSync()` for V2 addons
 - **Vue wrapper** — ships a `<CodePreview>` component for seamless VitePress integration
 
 ## Quick Start
@@ -160,6 +160,8 @@ export default {
 ```
 
 All `<CodePreview>` instances (including those from ` ```gjs live ` fences) will then use the `@service` decorator for dependency injection.
+
+For components that need a full Ember owner (services from a resolver, `<LinkTo>`), pass `owner` a function that boots an `ApplicationInstance`; it runs when the first demo renders. See [Using a real Ember owner](https://aklkv.github.io/vite-plugin-ember/guide/plugin-api#using-a-real-ember-owner).
 
 ## Requirements
 

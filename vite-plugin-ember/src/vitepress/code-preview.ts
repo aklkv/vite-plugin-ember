@@ -6,10 +6,13 @@ import {
   inject,
   h,
 } from 'vue';
-import { render } from 'ember-live-compiler/runtime';
+// Not `ember-live-compiler/runtime`: its browser compiler would pull Babel
+// into the app's dependency graph (and Vite's dep pre-bundling).
+import { render } from 'ember-live-compiler/runtime/render';
 import { EMBER_OWNER_KEY } from './constants.js';
 
-import type { Mount } from 'ember-live-compiler/runtime';
+import type { Mount } from 'ember-live-compiler/runtime/render';
+import type { EmberOwner, EmberOwnerFactory } from './setup.js';
 import type { PropType } from 'vue';
 
 // Inlined to avoid a top-level static import from `vitepress`. The `vitepress`
@@ -53,18 +56,21 @@ export default defineComponent({
   props: {
     src: { type: String },
     loader: { type: Function as PropType<() => Promise<unknown>> },
-    owner: { type: Object },
+    owner: {
+      type: [Object, Function] as PropType<EmberOwner | EmberOwnerFactory>,
+    },
     preview: { type: Boolean },
     collapsible: { type: Boolean },
   },
   setup(props, { slots }) {
-    const injectedOwner = inject<object | undefined>(
+    const injectedOwner = inject<EmberOwner | EmberOwnerFactory | undefined>(
       EMBER_OWNER_KEY,
       undefined,
     );
     const mountEl = ref<HTMLDivElement | null>(null);
     const error = ref<string | null>(null);
     let mount: Mount | undefined;
+    let unmounted = false;
 
     onMounted(async () => {
       ensureStyle();
@@ -75,11 +81,24 @@ export default defineComponent({
           ? props.loader()
           : import(/* @vite-ignore */ props.src!));
 
-        const owner = props.owner ?? injectedOwner;
-        mount = await render(mod, {
+        // a function creates the owner lazily (see `setupEmber`'s `owner`)
+        const ownerOrFactory = props.owner ?? injectedOwner;
+        const owner =
+          typeof ownerOrFactory === 'function'
+            ? await ownerOrFactory()
+            : ownerOrFactory;
+        if (unmounted) return;
+
+        const rendered = await render(mod, {
           into: mountEl.value,
           ...(owner ? { owner } : {}),
         });
+        // unmounted while rendering: nothing will destroy it later
+        if (unmounted) {
+          rendered.destroy();
+          return;
+        }
+        mount = rendered;
       } catch (err) {
         console.error('[CodePreview] Failed to render:', err);
         error.value = String(err);
@@ -87,6 +106,7 @@ export default defineComponent({
     });
 
     onBeforeUnmount(() => {
+      unmounted = true;
       mount?.destroy();
       mount = undefined;
     });

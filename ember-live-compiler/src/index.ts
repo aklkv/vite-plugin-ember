@@ -11,6 +11,12 @@
  */
 
 export { createNodeCompiler } from './compile.node.js';
+export {
+  dependencySatisfies,
+  macrosBabelPlugin,
+  needsMacrosTransform,
+  transformMacros,
+} from './macros.node.js';
 export { createOwner } from './create-owner.js';
 
 export type {
@@ -21,4 +27,5 @@ export type {
   CompileResult,
 } from './compile.node.js';
 export type { EmberOwner } from './create-owner.js';
+export type { MacrosOptions, TransformMacrosOptions } from './macros.node.js';
 export type { PluginItem, PresetItem, ParserOptions } from './compile.node.js';

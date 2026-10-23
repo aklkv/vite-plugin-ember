@@ -31,12 +31,15 @@ import decoratorTransforms from 'decorator-transforms';
 import { transformAsync } from '@babel/core';
 import { Preprocessor } from 'content-tag';
 
+import { macrosBabelPlugin } from './macros.node.js';
+
 import type {
   InputOptions,
   PluginItem,
   PluginTarget,
   PresetItem,
 } from '@babel/core';
+import type { MacrosOptions } from './macros.node.js';
 
 // `@babel/core` v8 no longer re-exports `ParserOptions`; derive it from the
 // (exported) `InputOptions` shape instead.
@@ -95,6 +98,13 @@ export interface NodeCompilerOptions {
    * `typescript` is always included for `.gts`; these are appended.
    */
   parserPlugins?: ParserPluginList;
+
+  /**
+   * Evaluate the `@embroider/macros` calls that need a build step
+   * (`dependencySatisfies()`, the `macroCondition()` branches it decides,
+   * `importSync()`) before the other plugins run. Off when omitted.
+   */
+  macros?: MacrosOptions;
 }
 
 /** Per-file options for {@link NodeCompiler.compile}. */
@@ -166,7 +176,12 @@ export function createNodeCompiler(
   // Built-in plugins are passed as imported functions, not by name: Babel
   // resolves names from `cwd`, which can pick up a different (e.g. hoisted
   // Babel 7) copy from the consumer's tree instead of our own dependency.
+  const macrosPlugins: PluginItem[] = options.macros
+    ? [macrosBabelPlugin(options.macros) as PluginTarget]
+    : [];
+
   const basePlugins: PluginItem[] = [
+    ...macrosPlugins,
     ...userBefore,
     [templateCompilation as PluginTarget, templateCompilationOpts],
     [
@@ -209,6 +224,7 @@ export function createNodeCompiler(
 
   // V2-addon `.js` with precompileTemplate calls: template-compilation only.
   const precompiledTemplatePlugins: PluginItem[] = [
+    ...macrosPlugins,
     [templateCompilation as PluginTarget, templateCompilationOpts],
   ];
 
