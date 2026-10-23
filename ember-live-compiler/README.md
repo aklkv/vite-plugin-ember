@@ -69,8 +69,9 @@ support.
 ### `@embroider/macros`
 
 The resolver's runtime shim covers the macros that work as plain functions.
-`dependencySatisfies()`, the `macroCondition()` branches it decides, and
-`importSync()` need a build step, as in Embroider. Pass `macros` to
+`dependencySatisfies()`, `appEmberSatisfies()`, `moduleExists()`, the
+`macroCondition()` branches they decide, and `importSync()` need a build step,
+as in Embroider. Pass `macros` to
 `createNodeCompiler()` to evaluate them in `.gjs` / `.gts` and
 `precompiled-template` files, and use `transformMacros()` for plain JavaScript
 such as V2 addons:

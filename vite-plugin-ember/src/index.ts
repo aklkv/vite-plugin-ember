@@ -102,11 +102,12 @@ export interface VitePluginEmberOptions {
    * or an object with `before` / `after` arrays for fine-grained ordering
    * relative to the built-ins:
    *
-   * 1. `before` plugins
-   * 2. `babel-plugin-ember-template-compilation`
-   * 3. `decorator-transforms`
-   * 4. `after` plugins
-   * 5. `@babel/plugin-transform-typescript` (only for `.gts`)
+   * 1. the build-time `@embroider/macros` step
+   * 2. `before` plugins
+   * 3. `babel-plugin-ember-template-compilation`
+   * 4. `decorator-transforms`
+   * 5. `after` plugins
+   * 6. `@babel/plugin-transform-typescript` (only for `.gts`)
    *
    * @example
    * ```ts
@@ -186,6 +187,8 @@ export default function vitePluginEmber(
   let cacheDir: string | undefined;
   // The project root, whose devDependencies `dependencySatisfies()` counts.
   let appRoot: string | undefined;
+  // Vite's root, for files that have no path of their own
+  let projectRoot: string | undefined;
 
   // Compile pipeline (built once `configResolved` has located the template
   // compiler so the engine sees the right `compiler` / `compilerPath`).
@@ -426,6 +429,7 @@ export default function vitePluginEmber(
       if (emberSourcePackagesDir) return;
 
       cacheDir = config.cacheDir;
+      projectRoot = config.root;
       appRoot = findPackageRoot(config.root);
 
       try {
@@ -650,7 +654,12 @@ export default function vitePluginEmber(
 
       try {
         const result = await compiler.compile(code, {
-          filename: bareId,
+          // Inline demos are virtual modules, with no path of their own. Place
+          // them in the project, so the build-time macros resolve packages from
+          // there rather than from the current directory.
+          filename: bareId.startsWith(PUBLIC_PREFIX)
+            ? join(appRoot ?? projectRoot ?? process.cwd(), bareId)
+            : bareId,
           kind: isGTS ? 'gts' : 'gjs',
         });
         if (!result) return null;

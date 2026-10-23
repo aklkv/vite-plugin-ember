@@ -34,13 +34,23 @@ let plugin;
 
 before(() => {
   root = mkdtempSync(join(tmpdir(), 'vite-plugin-ember-macros-'));
-  writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'app' }));
+  writeFileSync(
+    join(root, 'package.json'),
+    JSON.stringify({ name: 'app', dependencies: { 'app-only': '*' } }),
+  );
   // the project needs ember-source, so link our devDependency
   mkdirSync(join(root, 'node_modules'));
   const emberSource = dirname(
     createRequire(import.meta.url).resolve('ember-source/package.json'),
   );
   symlinkSync(emberSource, join(root, 'node_modules/ember-source'), 'dir');
+
+  // a dependency only the app has
+  mkdirSync(join(root, 'node_modules/app-only'));
+  writeFileSync(
+    join(root, 'node_modules/app-only/package.json'),
+    JSON.stringify({ name: 'app-only', version: '1.0.0' }),
+  );
 
   const addonDir = join(root, 'node_modules/fake-addon');
   mkdirSync(addonDir, { recursive: true });
@@ -113,4 +123,20 @@ test('transform evaluates the macros in addon files', async () => {
 test('transform skips files Vite already pre-bundled', async () => {
   const chunk = join(root, 'node_modules/.vite/deps/chunk.js');
   assert.equal(await plugin.transform.call({}, ADDON_SOURCE, chunk), null);
+});
+
+test('inline demos resolve the macros from the project', async () => {
+  const result = await plugin.transform.call(
+    {
+      error(message) {
+        throw new Error(message);
+      },
+    },
+    `import { dependencySatisfies } from '@embroider/macros';
+export const hasAppOnly = dependencySatisfies('app-only', '*');
+`,
+    'virtual:ember-demo-macros.gjs',
+  );
+
+  assert.match(result.code, /hasAppOnly = true/);
 });

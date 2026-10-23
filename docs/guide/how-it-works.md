@@ -99,7 +99,7 @@ The markdown-it plugin runs during markdown parsing (synchronously), but Vite's 
 
 Ember's ESM packages call functions like `isDevelopingApp()` and `macroCondition()` at import time. In a standard Ember build, these are replaced at compile time by `@embroider/macros`. Since we're not running the full Ember build pipeline, we provide runtime implementations that return sensible defaults.
 
-A few macros can't work at runtime: `importSync()` has to become a static import, and the branch `dependencySatisfies()` rules out may import a package that isn't installed. Those are evaluated at build time instead, the way Embroider does: in your components, in V2 addons Vite transforms, and in the addons it pre-bundles in dev.
+A few macros can't work at runtime: `importSync()` has to become a static import, and the branch `dependencySatisfies()` or `appEmberSatisfies()` rules out may import a package that isn't installed. Those are evaluated at build time instead, the way Embroider does: in your components, in V2 addons Vite transforms, and in the addons it pre-bundles in dev.
 
 ### Why `content-tag` + Babel (two stages)?
 

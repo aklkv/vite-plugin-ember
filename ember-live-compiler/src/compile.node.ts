@@ -82,11 +82,12 @@ export interface NodeCompilerOptions {
    * built-ins, matching legacy behavior) or `{ before, after }` for fine
    * ordering relative to the built-ins:
    *
-   * 1. `before` plugins
-   * 2. `babel-plugin-ember-template-compilation`
-   * 3. `module:decorator-transforms`
-   * 4. `after` plugins
-   * 5. `@babel/plugin-transform-typescript` (only for `.gts`)
+   * 1. the `macros` step, when enabled
+   * 2. `before` plugins
+   * 3. `babel-plugin-ember-template-compilation`
+   * 4. `module:decorator-transforms`
+   * 5. `after` plugins
+   * 6. `@babel/plugin-transform-typescript` (only for `.gts`)
    */
   babelPlugins?: PluginItem[] | { before?: PluginItem[]; after?: PluginItem[] };
 
@@ -101,8 +102,9 @@ export interface NodeCompilerOptions {
 
   /**
    * Evaluate the `@embroider/macros` calls that need a build step
-   * (`dependencySatisfies()`, the `macroCondition()` branches it decides,
-   * `importSync()`) before the other plugins run. Off when omitted.
+   * (`dependencySatisfies()`, `appEmberSatisfies()`, `moduleExists()`, the
+   * `macroCondition()` branches they decide, `importSync()`) before the
+   * other plugins run. Off when omitted.
    */
   macros?: MacrosOptions;
 }

@@ -21,7 +21,7 @@ Write `.gjs` / `.gts` code fences in markdown and see them rendered on the page 
 - **Preview mode** — add `preview` to show source code alongside the rendered component, or `collapsible` to hide it behind a toggle
 - **Full Ember support** — class components, `@tracked` state, `{{on}}` modifier, and TypeScript via `.gts`
 - **Zero-config compilation** — content-tag preprocessing, Babel template compilation, decorator transforms, and `@ember/*` / `@glimmer/*` module resolution handled automatically
-- **`@embroider/macros` shim** — runtime stubs so `ember-source` ESM imports just work, plus build-time `dependencySatisfies()`, `macroCondition()` and `importSync()` for V2 addons
+- **`@embroider/macros` shim** — runtime stubs so `ember-source` ESM imports just work, plus build-time `dependencySatisfies()`, `appEmberSatisfies()`, `moduleExists()`, `macroCondition()` and `importSync()` for V2 addons
 - **Vue wrapper** — ships a `<CodePreview>` component for seamless VitePress integration
 
 ## Quick Start

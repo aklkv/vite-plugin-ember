@@ -324,6 +324,17 @@ test('skips files that include() leaves out', async () => {
   );
 });
 
+test('returns null when nothing could be evaluated', async () => {
+  // non-literal arguments are left to the runtime shim, so there's nothing to rewrite
+  const code = await transform(`
+    import { importSync, dependencySatisfies } from '@embroider/macros';
+    const name = 'helper-pkg';
+    export const helper = dependencySatisfies(name, '*') ? importSync(name) : null;
+  `);
+
+  assert.equal(code, undefined);
+});
+
 test('imports each specifier once', async () => {
   const code = await transform(`
     import { importSync } from '@embroider/macros';

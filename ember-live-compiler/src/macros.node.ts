@@ -29,6 +29,9 @@ import type { CompileResult } from './compile.node.js';
 
 const MACROS_MODULE = '@embroider/macros';
 
+// set in Babel's file metadata when the plugin rewrote something
+const CHANGED = 'embroiderMacrosChanged';
+
 // the macros this pass evaluates; the runtime shim covers the rest
 const BUILD_TIME_MACROS = [
   'importSync',
@@ -94,7 +97,9 @@ export async function transformMacros(
     parserOpts: { sourceType: 'module' },
     sourceMaps: options.sourceMaps ?? true,
   });
-  if (!result?.code) return null;
+  // nothing to evaluate (e.g. only non-literal arguments): keep the original
+  const metadata = result?.metadata as Record<string, unknown> | undefined;
+  if (!result?.code || !metadata?.[CHANGED]) return null;
   return { code: result.code, map: result.map ?? undefined };
 }
 
@@ -133,6 +138,9 @@ export function macrosBabelPlugin(options: MacrosOptions = {}) {
         Program(program, state) {
           const filename = state.filename;
           if (!filename || options.include?.(filename) === false) return;
+          const changed = () => {
+            (state.file.metadata as Record<string, unknown>)[CHANGED] = true;
+          };
 
           // 1. `dependencySatisfies('name', 'range')`, `appEmberSatisfies('range')`
           //    and `moduleExists('name')` → `true` / `false`
@@ -161,8 +169,9 @@ export function macrosBabelPlugin(options: MacrosOptions = {}) {
                   value = canResolve(specifier.value, filename);
                 }
               }
-              if (value !== undefined)
-                path.replaceWith(t.booleanLiteral(value));
+              if (value === undefined) return;
+              path.replaceWith(t.booleanLiteral(value));
+              changed();
             },
           });
 
@@ -175,6 +184,7 @@ export function macrosBabelPlugin(options: MacrosOptions = {}) {
               const evaluated = predicate?.evaluate();
               if (!evaluated?.confident) return;
               foldCondition(t, path, Boolean(evaluated.value));
+              changed();
             },
           });
 
@@ -204,6 +214,7 @@ export function macrosBabelPlugin(options: MacrosOptions = {}) {
           });
 
           if (!esCompat) return;
+          changed();
           program.unshiftContainer('body', [
             ...[...imports].map(([specifier, namespace]) =>
               t.importDeclaration(
