@@ -1,5 +1,21 @@
 # Changelog
 
+## Release (2026-10-23)
+
+* ember-live-compiler 0.3.0 (minor)
+* vite-plugin-ember 0.9.0 (minor)
+
+#### :rocket: Enhancement
+* `ember-live-compiler`, `vite-plugin-ember`
+  * [#121](https://github.com/aklkv/vite-plugin-ember/pull/121) Fix duplicate Ember modules in dev, build-time macros for addons, lazy owners ([@aklkv](https://github.com/aklkv))
+
+#### :bug: Bug Fix
+* `ember-live-compiler`, `vite-plugin-ember`
+  * [#121](https://github.com/aklkv/vite-plugin-ember/pull/121) Fix duplicate Ember modules in dev, build-time macros for addons, lazy owners ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-09-18)
 
 * ember-live-compiler 0.2.5 (patch)
