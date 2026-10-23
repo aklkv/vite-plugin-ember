@@ -2,6 +2,17 @@
 
 ## Release (2026-10-23)
 
+* vite-plugin-ember 0.9.1 (patch)
+
+#### :bug: Bug Fix
+* `vite-plugin-ember`
+  * [#122](https://github.com/aklkv/vite-plugin-ember/pull/122) Resolve standalone `@ember/*` packages from the addon that imports them ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
+## Release (2026-10-23)
+
 * ember-live-compiler 0.3.0 (minor)
 * vite-plugin-ember 0.9.0 (minor)
 
