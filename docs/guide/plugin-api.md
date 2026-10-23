@@ -261,7 +261,7 @@ enhanceApp({ app }) {
 
 ```ts
 // .vitepress/theme/ember-owner.ts
-import EmberApp from 'ember-strict-application-resolver';
+import Application from '@ember/application';
 import EmberRouter from '@ember/routing/router';
 import ThemeService from 'my-addon/services/theme';
 
@@ -269,7 +269,9 @@ class Router extends EmberRouter {
   location = 'none';
 }
 
-class DemoApp extends EmberApp {
+class DemoApp extends Application {
+  // Ember 7.2+ resolves only these modules. Before 7.2, extend the default
+  // export of `ember-strict-application-resolver` instead of `Application`.
   modules = {
     './router': Router,
     './services/theme': ThemeService,
