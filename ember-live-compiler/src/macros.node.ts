@@ -19,7 +19,7 @@
 
 import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { basename, dirname, join } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 
 import { transformAsync } from '@babel/core';
 import semver from 'semver';
@@ -488,6 +488,7 @@ function installedVersion(root: string, name: string): string | undefined {
   return undefined;
 }
 
+// `resolve()` drops trailing separators, without a regex that backtracks on long paths
 function samePath(a: string, b: string): boolean {
-  return a.replace(/[\\/]+$/, '') === b.replace(/[\\/]+$/, '');
+  return resolve(a) === resolve(b);
 }
