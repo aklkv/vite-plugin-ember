@@ -485,12 +485,17 @@ export default function vitePluginEmber(
         }
       }
 
-      // Pre-resolve decorator-transforms runtime (CJS → ESM)
-      try {
-        const cjsPath = rootRequire.resolve('decorator-transforms/runtime');
-        decoratorRuntimePath = cjsPath.replace(/runtime\.cjs$/, 'runtime.js');
-      } catch {
-        // not installed
+      // Pre-resolve decorator-transforms runtime (CJS → ESM). Compiled code
+      // imports it, and it's our dependency, so fall back to our own copy for
+      // projects that don't install it (pnpm doesn't hoist it for them).
+      for (const require of [rootRequire, createRequire(import.meta.url)]) {
+        try {
+          const cjsPath = require.resolve('decorator-transforms/runtime');
+          decoratorRuntimePath = cjsPath.replace(/runtime\.cjs$/, 'runtime.js');
+          break;
+        } catch {
+          // not resolvable from here
+        }
       }
 
       buildCompiler();
