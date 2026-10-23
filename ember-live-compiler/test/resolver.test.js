@@ -41,6 +41,8 @@ test('EMBROIDER_MACROS_SHIM_SOURCE exports all consumed macros', () => {
     'isTesting',
     'macroCondition',
     'dependencySatisfies',
+    'appEmberSatisfies',
+    'moduleExists',
     'getOwnConfig',
     'getConfig',
     'importSync',

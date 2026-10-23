@@ -254,6 +254,9 @@ importers:
       decorator-transforms:
         specifier: ^2.4.0
         version: 2.4.0(@babel/core@8.0.7)
+      semver:
+        specifier: ^7.8.5
+        version: 7.8.5
     devDependencies:
       '@babel/standalone':
         specifier: ^8.0.7
@@ -264,6 +267,9 @@ importers:
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
+      '@types/semver':
+        specifier: ^7.8.0
+        version: 7.8.0
       concurrently:
         specifier: ^10.0.6
         version: 10.0.6
@@ -1581,6 +1587,9 @@ packages:
 
   '@types/node@26.6.5':
     resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
+
+  '@types/semver@7.8.0':
+    resolution: {integrity: sha512-1mAINjtQCXXeLkJ9ehXkwOcBpqtLxiVtKhpUf83DdRNdQKV0iXZpaHYqRr7nj+wvxuJzoAmAwXI+sCNMv1CzLQ==}
 
   '@types/symlink-or-copy@1.2.2':
     resolution: {integrity: sha512-MQ1AnmTLOncwEf9IVU+B2e4Hchrku5N67NkgcAHW0p3sdzPe0FNMANxEm6OJUzPniEQGkeT3OROLlCwZJLWFZA==}
@@ -5199,6 +5208,8 @@ snapshots:
   '@types/node@26.6.5':
     dependencies:
       undici-types: 8.9.0
+
+  '@types/semver@7.8.0': {}
 
   '@types/symlink-or-copy@1.2.2': {}
 

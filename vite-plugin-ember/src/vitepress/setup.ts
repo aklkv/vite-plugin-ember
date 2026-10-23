@@ -8,6 +8,9 @@ import type { EmberOwner } from './create-owner.js';
 export type { EmberOwner };
 export { createOwner, EMBER_OWNER_KEY };
 
+/** Creates the owner on demand, see {@link SetupEmberOptions.owner}. */
+export type EmberOwnerFactory = () => EmberOwner | Promise<EmberOwner>;
+
 export interface SetupEmberOptions {
   /**
    * Services to register on the owner, keyed by name.
@@ -24,10 +27,13 @@ export interface SetupEmberOptions {
   services?: Record<string, unknown>;
 
   /**
-   * A pre-built owner to use instead of creating one internally.
-   * If provided, `services` entries are still registered on it.
+   * The owner to use instead of creating one internally, or a function that
+   * creates it. A function is called once, when the first `<CodePreview>`
+   * renders in the browser (never during SSR), which suits a real Ember
+   * `ApplicationInstance` that has to load and boot Ember first.
+   * `services` entries are registered on it either way.
    */
-  owner?: EmberOwner;
+  owner?: EmberOwner | EmberOwnerFactory;
 
   /**
    * The name to register the `CodePreview` component under.
@@ -61,24 +67,55 @@ export interface SetupEmberOptions {
  * } satisfies Theme;
  * ```
  *
- * @returns The owner instance, in case you need to register more services later.
+ * @returns The owner instance, in case you need to register more services
+ * later. With an `owner` function there's no owner yet, so nothing is returned.
  */
 export function setupEmber(
   app: App,
+  options: SetupEmberOptions & { owner: EmberOwnerFactory },
+): void;
+export function setupEmber(
+  app: App,
+  options?: SetupEmberOptions & { owner?: EmberOwner },
+): EmberOwner;
+export function setupEmber(
+  app: App,
+  options?: SetupEmberOptions,
+): EmberOwner | undefined;
+export function setupEmber(
+  app: App,
   options: SetupEmberOptions = {},
-): EmberOwner {
+): EmberOwner | undefined {
   const { services, componentName = 'CodePreview' } = options;
-  const owner = options.owner ?? createOwner();
 
-  if (services) {
-    for (const [name, instance] of Object.entries(services)) {
-      owner.register(`service:${name}`, instance);
+  const registerServices = (owner: EmberOwner) => {
+    for (const [name, instance] of Object.entries(services ?? {})) {
+      // `instantiate: false` lets a real Ember owner take the instance as is
+      owner.register(`service:${name}`, instance, { instantiate: false });
     }
-  }
+    return owner;
+  };
 
   const CodePreview = defineAsyncComponent(() => import('./code-preview.js'));
   app.component(componentName, CodePreview);
-  app.provide(EMBER_OWNER_KEY, owner);
 
+  if (typeof options.owner === 'function') {
+    const factory = options.owner;
+    let owner: Promise<EmberOwner> | undefined;
+    // shared by every <CodePreview>; a failed attempt is retried by the next one
+    const lazyOwner: EmberOwnerFactory = () =>
+      (owner ??= Promise.resolve()
+        .then(factory)
+        .then(registerServices)
+        .catch((err: unknown) => {
+          owner = undefined;
+          throw err;
+        }));
+    app.provide(EMBER_OWNER_KEY, lazyOwner);
+    return;
+  }
+
+  const owner = registerServices(options.owner ?? createOwner());
+  app.provide(EMBER_OWNER_KEY, owner);
   return owner;
 }

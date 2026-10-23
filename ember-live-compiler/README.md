@@ -33,11 +33,13 @@ call `render()`, since it dynamically imports `@ember/renderer`.
 
 ## Subpath exports
 
-| Import                         | Environment   | Purpose                                                                                  |
-| ------------------------------ | ------------- | ---------------------------------------------------------------------------------------- |
-| `ember-live-compiler`          | Node          | Build-time `createNodeCompiler()` — Babel + content-tag.                                 |
-| `ember-live-compiler/runtime`  | Browser       | `createBrowserCompiler()` + `render()` + `createOwner()` — compile and mount in-browser. |
-| `ember-live-compiler/resolver` | Node, Browser | Pure helpers for resolving `@ember/*` / `@glimmer/*`.                                    |
+| Import                               | Environment   | Purpose                                                                                  |
+| ------------------------------------ | ------------- | ---------------------------------------------------------------------------------------- |
+| `ember-live-compiler`                | Node          | Build-time `createNodeCompiler()` — Babel + content-tag — and `transformMacros()`.       |
+| `ember-live-compiler/runtime`        | Browser       | `createBrowserCompiler()` + `render()` + `createOwner()` — compile and mount in-browser. |
+| `ember-live-compiler/runtime/render` | Browser       | Just `render()`, without the browser compiler.                                           |
+| `ember-live-compiler/owner`          | Node, Browser | Just `createOwner()`.                                                                    |
+| `ember-live-compiler/resolver`       | Node, Browser | Pure helpers for resolving `@ember/*` / `@glimmer/*`.                                    |
 
 ## Node — build-time compile
 
@@ -64,10 +66,38 @@ const { code, map } = await compiler.compile(source, {
 Wrap it in a Vite / Rollup / esbuild / Webpack plugin and you've got Ember SFC
 support.
 
+### `@embroider/macros`
+
+The resolver's runtime shim covers the macros that work as plain functions.
+`dependencySatisfies()`, `appEmberSatisfies()`, `moduleExists()`, the
+`macroCondition()` branches they decide, and `importSync()` need a build step,
+as in Embroider. Pass `macros` to
+`createNodeCompiler()` to evaluate them in `.gjs` / `.gts` and
+`precompiled-template` files, and use `transformMacros()` for plain JavaScript
+such as V2 addons:
+
+```ts
+import { createNodeCompiler, transformMacros } from 'ember-live-compiler';
+
+const macros = {
+  // the app, whose devDependencies dependencySatisfies() also counts
+  appRoot: process.cwd(),
+  // importSync() targets only your bundler resolves; undefined = Node resolution
+  canResolve: (specifier) =>
+    specifier.startsWith('@ember/') ? true : undefined,
+};
+
+const compiler = createNodeCompiler({ macros });
+const result = await transformMacros(source, { ...macros, filename });
+```
+
+`importSync()` calls that don't resolve keep throwing at runtime instead of
+failing the build.
+
 ## Browser — render
 
 ```ts
-import { render } from 'ember-live-compiler/runtime';
+import { render } from 'ember-live-compiler/runtime/render';
 import * as DemoModule from './demo.gjs';
 
 const mount = await render(DemoModule, {
@@ -79,7 +109,10 @@ mount.destroy();
 ```
 
 `render()` lazily imports `@ember/renderer` (Ember 6.8+) so apps that never
-call it don't pay the import cost. The host bundler must be able to resolve
+call it don't pay the import cost. Import it from `/runtime/render` rather than
+`/runtime` when you don't compile in the browser: the browser compiler's lazy
+imports are never loaded, but bundlers still resolve (and Vite pre-bundles)
+the Babel they reach. The host bundler must be able to resolve
 `@ember/*` specifiers — `vite-plugin-ember`'s `resolveId` hook and
 `ssr.noExternal` rule already handle this; equivalent wiring is needed for
 other bundlers.
@@ -110,8 +143,10 @@ Mirrors the Node pipeline (content-tag → Babel with
 `@babel/plugin-transform-typescript`) but runs through `@babel/standalone` so
 it can execute in a worker or on the main thread. Every dependency
 (`@babel/standalone`, `content-tag`, the babel plugins, the TS transform) is
-**lazy-imported on first compile**, so apps that only use `render` /
-`createOwner` pay no extra cost.
+**lazy-imported on first compile**, so nothing loads until you compile. Apps
+that only render should still import `render` from `/runtime/render` and
+`createOwner` from `/owner`: bundlers resolve those lazy imports anyway, and
+Vite pre-bundles everything they reach.
 
 Consumer checklist:
 

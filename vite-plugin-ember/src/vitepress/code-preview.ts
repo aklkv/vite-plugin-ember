@@ -6,10 +6,14 @@ import {
   inject,
   h,
 } from 'vue';
-import { render } from 'ember-live-compiler/runtime';
+// Not `ember-live-compiler/runtime`: its browser compiler would pull Babel
+// into the app's dependency graph (and Vite's dep pre-bundling).
+import { render } from 'ember-live-compiler/runtime/render';
 import { EMBER_OWNER_KEY } from './constants.js';
+import { mountDemo } from './mount.js';
 
-import type { Mount } from 'ember-live-compiler/runtime';
+import type { Mount } from 'ember-live-compiler/runtime/render';
+import type { OwnerOrFactory } from './mount.js';
 import type { PropType } from 'vue';
 
 // Inlined to avoid a top-level static import from `vitepress`. The `vitepress`
@@ -53,32 +57,35 @@ export default defineComponent({
   props: {
     src: { type: String },
     loader: { type: Function as PropType<() => Promise<unknown>> },
-    owner: { type: Object },
+    // an owner, or a function creating it on first use (see `setupEmber`)
+    owner: { type: [Object, Function] as PropType<OwnerOrFactory> },
     preview: { type: Boolean },
     collapsible: { type: Boolean },
   },
   setup(props, { slots }) {
-    const injectedOwner = inject<object | undefined>(
+    const injectedOwner = inject<OwnerOrFactory | undefined>(
       EMBER_OWNER_KEY,
       undefined,
     );
     const mountEl = ref<HTMLDivElement | null>(null);
     const error = ref<string | null>(null);
     let mount: Mount | undefined;
+    let unmounted = false;
 
     onMounted(async () => {
       ensureStyle();
       if (!inBrowser || !mountEl.value) return;
 
       try {
-        const mod = await (props.loader
-          ? props.loader()
-          : import(/* @vite-ignore */ props.src!));
-
-        const owner = props.owner ?? injectedOwner;
-        mount = await render(mod, {
+        mount = await mountDemo({
+          load: () =>
+            props.loader
+              ? props.loader()
+              : import(/* @vite-ignore */ props.src!),
+          owner: props.owner ?? injectedOwner,
           into: mountEl.value,
-          ...(owner ? { owner } : {}),
+          render,
+          isUnmounted: () => unmounted,
         });
       } catch (err) {
         console.error('[CodePreview] Failed to render:', err);
@@ -87,6 +94,7 @@ export default defineComponent({
     });
 
     onBeforeUnmount(() => {
+      unmounted = true;
       mount?.destroy();
       mount = undefined;
     });

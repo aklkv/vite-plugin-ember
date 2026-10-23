@@ -77,12 +77,13 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Pin ember-source@${{ matrix.ember-source }} in the engine package
-        # Rewrite the engine devDep version in-place, then reinstall with
+      - name: Pin ember-source@${{ matrix.ember-source }} in the engine and plugin packages
+        # Rewrite the devDep versions in-place, then reinstall with
         # the lockfile unfrozen so pnpm resolves the new ember-source.
         # Edits are job-scoped and never committed back.
         run: |
           npm --prefix ember-live-compiler pkg set devDependencies.ember-source=${{ matrix.ember-source }}
+          npm --prefix vite-plugin-ember pkg set devDependencies.ember-source=${{ matrix.ember-source }}
           pnpm install --no-frozen-lockfile
 
       - name: Build (all workspace packages)

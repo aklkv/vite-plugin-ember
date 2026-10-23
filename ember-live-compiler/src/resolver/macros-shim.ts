@@ -22,6 +22,8 @@ export function isDevelopingApp() { return true; }
 export function isTesting() { return false; }
 export function macroCondition(condition) { return condition; }
 export function dependencySatisfies() { return true; }
+export function appEmberSatisfies() { return true; }
+export function moduleExists() { return false; }
 export function getOwnConfig() { return {}; }
 export function getConfig() { return {}; }
 export function importSync(specifier) {

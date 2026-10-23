@@ -36,6 +36,14 @@
       "types": "./dist/runtime/index.d.ts",
       "default": "./dist/runtime/index.js"
     },
+    "./runtime/render": {
+      "types": "./dist/runtime/render.d.ts",
+      "default": "./dist/runtime/render.js"
+    },
+    "./owner": {
+      "types": "./dist/create-owner.d.ts",
+      "default": "./dist/create-owner.js"
+    },
     "./resolver": {
       "types": "./dist/resolver/index.d.ts",
       "default": "./dist/resolver/index.js"
@@ -64,12 +72,14 @@
     "@babel/plugin-transform-typescript": "^8.0.6",
     "babel-plugin-ember-template-compilation": "^4.0.1",
     "content-tag": "^4.2.1",
-    "decorator-transforms": "^2.4.0"
+    "decorator-transforms": "^2.4.0",
+    "semver": "^7.8.5"
   },
   "devDependencies": {
     "@babel/standalone": "^8.0.7",
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.5",
+    "@types/semver": "^7.8.0",
     "concurrently": "^10.0.6",
     "ember-source": "^7.3.1",
     "eslint": "^10.13.0",

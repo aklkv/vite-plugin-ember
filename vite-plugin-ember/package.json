@@ -71,7 +71,8 @@
     "lint:format:fix": "prettier . --cache --write",
     "lint:types": "tsc --noEmit",
     "format": "prettier . --cache --write",
-    "format:check": "prettier . --cache --check"
+    "format:check": "prettier . --cache --check",
+    "test": "node --test --test-reporter=spec test/*.test.js"
   },
   "dependencies": {
     "decorator-transforms": "^2.4.0",

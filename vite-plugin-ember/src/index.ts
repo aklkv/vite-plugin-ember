@@ -1,14 +1,22 @@
 import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 
-import { createNodeCompiler } from 'ember-live-compiler';
+import {
+  createNodeCompiler,
+  needsMacrosTransform,
+  transformMacros,
+} from 'ember-live-compiler';
 import {
   EMBROIDER_MACROS_VIRTUAL_ID,
   EMBROIDER_MACROS_SHIM_SOURCE,
-  EMBER_PACKAGE_PREFIXES,
+  isEmberSpecifier,
 } from 'ember-live-compiler/resolver';
 
 import type {
+  CompileResult,
+  MacrosOptions,
   NodeCompiler,
   ParserOptions,
   PluginItem,
@@ -29,6 +37,28 @@ function errorCode(err: unknown): string | undefined {
     return typeof code === 'string' ? code : undefined;
   }
   return undefined;
+}
+
+// Vite uses forward slashes in module ids, esbuild native paths.
+function normalizeSlashes(path: string): string {
+  return path.replace(/\\/g, '/');
+}
+
+// The directory of the nearest package.json, i.e. the project the app is in.
+function findPackageRoot(dir: string): string | undefined {
+  while (!existsSync(join(dir, 'package.json'))) {
+    const parent = dirname(dir);
+    if (parent === dir) return undefined;
+    dir = parent;
+  }
+  return dir;
+}
+
+// Lets esbuild keep mapping pre-bundled code back to the original file.
+function withInlineSourceMap({ code, map }: CompileResult): string {
+  if (!map) return code;
+  const encoded = Buffer.from(JSON.stringify(map)).toString('base64');
+  return `${code}\n//# sourceMappingURL=data:application/json;base64,${encoded}`;
 }
 
 // ── Virtual-module helpers (for inline markdown demos) ──────────────────
@@ -72,11 +102,12 @@ export interface VitePluginEmberOptions {
    * or an object with `before` / `after` arrays for fine-grained ordering
    * relative to the built-ins:
    *
-   * 1. `before` plugins
-   * 2. `babel-plugin-ember-template-compilation`
-   * 3. `decorator-transforms`
-   * 4. `after` plugins
-   * 5. `@babel/plugin-transform-typescript` (only for `.gts`)
+   * 1. the build-time `@embroider/macros` step
+   * 2. `before` plugins
+   * 3. `babel-plugin-ember-template-compilation`
+   * 4. `decorator-transforms`
+   * 5. `after` plugins
+   * 6. `@babel/plugin-transform-typescript` (only for `.gts`)
    *
    * @example
    * ```ts
@@ -151,6 +182,14 @@ export default function vitePluginEmber(
   const resolveCache = new Map<string, string | null>();
   let decoratorRuntimePath: string | undefined;
 
+  // Vite's dependency cache; its pre-bundled files already went through the
+  // macros transform when esbuild loaded the originals (see `config()`).
+  let cacheDir: string | undefined;
+  // The project root, whose devDependencies `dependencySatisfies()` counts.
+  let appRoot: string | undefined;
+  // Vite's root, for files that have no path of their own
+  let projectRoot: string | undefined;
+
   // Compile pipeline (built once `configResolved` has located the template
   // compiler so the engine sees the right `compiler` / `compilerPath`).
   let compiler: NodeCompiler | undefined;
@@ -164,7 +203,35 @@ export default function vitePluginEmber(
       babelPlugins: options.babelPlugins,
       babelPresets: options.babelPresets,
       parserPlugins: options.parserPlugins,
+      macros: macrosOptions(),
     });
+  }
+
+  /**
+   * Options for the build-time `@embroider/macros` transform. `importSync()`
+   * of a specifier only this plugin resolves (`@ember/*`, `@glimmer/*`, …)
+   * counts as resolvable; everything else falls back to Node's resolution.
+   */
+  function macrosOptions(): MacrosOptions {
+    return {
+      appRoot,
+      canResolve(specifier) {
+        if (specifier === '@embroider/macros') return true;
+        if (specifier === 'decorator-transforms/runtime') {
+          return decoratorRuntimePath !== undefined;
+        }
+        if (options.resolve?.[specifier]) return true;
+        if (isEmberSpecifier(specifier)) {
+          return resolveEmberPackage(specifier) !== null;
+        }
+        return undefined;
+      },
+      include: (filename) =>
+        !cacheDir ||
+        !normalizeSlashes(filename).startsWith(
+          `${normalizeSlashes(cacheDir)}/`,
+        ),
+    };
   }
 
   /**
@@ -306,6 +373,41 @@ export default function vitePluginEmber(
                   );
                 },
               },
+              {
+                // Pre-bundled addons skip this plugin's `transform`, so run the
+                // build-time macros (`importSync()` & co.) when esbuild loads
+                // their files, where `dependencySatisfies()` can still tell
+                // which package a module belongs to.
+                name: 'vite-plugin-ember:embroider-macros',
+                setup(build: {
+                  onLoad: (
+                    opts: { filter: RegExp },
+                    cb: (args: {
+                      path: string;
+                    }) => Promise<
+                      { contents: string; loader: 'js' } | undefined
+                    >,
+                  ) => void;
+                }) {
+                  build.onLoad({ filter: /\.m?js$/ }, async ({ path }) => {
+                    // not a file we can read (e.g. a virtual module): not ours
+                    let source: string;
+                    try {
+                      source = await readFile(path, 'utf8');
+                    } catch {
+                      return undefined;
+                    }
+                    if (!needsMacrosTransform(source)) return undefined;
+                    const result = await transformMacros(source, {
+                      ...macrosOptions(),
+                      filename: path,
+                    });
+                    return result
+                      ? { contents: withInlineSourceMap(result), loader: 'js' }
+                      : undefined;
+                  });
+                },
+              },
             ],
           },
         },
@@ -325,6 +427,10 @@ export default function vitePluginEmber(
     /* ─── locate ember-source from the project root ───────────────── */
     configResolved(config) {
       if (emberSourcePackagesDir) return;
+
+      cacheDir = config.cacheDir;
+      projectRoot = config.root;
+      appRoot = findPackageRoot(config.root);
 
       try {
         rootRequire = createRequire(config.root + '/package.json');
@@ -389,12 +495,17 @@ export default function vitePluginEmber(
         }
       }
 
-      // Pre-resolve decorator-transforms runtime (CJS → ESM)
-      try {
-        const cjsPath = rootRequire.resolve('decorator-transforms/runtime');
-        decoratorRuntimePath = cjsPath.replace(/runtime\.cjs$/, 'runtime.js');
-      } catch {
-        // not installed
+      // Pre-resolve decorator-transforms runtime (CJS → ESM). Compiled code
+      // imports it, and it's our dependency, so fall back to our own copy for
+      // projects that don't install it (pnpm doesn't hoist it for them).
+      for (const require of [rootRequire, createRequire(import.meta.url)]) {
+        try {
+          const cjsPath = require.resolve('decorator-transforms/runtime');
+          decoratorRuntimePath = cjsPath.replace(/runtime\.cjs$/, 'runtime.js');
+          break;
+        } catch {
+          // not resolvable from here
+        }
       }
 
       buildCompiler();
@@ -429,15 +540,24 @@ export default function vitePluginEmber(
     },
 
     /* ─── resolve virtual modules + @ember/* / @glimmer/* ─────────── */
-    resolveId(id) {
+    async resolveId(id, importer) {
       if (id.startsWith('\0')) return null;
 
       // Shim @embroider/macros with runtime implementations
       if (id === '@embroider/macros') return EMBROIDER_MACROS_VIRTUAL_ID;
 
+      // Hand the files we locate back to Vite's resolver, so they get the same
+      // id as when a module imports them by a relative path. In dev that id
+      // carries the dependency `?v=` query; without it, ember-source modules
+      // imported both ways would load twice (two `EmberRouter` classes, etc.).
+      const viteResolve = async (path: string | null) =>
+        path
+          ? ((await this.resolve(path, importer, { skipSelf: true })) ?? path)
+          : null;
+
       // Resolve decorator-transforms runtime (pre-cached ESM path)
       if (id === 'decorator-transforms/runtime') {
-        return decoratorRuntimePath ?? null;
+        return viteResolve(decoratorRuntimePath ?? null);
       }
 
       // Virtual ember-demo modules (with or without /@id/ prefix)
@@ -448,10 +568,8 @@ export default function vitePluginEmber(
       if (bareStripped.startsWith(PUBLIC_PREFIX)) return bareStripped;
 
       // Resolve bare @ember/* and @glimmer/* to ember-source dist (cached)
-      for (const prefix of EMBER_PACKAGE_PREFIXES) {
-        if (id.startsWith(prefix)) {
-          return resolveEmberPackage(id);
-        }
+      if (isEmberSpecifier(id)) {
+        return viteResolve(resolveEmberPackage(id));
       }
 
       // User-provided custom resolution map
@@ -522,11 +640,26 @@ export default function vitePluginEmber(
         return { code: result.code, map: result.map as Rollup.SourceMapInput };
       }
 
+      // ── Build-time @embroider/macros (importSync & co.) ──────────────
+      if (/\.m?js$/.test(bareId) && needsMacrosTransform(code)) {
+        const result = await transformMacros(code, {
+          ...macrosOptions(),
+          filename: bareId,
+        });
+        if (!result) return null;
+        return { code: result.code, map: result.map as Rollup.SourceMapInput };
+      }
+
       if (!isGJS && !isGTS) return null;
 
       try {
         const result = await compiler.compile(code, {
-          filename: bareId,
+          // Inline demos are virtual modules, with no path of their own. Place
+          // them in the project, so the build-time macros resolve packages from
+          // there rather than from the current directory.
+          filename: bareId.startsWith(PUBLIC_PREFIX)
+            ? join(appRoot ?? projectRoot ?? process.cwd(), bareId)
+            : bareId,
           kind: isGTS ? 'gts' : 'gjs',
         });
         if (!result) return null;

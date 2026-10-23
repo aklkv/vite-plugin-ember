@@ -64,13 +64,15 @@ When the browser requests the virtual module, Vite's plugin hooks fire:
 - **`load`** pulls the raw source from the `demoRegistry`
 - **`transform`** compiles it through the two-stage pipeline:
   1. **content-tag** — converts `<template>` tags into JavaScript
-  2. **Babel** — applies template compilation, decorator transforms, and (for `.gts`) TypeScript stripping
+  2. **Babel** — evaluates the build-time `@embroider/macros`, then applies template compilation, decorator transforms, and (for `.gts`) TypeScript stripping
 
 ### 3. Ember package resolution
 
 When the compiled code imports from `@ember/component` or `@glimmer/tracking`, the plugin's `resolveId` hook maps these to actual files inside `ember-source/dist/packages/`. Results are cached to avoid repeated filesystem lookups.
 
-The `@embroider/macros` package (which `ember-source` ESM modules import) is shimmed with runtime implementations since there's no Ember build pipeline to evaluate compile-time macros.
+The `@embroider/macros` package (which `ember-source` ESM modules import) is shimmed with runtime implementations for the macros that work as plain functions. The rest are evaluated at build time, as described below.
+
+`<CodePreview>` and `setupEmber` import `render` and `createOwner` from `ember-live-compiler/runtime/render` and `ember-live-compiler/owner`, not `ember-live-compiler/runtime`, so the browser compiler and its Babel dependencies stay out of your site's dependency graph.
 
 ### 4. Client-side rendering
 
@@ -96,6 +98,8 @@ The markdown-it plugin runs during markdown parsing (synchronously), but Vite's 
 ### Why shim `@embroider/macros`?
 
 Ember's ESM packages call functions like `isDevelopingApp()` and `macroCondition()` at import time. In a standard Ember build, these are replaced at compile time by `@embroider/macros`. Since we're not running the full Ember build pipeline, we provide runtime implementations that return sensible defaults.
+
+A few macros can't work at runtime: `importSync()` has to become a static import, and the branch `dependencySatisfies()` or `appEmberSatisfies()` rules out may import a package that isn't installed. Those are evaluated at build time instead, the way Embroider does: in your components, in V2 addons Vite transforms, and in the addons it pre-bundles in dev.
 
 ### Why `content-tag` + Babel (two stages)?
 
