@@ -109,7 +109,7 @@ The built-in parser plugins (`classProperties`, `classPrivateProperties`, `class
 
 3. **TypeScript** — Strips type annotations from `.gts` files via `@babel/plugin-transform-typescript`.
 
-4. **Module resolution** — Resolves `@ember/*` and `@glimmer/*` bare specifiers to files inside `ember-source/dist/packages/`.
+4. **Module resolution** — Resolves `@ember/*` and `@glimmer/*` bare specifiers to files inside `ember-source/dist/packages/`. Standalone packages in those scopes, such as `@ember/test-waiters`, resolve like any other dependency.
 
 5. **`@embroider/macros` shim** — Provides runtime implementations for `isDevelopingApp()`, `macroCondition()`, and other compile-time macros that `ember-source`'s ESM modules import. The ones that can't run as plain functions are evaluated at build time, as Embroider does, in your components and in V2 addons (including when Vite pre-bundles them): `dependencySatisfies()`, `appEmberSatisfies()`, `moduleExists()`, the `macroCondition()` branches they decide, and `importSync()`, which becomes a static import.
 
