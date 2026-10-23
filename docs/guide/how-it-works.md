@@ -64,13 +64,15 @@ When the browser requests the virtual module, Vite's plugin hooks fire:
 - **`load`** pulls the raw source from the `demoRegistry`
 - **`transform`** compiles it through the two-stage pipeline:
   1. **content-tag** — converts `<template>` tags into JavaScript
-  2. **Babel** — applies template compilation, decorator transforms, and (for `.gts`) TypeScript stripping
+  2. **Babel** — evaluates the build-time `@embroider/macros`, then applies template compilation, decorator transforms, and (for `.gts`) TypeScript stripping
 
 ### 3. Ember package resolution
 
 When the compiled code imports from `@ember/component` or `@glimmer/tracking`, the plugin's `resolveId` hook maps these to actual files inside `ember-source/dist/packages/`. Results are cached to avoid repeated filesystem lookups.
 
-The `@embroider/macros` package (which `ember-source` ESM modules import) is shimmed with runtime implementations since there's no Ember build pipeline to evaluate compile-time macros.
+The `@embroider/macros` package (which `ember-source` ESM modules import) is shimmed with runtime implementations for the macros that work as plain functions. The rest are evaluated at build time, as described below.
+
+`<CodePreview>` and `setupEmber` import `render` and `createOwner` from `ember-live-compiler/runtime/render` and `ember-live-compiler/owner`, not `ember-live-compiler/runtime`, so the browser compiler and its Babel dependencies stay out of your site's dependency graph.
 
 ### 4. Client-side rendering
 

@@ -142,8 +142,10 @@ Mirrors the Node pipeline (content-tag → Babel with
 `@babel/plugin-transform-typescript`) but runs through `@babel/standalone` so
 it can execute in a worker or on the main thread. Every dependency
 (`@babel/standalone`, `content-tag`, the babel plugins, the TS transform) is
-**lazy-imported on first compile**, so apps that only use `render` /
-`createOwner` pay no extra cost.
+**lazy-imported on first compile**, so nothing loads until you compile. Apps
+that only render should still import `render` from `/runtime/render` and
+`createOwner` from `/owner`: bundlers resolve those lazy imports anyway, and
+Vite pre-bundles everything they reach.
 
 Consumer checklist:
 

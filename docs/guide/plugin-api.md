@@ -281,7 +281,7 @@ export async function createDemoOwner() {
   const instance = app.buildInstance();
   await instance.boot({ isBrowser: true, shouldRender: false });
   // lets <LinkTo> build URLs without the app routing
-  instance.lookup('router:main').setupRouter();
+  (instance.lookup('router:main') as EmberRouter).setupRouter();
   return instance;
 }
 ```
@@ -299,6 +299,8 @@ Source (.gjs/.gts)
   │    Converts <template>...</template> into JS function calls
   │
   ├─ Babel transform
+  │    ├─ build-time @embroider/macros (dependencySatisfies, appEmberSatisfies,
+  │    │   moduleExists, the macroCondition branches they decide, importSync)
   │    ├─ babel-plugin-ember-template-compilation (wire format)
   │    ├─ decorator-transforms (@tracked)
   │    ├─ custom babelPlugins (if configured)

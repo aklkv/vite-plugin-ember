@@ -26,7 +26,7 @@ export interface EmberOwner {
  *
  * @example
  * ```ts
- * import { createOwner } from 'ember-live-compiler';
+ * import { createOwner } from 'ember-live-compiler/owner';
  *
  * const owner = createOwner();
  * owner.register('service:greeting', new GreetingService());

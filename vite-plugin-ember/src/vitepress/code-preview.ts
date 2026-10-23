@@ -10,9 +10,10 @@ import {
 // into the app's dependency graph (and Vite's dep pre-bundling).
 import { render } from 'ember-live-compiler/runtime/render';
 import { EMBER_OWNER_KEY } from './constants.js';
+import { mountDemo } from './mount.js';
 
 import type { Mount } from 'ember-live-compiler/runtime/render';
-import type { EmberOwner, EmberOwnerFactory } from './setup.js';
+import type { OwnerOrFactory } from './mount.js';
 import type { PropType } from 'vue';
 
 // Inlined to avoid a top-level static import from `vitepress`. The `vitepress`
@@ -56,14 +57,13 @@ export default defineComponent({
   props: {
     src: { type: String },
     loader: { type: Function as PropType<() => Promise<unknown>> },
-    owner: {
-      type: [Object, Function] as PropType<EmberOwner | EmberOwnerFactory>,
-    },
+    // an owner, or a function creating it on first use (see `setupEmber`)
+    owner: { type: [Object, Function] as PropType<OwnerOrFactory> },
     preview: { type: Boolean },
     collapsible: { type: Boolean },
   },
   setup(props, { slots }) {
-    const injectedOwner = inject<EmberOwner | EmberOwnerFactory | undefined>(
+    const injectedOwner = inject<OwnerOrFactory | undefined>(
       EMBER_OWNER_KEY,
       undefined,
     );
@@ -77,28 +77,16 @@ export default defineComponent({
       if (!inBrowser || !mountEl.value) return;
 
       try {
-        const mod = await (props.loader
-          ? props.loader()
-          : import(/* @vite-ignore */ props.src!));
-
-        // a function creates the owner lazily (see `setupEmber`'s `owner`)
-        const ownerOrFactory = props.owner ?? injectedOwner;
-        const owner =
-          typeof ownerOrFactory === 'function'
-            ? await ownerOrFactory()
-            : ownerOrFactory;
-        if (unmounted) return;
-
-        const rendered = await render(mod, {
+        mount = await mountDemo({
+          load: () =>
+            props.loader
+              ? props.loader()
+              : import(/* @vite-ignore */ props.src!),
+          owner: props.owner ?? injectedOwner,
           into: mountEl.value,
-          ...(owner ? { owner } : {}),
+          render,
+          isUnmounted: () => unmounted,
         });
-        // unmounted while rendering: nothing will destroy it later
-        if (unmounted) {
-          rendered.destroy();
-          return;
-        }
-        mount = rendered;
       } catch (err) {
         console.error('[CodePreview] Failed to render:', err);
         error.value = String(err);

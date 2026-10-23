@@ -80,8 +80,12 @@ export function setupEmber(
 ): EmberOwner;
 export function setupEmber(
   app: App,
+  options?: SetupEmberOptions,
+): EmberOwner | undefined;
+export function setupEmber(
+  app: App,
   options: SetupEmberOptions = {},
-): EmberOwner | void {
+): EmberOwner | undefined {
   const { services, componentName = 'CodePreview' } = options;
 
   const registerServices = (owner: EmberOwner) => {

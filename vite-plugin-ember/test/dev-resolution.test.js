@@ -26,7 +26,8 @@ before(async () => {
     configFile: false,
     logLevel: 'silent',
     appType: 'custom',
-    server: { middlewareMode: true, ws: false },
+    // no file watcher, which would keep the process alive on Vite 5 to 7
+    server: { middlewareMode: true, ws: false, watch: null },
     plugins: [vitePluginEmber()],
   });
 });

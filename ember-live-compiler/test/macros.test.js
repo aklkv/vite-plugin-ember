@@ -13,6 +13,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import {
+  appEmberSatisfies,
   createNodeCompiler,
   dependencySatisfies,
   needsMacrosTransform,
@@ -40,12 +41,22 @@ before(() => {
   root = mkdtempSync(join(tmpdir(), 'ember-live-compiler-macros-'));
   writeJson(join(root, 'package.json'), {
     name: 'app',
-    devDependencies: { 'dev-only': '*' },
+    devDependencies: { 'dev-only': '*', 'ember-source': '*' },
   });
   writePackage('ember-source', { version: '6.12.0' });
   writePackage('helper-pkg', { version: '1.2.0' });
   writePackage('undeclared', { version: '1.0.0' });
   writePackage('dev-only', { version: '2.0.0-beta.1' });
+  // exports paths only to `import`, like ESM-only packages
+  writePackage('esm-only', {
+    version: '1.0.0',
+    exports: {
+      '.': { import: './index.js' },
+      './utils': { import: './utils.js' },
+      './features/*': { import: './features/*.js' },
+      './features/internal/*': null,
+    },
+  });
   writePackage('addon', {
     version: '1.0.0',
     dependencies: { 'helper-pkg': '^1.0.0' },
@@ -94,6 +105,12 @@ test('needsMacrosTransform only matches modules that use the build-time macros',
   assert.equal(
     needsMacrosTransform(
       `import { importSync } from '@embroider/macros'; importSync('x');`,
+    ),
+    true,
+  );
+  assert.equal(
+    needsMacrosTransform(
+      `import { macroCondition, appEmberSatisfies } from '@embroider/macros'; macroCondition(appEmberSatisfies('>=6'));`,
     ),
     true,
   );
@@ -155,6 +172,8 @@ test('dependencySatisfies follows Embroider: declared dependencies only, prerele
   );
   // devDependencies only count for the app
   assert.equal(dependencySatisfies(addonFile, 'dev-only', '*', root), false);
+  // a prerelease satisfies `*` only when prereleases count
+  assert.equal(dependencySatisfies(appFile, 'dev-only', '*', root), true);
   assert.equal(
     dependencySatisfies(appFile, 'dev-only', '>=2.0.0-alpha', root),
     true,
@@ -163,6 +182,68 @@ test('dependencySatisfies follows Embroider: declared dependencies only, prerele
     dependencySatisfies(appFile, 'dev-only', '>=2.0.0-alpha'),
     false,
   );
+});
+
+test("appEmberSatisfies checks the app's ember-source", () => {
+  assert.equal(appEmberSatisfies('>=6.8.0', root), true);
+  assert.equal(appEmberSatisfies('^7.0.0', root), false);
+  // no app, no ember-source
+  assert.equal(appEmberSatisfies('*'), false);
+});
+
+test('keeps the branch appEmberSatisfies selects', async () => {
+  // the pattern tracked-built-ins uses
+  const code = await transform(`
+    import { macroCondition, appEmberSatisfies, importSync } from '@embroider/macros';
+    export let trackedArray;
+    if (macroCondition(appEmberSatisfies('^6.8.0-beta.1 || >= 6.8.0'))) {
+      trackedArray = importSync('@ember/reactive/collections').trackedArray;
+    } else {
+      trackedArray = importSync('./classic/array.js').default;
+    }
+  `);
+
+  assert.match(
+    code,
+    /import \* as _importSync from "@ember\/reactive\/collections";/,
+  );
+  assert.doesNotMatch(code, /classic\/array/);
+  assert.doesNotMatch(code, /appEmberSatisfies\(/);
+});
+
+test('moduleExists checks whether a module resolves', async () => {
+  const code = await transform(`
+    import { macroCondition, moduleExists, importSync } from '@embroider/macros';
+    export const helper = macroCondition(moduleExists('helper-pkg')) ? importSync('helper-pkg') : null;
+    export const missing = macroCondition(moduleExists('missing-pkg')) ? importSync('missing-pkg') : null;
+  `);
+
+  assert.match(code, /import \* as _importSync from "helper-pkg";/);
+  assert.match(code, /export const missing = null;/);
+  assert.doesNotMatch(code, /missing-pkg/);
+});
+
+test('hoists only the paths a package exports to import', async () => {
+  const code = await transform(
+    `
+    import { importSync } from '@embroider/macros';
+    export const utils = importSync('esm-only/utils');
+    export const feature = importSync('esm-only/features/a');
+    export const internal = importSync('esm-only/features/internal/b');
+    export const missing = importSync('esm-only/missing');
+  `,
+    addonFile,
+    { canResolve: undefined },
+  );
+
+  assert.match(code, /import \* as _importSync from "esm-only\/utils";/);
+  assert.match(code, /import \* as _importSync2 from "esm-only\/features\/a";/);
+  // not exported, so they keep throwing at runtime instead of failing the build
+  assert.match(
+    code,
+    /internal = importSync\('esm-only\/features\/internal\/b'\)/,
+  );
+  assert.match(code, /missing = importSync\('esm-only\/missing'\)/);
 });
 
 test('follows renamed imports of the macros', async () => {

@@ -5,8 +5,16 @@
  */
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs';
+import { createRequire } from 'node:module';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
 
 import vitePluginEmber from '../dist/index.js';
 
@@ -25,9 +33,14 @@ let addonFile;
 let plugin;
 
 before(() => {
-  // inside the package, so this project resolves our ember-source devDependency
-  root = mkdtempSync(join(import.meta.dirname, '.tmp-macros-'));
+  root = mkdtempSync(join(tmpdir(), 'vite-plugin-ember-macros-'));
   writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'app' }));
+  // the project needs ember-source, so link our devDependency
+  mkdirSync(join(root, 'node_modules'));
+  const emberSource = dirname(
+    createRequire(import.meta.url).resolve('ember-source/package.json'),
+  );
+  symlinkSync(emberSource, join(root, 'node_modules/ember-source'), 'dir');
 
   const addonDir = join(root, 'node_modules/fake-addon');
   mkdirSync(addonDir, { recursive: true });
@@ -88,6 +101,8 @@ test('dependency pre-bundling evaluates the macros in addon files', async () => 
 test('dependency pre-bundling leaves other files to esbuild', async () => {
   const onLoad = optimizerOnLoad();
   assert.equal(await onLoad({ path: join(root, 'package.json') }), undefined);
+  // e.g. a virtual module, which has no file to read
+  assert.equal(await onLoad({ path: '\0virtual:module.js' }), undefined);
 });
 
 test('transform evaluates the macros in addon files', async () => {

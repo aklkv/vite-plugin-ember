@@ -12,6 +12,7 @@
 
 export { createNodeCompiler } from './compile.node.js';
 export {
+  appEmberSatisfies,
   dependencySatisfies,
   macrosBabelPlugin,
   needsMacrosTransform,

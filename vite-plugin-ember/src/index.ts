@@ -387,7 +387,13 @@ export default function vitePluginEmber(
                   ) => void;
                 }) {
                   build.onLoad({ filter: /\.m?js$/ }, async ({ path }) => {
-                    const source = await readFile(path, 'utf8');
+                    // not a file we can read (e.g. a virtual module): not ours
+                    let source: string;
+                    try {
+                      source = await readFile(path, 'utf8');
+                    } catch {
+                      return undefined;
+                    }
                     if (!needsMacrosTransform(source)) return undefined;
                     const result = await transformMacros(source, {
                       ...macrosOptions(),

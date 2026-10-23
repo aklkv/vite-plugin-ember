@@ -6,13 +6,15 @@
  * can only be done at build time, the way Embroider's Babel plugin does them:
  *
  * - `dependencySatisfies(name, range)` checks the version of a dependency
- *   installed for the calling package.
+ *   installed for the calling package, `appEmberSatisfies(range)` the app's
+ *   `ember-source`, and `moduleExists(name)` whether a module resolves.
  * - `macroCondition(…)` with a statically known condition keeps only the
  *   branch it selects, so the other branch's `importSync()` is never bundled.
  * - `importSync('x')` becomes a hoisted `import * as … from 'x'`.
  *
- * V2 addons call these (e.g. `ember-resources`, `ember-style-modifier`), and
- * without this the shim's `importSync()` throws when they load.
+ * V2 addons call these (e.g. `ember-resources`, `tracked-built-ins`,
+ * `ember-style-modifier`), and without this the shim's `importSync()` throws
+ * when they load.
  */
 
 import { existsSync, readFileSync } from 'node:fs';
@@ -27,17 +29,27 @@ import type { CompileResult } from './compile.node.js';
 
 const MACROS_MODULE = '@embroider/macros';
 
+// the macros this pass evaluates; the runtime shim covers the rest
+const BUILD_TIME_MACROS = [
+  'importSync',
+  'dependencySatisfies',
+  'appEmberSatisfies',
+  'moduleExists',
+];
+
 export interface MacrosOptions {
   /**
-   * The project's root directory. Like Embroider, `dependencySatisfies()`
+   * The project's root directory. `appEmberSatisfies()` checks the
+   * `ember-source` it depends on, and like Embroider, `dependencySatisfies()`
    * also counts the `devDependencies` of the package rooted here.
    */
   appRoot?: string;
   /**
    * Whether `importSync(specifier)` from `filename` can be turned into a
-   * static import. Calls that can't keep throwing at runtime (the macros
-   * shim's behavior) instead of failing the build. Return `undefined` to
-   * fall back to Node's resolution from `filename`, the default.
+   * static import (and what `moduleExists(specifier)` returns). Calls that
+   * can't keep throwing at runtime (the macros shim's behavior) instead of
+   * failing the build. Return `undefined` to fall back to Node's resolution
+   * from `filename`, the default.
    */
   canResolve?: (specifier: string, filename: string) => boolean | undefined;
   /** Which files to transform. Defaults to all of them. */
@@ -58,14 +70,14 @@ export interface TransformMacrosOptions extends MacrosOptions {
 export function needsMacrosTransform(source: string): boolean {
   return (
     source.includes(MACROS_MODULE) &&
-    (source.includes('importSync') || source.includes('dependencySatisfies'))
+    BUILD_TIME_MACROS.some((name) => source.includes(name))
   );
 }
 
 /**
- * Evaluates `dependencySatisfies()`, the `macroCondition()` branches it
- * decides and `importSync()` in a plain JavaScript module. Returns `null`
- * when the module doesn't use them.
+ * Evaluates `dependencySatisfies()`, `appEmberSatisfies()`, `moduleExists()`,
+ * the `macroCondition()` branches they decide and `importSync()` in a plain
+ * JavaScript module. Returns `null` when the module doesn't use them.
  */
 export async function transformMacros(
   source: string,
@@ -122,22 +134,35 @@ export function macrosBabelPlugin(options: MacrosOptions = {}) {
           const filename = state.filename;
           if (!filename || options.include?.(filename) === false) return;
 
-          // 1. `dependencySatisfies('name', 'range')` → `true` / `false`
+          // 1. `dependencySatisfies('name', 'range')`, `appEmberSatisfies('range')`
+          //    and `moduleExists('name')` → `true` / `false`
           program.traverse({
             CallExpression(path) {
-              if (!isMacroCall(path, 'dependencySatisfies')) return;
-              const [name, range] = path.node.arguments;
-              if (!t.isStringLiteral(name) || !t.isStringLiteral(range)) return;
-              path.replaceWith(
-                t.booleanLiteral(
-                  dependencySatisfies(
+              const args = path.node.arguments;
+              let value: boolean | undefined;
+              if (isMacroCall(path, 'dependencySatisfies')) {
+                const [name, range] = args;
+                if (t.isStringLiteral(name) && t.isStringLiteral(range)) {
+                  value = dependencySatisfies(
                     filename,
                     name.value,
                     range.value,
                     options.appRoot,
-                  ),
-                ),
-              );
+                  );
+                }
+              } else if (isMacroCall(path, 'appEmberSatisfies')) {
+                const [range] = args;
+                if (t.isStringLiteral(range)) {
+                  value = appEmberSatisfies(range.value, options.appRoot);
+                }
+              } else if (isMacroCall(path, 'moduleExists')) {
+                const [specifier] = args;
+                if (t.isStringLiteral(specifier)) {
+                  value = canResolve(specifier.value, filename);
+                }
+              }
+              if (value !== undefined)
+                path.replaceWith(t.booleanLiteral(value));
             },
           });
 
@@ -260,13 +285,93 @@ function esCompatHelper(t: typeof BabelTypes, name: BabelTypes.Identifier) {
 }
 
 function nodeCanResolve(specifier: string, filename: string): boolean {
+  const require = createRequire(filename);
   try {
-    createRequire(filename).resolve(specifier);
+    require.resolve(specifier);
     return true;
   } catch (err) {
-    // the package is there, it just doesn't export this path to `require`
-    return (err as { code?: string }).code === 'ERR_PACKAGE_PATH_NOT_EXPORTED';
+    // `require` conditions miss what only `import` exports (ESM-only packages),
+    // so look for the path in the package's exports instead
+    if ((err as { code?: string }).code !== 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
+      return false;
+    }
+    return exportsForImport(require, specifier);
   }
+}
+
+// The conditions a bundler resolves a browser `import` with
+const IMPORT_CONDITIONS = new Set([
+  'import',
+  'module',
+  'browser',
+  'development',
+  'production',
+  'default',
+]);
+
+function exportsForImport(require: NodeJS.Require, specifier: string): boolean {
+  const [, name, subpath = ''] =
+    specifier.match(/^((?:@[^/]+\/)?[^/]+)(\/.*)?$/) ?? [];
+  if (!name) return false;
+  for (const nodeModules of require.resolve.paths(name) ?? []) {
+    const packageJson = join(nodeModules, name, 'package.json');
+    if (existsSync(packageJson)) {
+      const { exports } = JSON.parse(readFileSync(packageJson, 'utf8'));
+      return exportTarget(exports, `.${subpath}`) !== undefined;
+    }
+  }
+  return false;
+}
+
+// What `exports` maps `subpath` to for an import, or undefined if nothing.
+function exportTarget(exports: unknown, subpath: string): unknown {
+  if (
+    typeof exports !== 'object' ||
+    exports === null ||
+    Array.isArray(exports)
+  ) {
+    return subpath === '.' ? conditionalTarget(exports) : undefined;
+  }
+  const map = exports as Record<string, unknown>;
+  if (!Object.keys(map).some((key) => key.startsWith('.'))) {
+    return subpath === '.' ? conditionalTarget(map) : undefined;
+  }
+  if (subpath in map) return conditionalTarget(map[subpath]);
+
+  // the pattern with the longest prefix wins, as in Node
+  let best: string | undefined;
+  for (const key of Object.keys(map)) {
+    const star = key.indexOf('*');
+    if (star === -1) continue;
+    const prefix = key.slice(0, star);
+    const suffix = key.slice(star + 1);
+    if (
+      subpath.startsWith(prefix) &&
+      subpath.endsWith(suffix) &&
+      subpath.length >= key.length - 1 &&
+      (!best || prefix.length > best.indexOf('*'))
+    ) {
+      best = key;
+    }
+  }
+  return best ? conditionalTarget(map[best]) : undefined;
+}
+
+function conditionalTarget(target: unknown): unknown {
+  // `null` means the path is deliberately not exported
+  if (target === null || target === undefined) return undefined;
+  if (typeof target === 'string') return target;
+  if (Array.isArray(target)) {
+    return target.map(conditionalTarget).find((value) => value !== undefined);
+  }
+  if (typeof target === 'object') {
+    for (const [condition, value] of Object.entries(target)) {
+      if (!IMPORT_CONDITIONS.has(condition)) continue;
+      const resolved = conditionalTarget(value);
+      if (resolved !== undefined) return resolved;
+    }
+  }
+  return undefined;
 }
 
 // ── dependencySatisfies, as @embroider/macros implements it ─────────────
@@ -313,6 +418,21 @@ export function dependencySatisfies(
   const version = installedVersion(owner.root, name);
   if (!version) return false;
   return semver.satisfies(version, range, { includePrerelease: true });
+}
+
+/**
+ * Whether the app's `ember-source` satisfies `range`, prereleases included:
+ * `appEmberSatisfies()` as @embroider/macros implements it. False without an
+ * app, or when the app doesn't depend on `ember-source`.
+ */
+export function appEmberSatisfies(range: string, appRoot?: string): boolean {
+  if (!appRoot) return false;
+  return dependencySatisfies(
+    join(appRoot, 'package.json'),
+    'ember-source',
+    range,
+    appRoot,
+  );
 }
 
 function ownerOfFile(filename: string): PackageInfo | undefined {
