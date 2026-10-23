@@ -1,36 +1,14 @@
 {
   "solution": {
     "ember-live-compiler": {
-      "impact": "minor",
-      "oldVersion": "0.2.5",
-      "newVersion": "0.3.0",
-      "tagName": "latest",
-      "constraints": [
-        {
-          "impact": "minor",
-          "reason": "Appears in changelog section :rocket: Enhancement"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :bug: Bug Fix"
-        }
-      ],
-      "pkgJSONPath": "./ember-live-compiler/package.json"
+      "oldVersion": "0.3.0"
     },
     "vite-plugin-ember": {
-      "impact": "minor",
-      "oldVersion": "0.8.2",
-      "newVersion": "0.9.0",
+      "impact": "patch",
+      "oldVersion": "0.9.0",
+      "newVersion": "0.9.1",
       "tagName": "latest",
       "constraints": [
-        {
-          "impact": "patch",
-          "reason": "Has dependency `workspace:*` on ember-live-compiler"
-        },
-        {
-          "impact": "minor",
-          "reason": "Appears in changelog section :rocket: Enhancement"
-        },
         {
           "impact": "patch",
           "reason": "Appears in changelog section :bug: Bug Fix"
@@ -39,5 +17,5 @@
       "pkgJSONPath": "./vite-plugin-ember/package.json"
     }
   },
-  "description": "## Release (2026-10-23)\n\n* ember-live-compiler 0.3.0 (minor)\n* vite-plugin-ember 0.9.0 (minor)\n\n#### :rocket: Enhancement\n* `ember-live-compiler`, `vite-plugin-ember`\n  * [#121](https://github.com/aklkv/vite-plugin-ember/pull/121) Fix duplicate Ember modules in dev, build-time macros for addons, lazy owners ([@aklkv](https://github.com/aklkv))\n\n#### :bug: Bug Fix\n* `ember-live-compiler`, `vite-plugin-ember`\n  * [#121](https://github.com/aklkv/vite-plugin-ember/pull/121) Fix duplicate Ember modules in dev, build-time macros for addons, lazy owners ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
+  "description": "## Release (2026-10-23)\n\n* vite-plugin-ember 0.9.1 (patch)\n\n#### :bug: Bug Fix\n* `vite-plugin-ember`\n  * [#122](https://github.com/aklkv/vite-plugin-ember/pull/122) Resolve standalone `@ember/*` packages from the addon that imports them ([@aklkv](https://github.com/aklkv))\n\n#### Committers: 1\n- Alexey Kulakov ([@aklkv](https://github.com/aklkv))\n"
 }
