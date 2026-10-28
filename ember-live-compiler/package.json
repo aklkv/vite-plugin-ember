@@ -68,7 +68,7 @@
     "test": "node --test --test-reporter=spec test/*.test.js"
   },
   "dependencies": {
-    "@babel/core": "^8.0.7",
+    "@babel/core": "^8.0.9",
     "@babel/plugin-transform-typescript": "^8.0.6",
     "babel-plugin-ember-template-compilation": "^4.0.1",
     "content-tag": "^4.2.1",
@@ -76,7 +76,7 @@
     "semver": "^7.8.5"
   },
   "devDependencies": {
-    "@babel/standalone": "^8.0.7",
+    "@babel/standalone": "^8.0.9",
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.5",
     "@types/semver": "^7.8.0",
@@ -87,7 +87,7 @@
     "globals": "^17.13.0",
     "prettier": "^3.9.10",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.2"
+    "typescript-eslint": "^8.72.0"
   },
   "peerDependencies": {
     "@babel/standalone": "^7.29.7",
