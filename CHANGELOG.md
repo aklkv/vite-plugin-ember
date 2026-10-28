@@ -1,5 +1,10 @@
 # Changelog
 
+
+
+
+
+
 ## Release (2026-10-23)
 
 * vite-plugin-ember 0.9.1 (patch)
