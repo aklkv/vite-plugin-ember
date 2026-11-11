@@ -68,26 +68,26 @@
     "test": "node --test --test-reporter=spec test/*.test.js"
   },
   "dependencies": {
-    "@babel/core": "^8.0.9",
+    "@babel/core": "^8.1.0",
     "@babel/plugin-transform-typescript": "^8.0.6",
     "babel-plugin-ember-template-compilation": "^4.0.1",
     "content-tag": "^4.2.1",
     "decorator-transforms": "^2.4.0",
-    "semver": "^7.8.5"
+    "semver": "^7.8.6"
   },
   "devDependencies": {
-    "@babel/standalone": "^8.0.9",
+    "@babel/standalone": "^8.1.1",
     "@eslint/js": "^10.0.1",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@types/semver": "^7.8.0",
-    "concurrently": "^10.0.6",
-    "ember-source": "^7.3.1",
-    "eslint": "^10.13.0",
+    "concurrently": "^10.0.7",
+    "ember-source": "^7.4.0",
+    "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.13.0",
+    "globals": "^17.14.0",
     "prettier": "^3.9.10",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.72.0"
+    "typescript-eslint": "^8.72.1"
   },
   "peerDependencies": {
     "@babel/standalone": "^7.29.7",
